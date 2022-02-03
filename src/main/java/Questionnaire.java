@@ -8,9 +8,12 @@ public class Questionnaire extends Ressource{
     public void addQuestion(Question quest_a){
         this.addQuestion(quest_a);
     }
-    public void displayQuestion(){
+    public void displayQuestionnaire(){
+        System.out.println("Questionnaire : "+ this.name);
         for (Question quest : this.ListeQuestions){
-            System.out.println("Question "+ quest.toString());
+            System.out.println("Question "+ quest.getEnonce());
+            System.out.println("Reponses : ");
+
 
         }
     }

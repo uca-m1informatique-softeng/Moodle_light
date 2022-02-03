@@ -10,7 +10,7 @@ public class main {
         String request = "";
         ActionsManager actionsManager = new ActionsManager();
         Questionnaire quest = new Questionnaire("Questionnaire 1 ");
-        quest.
+        quest.displayQuestionnaire();
     }
 
 }
