@@ -1,4 +1,3 @@
-package fr.unice.polytech.biblio;
 
 import java.util.*;
 
