@@ -1,14 +1,16 @@
 package Model;
 
-import Model.Documents.Cours;
+import Model.Documents.*;
 import Model.Documents.Module;
-import Model.Documents.Questionnaire;
-import Model.Documents.Ressource;
+import Model.user.Student;
+import Model.user.Teacher;
 
 import java.util.ArrayList;
 
 public class ActionsManager {
     static private ArrayList<Module> modules;
+    private ArrayList<Teacher> teachers;
+    private ArrayList<Student> students;
 
     public ActionsManager() {
         modules = new ArrayList<>();
@@ -18,32 +20,96 @@ public class ActionsManager {
         modules.add(new Module(name,id));
     }
 
-    public void addElementToModule(String id, String titel){
-        for(Module module:modules){
-            if(module.id == id){
-                module.ressources.add(new Questionnaire(titel));
+    public void addQuestionaireToModule(String modulid, String titel){
+        Module module = findModule(modulid);
+        module.ressources.add(new Questionnaire(titel));
+    }
+
+    public void addTextModule(String modulid, String name, String text ){
+        Module module = findModule(modulid);
+        module.ressources.add(new Cours(name,text));
+    }
+
+    public void addQuestToQuestionaire(String modulid,String name, String enoncer, String reponse){
+        Module module = findModule(modulid);
+        for(Ressource ressource: module.ressources) {
+            if(ressource.name == name){
+                //((Questionnaire)ressource).addQuestion(new Question(enoncer,));
             }
         }
     }
 
-    public void addQuestionaireToModule(String id, String titel){
-        for(Module module:modules){
-            if(module.id == id){
-                module.ressources.add(new Questionnaire(titel));
-            }
-        }
+    /**
+     * Assigne un teacher a un module
+     * @param modulid
+     * @param teacherid
+     */
+    public void assigneTeacher(String modulid, String teacherid){
+        Module module = findModule(modulid);
+        module.teacher = findTeacher(teacherid);
     }
 
-    public void modifyTextModule(String id, String name, String text ){
-        for(Module module:modules){
-            if(module.id == id){
-                module.ressources.add(new Cours(name,text));
+    /**
+     * Assigne un student à un module from modulid and studentid
+     * @param modulid
+     * @param studentid
+     */
+    public void assigneStudent(String modulid, String studentid){
+        Module module = findModule(modulid);
+        module.students.add(findStudent(studentid));
+    }
+
+    ///////////////////       Help methodes       ///////////////////
+
+    /**
+     * renvois le module correspendant a modulid
+     * si non renvois null.
+     * @param modulid
+     * @return Module
+     */
+    private Module findModule(String modulid){
+        for(Module module:modules) {
+            if (module.id == modulid){
+                return module;
             }
         }
+        return null;
     }
+
+    /**
+     * renvois le teacher correspendant à teahcerid
+     * si non renvois null.
+     * @param teacherid
+     * @return Teacher
+     */
+    private Teacher findTeacher(String teacherid){
+        for (Teacher teacher:teachers) {
+            if (teacher.id == teacherid){
+                return teacher;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * renvois le teacher correspendant à teahcerid
+     * si non renvois null.
+     * @param studentid
+     * @return Teacher
+     */
+    private Student findStudent(String studentid){
+        for (Student student:students) {
+            if (student.id == studentid){
+                return student;
+            }
+        }
+        return null;
+    }
+
+
+    ///////////////////       Get/Set methodes       ///////////////////
 
     static public ArrayList<Module> getModules(){
         return modules;
     }
-
 }

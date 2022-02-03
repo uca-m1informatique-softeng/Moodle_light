@@ -17,7 +17,7 @@ public class ActionsManagerTest {
 
     @Given("a teacher of name {string} and with teacher id {string}")
     public void giveATeacher(String name, String id){
-        marcel = new Teacher(name, id, actionsManager);
+        marcel = new Teacher(name, id);
     }
 
     @When("{string} creates the course {string} in the module {string}")

@@ -1,5 +1,7 @@
 package Model.Documents;
 
+import Model.user.Teacher;
+
 public class Cours extends Ressource {
     public String text;
 

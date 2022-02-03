@@ -1,7 +1,7 @@
 package Model.Documents;
 
 public class Ressource {
-    String name;
+    public String name;
     public Ressource(String name_a){
         this.name=name_a;
     }
