@@ -1,3 +1,5 @@
+package action;
+
 import Documents.Module;
 import Documents.Questionnaire;
 
@@ -5,8 +7,6 @@ import java.util.ArrayList;
 
 public class ActionsManager {
     ArrayList<Module> modules;
-
-
 
     public ActionsManager() {
         modules = new ArrayList<>();
@@ -35,7 +35,7 @@ public class ActionsManager {
     public void modifyTextModule(String id, String ){
         for(Module module:modules){
             if(module.id == id){
-
+                
             }
         }
     }

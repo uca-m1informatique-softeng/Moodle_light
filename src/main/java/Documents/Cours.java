@@ -1,9 +1,10 @@
 package Documents;
 
 public class Cours extends Ressource {
-    String name;
+    String text;
 
-    public Cours(String name_a) {
+    public Cours(String name_a,String text) {
         super(name_a);
+        this.text = text;
     }
 }
