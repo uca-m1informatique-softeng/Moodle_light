@@ -1,0 +1,8 @@
+Feature : Adding Question to Questionnaire
+
+    Background :
+        Given a teacher of name "Marcel" and with teacher id "123"
+
+    Scenario : adding a question to a questionnaire
+        When
+        Then

@@ -1,4 +1,4 @@
-package Documents;
+package Model.Documents;
 
 public class ReponseText<String> implements TypeReponse {
     private String reponse_;
