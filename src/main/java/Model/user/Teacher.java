@@ -11,4 +11,8 @@ public class Teacher {
         this.id = id;
         this.actionManager = actionManager;
     }
+
+    public String getName(){
+        return this.name;
+    }
 }

@@ -3,11 +3,12 @@ package Model;
 import Model.Documents.Cours;
 import Model.Documents.Module;
 import Model.Documents.Questionnaire;
+import Model.Documents.Ressource;
 
 import java.util.ArrayList;
 
 public class ActionsManager {
-    private ArrayList<Module> modules;
+    static private ArrayList<Module> modules;
 
     public ActionsManager() {
         modules = new ArrayList<>();
@@ -41,6 +42,8 @@ public class ActionsManager {
         }
     }
 
-
+    static public ArrayList<Module> getModules(){
+        return modules;
+    }
 
 }
