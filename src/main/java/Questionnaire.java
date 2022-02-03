@@ -5,4 +5,13 @@ public class Questionnaire extends Ressource{
     public  Questionnaire(String name){
         super(name);
     }
+    public void addQuestion(Question quest_a){
+        this.addQuestion(quest_a);
+    }
+    public void displayQuestion(){
+        for (Question quest : this.ListeQuestions){
+            System.out.println("Question "+ quest.toString());
+
+        }
+    }
 }

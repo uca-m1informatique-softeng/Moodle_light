@@ -9,6 +9,8 @@ public class main {
         boolean run = true;
         String request = "";
         ActionsManager actionsManager = new ActionsManager();
+        Questionnaire quest = new Questionnaire("Questionnaire 1 ");
+        quest.
     }
 
 }
