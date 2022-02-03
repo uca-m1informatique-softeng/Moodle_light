@@ -1,4 +1,6 @@
-public class reponseText implements TypeReponse{
+package Documents;
+
+public class reponseText implements TypeReponse {
     private String reponse_;
     private boolean repondu_;
     public reponseText(){

@@ -1,6 +1,10 @@
+package Documents;
+
+import Documents.Question;
+
 import java.util.ArrayList;
 
-public class Questionnaire extends Ressource{
+public class Questionnaire extends Ressource {
     ArrayList<Question> ListeQuestions = new ArrayList<>();
     public  Questionnaire(String name){
         super(name);
@@ -10,7 +14,7 @@ public class Questionnaire extends Ressource{
     }
     public void displayQuestion(){
         for (Question quest : this.ListeQuestions){
-            System.out.println("Question "+ quest.toString());
+            System.out.println("Documents.Question "+ quest.toString());
 
         }
     }
