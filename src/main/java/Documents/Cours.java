@@ -1,4 +1,6 @@
-public class Cours extends Ressource{
+package Documents;
+
+public class Cours extends Ressource {
     String name;
 
     public Cours(String name_a) {

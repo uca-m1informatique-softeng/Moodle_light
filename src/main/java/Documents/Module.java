@@ -1,3 +1,5 @@
+package Documents;
+
 import java.util.ArrayList;
 
 public class Module {
@@ -9,4 +11,6 @@ public class Module {
         this.name = name;
         this.id = id;
     }
+
+
 }
