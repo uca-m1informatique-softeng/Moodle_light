@@ -1,3 +1,9 @@
+# Projet Génie Logiciel 
+ KUHL Mathias 
+ LEFEVRE Olivier 
+ PLANTIER Antoine
+
+
 # cucumber-demo
 Démo Cucumber sur une version ultra-simplifiée d'emprunt de bibliothèque
 * Cucumber 7 et JUnit 5 
