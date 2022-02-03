@@ -1,5 +1,6 @@
 package Documents;
 
-public interface TypeReponse {
-    String getReponse();
+public interface TypeReponse<T> {
+    public T getReponse();
 }
+

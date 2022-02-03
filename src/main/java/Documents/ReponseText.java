@@ -1,9 +1,9 @@
 package Documents;
 
-public class reponseText implements TypeReponse {
+public class ReponseText<String> implements TypeReponse {
     private String reponse_;
     private boolean repondu_;
-    public reponseText(){
+    public ReponseText(){
         this.reponse_="";
         this.repondu_=false;
     }
