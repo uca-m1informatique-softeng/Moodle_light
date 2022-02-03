@@ -1,7 +1,6 @@
 package Documents;
 
-import Documents.Question;
-import Documents.TypeReponse;
+import Model.Documents.TypeReponse;
 
 import java.util.ArrayList;
 
@@ -15,7 +14,7 @@ public class QuestionText extends Question {
     public ArrayList<String> getChoix(){
         return null;
     }
-    public TypeReponse getReponse() {
+    public TypeReponse<String> getReponse() {
         return this.reponse_;
     }
 }

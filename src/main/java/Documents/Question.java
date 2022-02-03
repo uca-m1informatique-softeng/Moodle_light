@@ -1,5 +1,7 @@
 package Documents;
 
+import Model.Documents.TypeReponse;
+
 import java.util.ArrayList;
 
 /**
@@ -12,10 +14,12 @@ public abstract class Question {
     public Question(String enonce_arg){
         this.enonce_=enonce_arg;
     }
+
     public String getEnonce(){return null; }
     public ArrayList<String> getChoix(){ return null; }
     public boolean isReponseCorrecte(TypeReponse reponse){
         //TODO: comparer la reponse
         reponse.getReponse();
+        return false;
     }
 }
