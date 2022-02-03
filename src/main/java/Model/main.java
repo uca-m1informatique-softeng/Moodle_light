@@ -1,5 +1,6 @@
-import Documents.Questionnaire;
-import action.ActionsManager;
+package Model;
+
+import Model.Documents.Questionnaire;
 
 
 /**
@@ -10,7 +11,7 @@ public class main {
         boolean run = true;
         String request = "";
         ActionsManager actionsManager = new ActionsManager();
-        Questionnaire quest = new Questionnaire("Documents.Questionnaire 1 ");
+        Questionnaire quest = new Questionnaire("Model.Documents.Questionnaire 1 ");
     }
 
 }

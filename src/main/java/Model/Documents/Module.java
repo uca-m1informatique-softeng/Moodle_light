@@ -1,4 +1,4 @@
-package Documents;
+package Model.Documents;
 
 import java.util.ArrayList;
 

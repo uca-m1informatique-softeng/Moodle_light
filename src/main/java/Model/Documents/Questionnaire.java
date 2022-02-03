@@ -1,6 +1,4 @@
-package Documents;
-
-import Documents.Question;
+package Model.Documents;
 
 import java.util.ArrayList;
 
@@ -14,7 +12,7 @@ public class Questionnaire extends Ressource {
     }
     public void displayQuestion(){
         for (Question quest : this.ListeQuestions){
-            System.out.println("Documents.Question "+ quest.toString());
+            System.out.println("Model.Documents.Question "+ quest.toString());
 
         }
     }

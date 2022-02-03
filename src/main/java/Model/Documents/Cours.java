@@ -1,4 +1,4 @@
-package Documents;
+package Model.Documents;
 
 public class Cours extends Ressource {
     String text;

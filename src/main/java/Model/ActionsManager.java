@@ -1,12 +1,12 @@
-package action;
+package Model;
 
-import Documents.Module;
-import Documents.Questionnaire;
+import Model.Documents.Module;
+import Model.Documents.Questionnaire;
 
 import java.util.ArrayList;
 
 public class ActionsManager {
-    ArrayList<Module> modules;
+    private ArrayList<Module> modules;
 
     public ActionsManager() {
         modules = new ArrayList<>();
@@ -35,7 +35,7 @@ public class ActionsManager {
     public void modifyTextModule(String id, String ){
         for(Module module:modules){
             if(module.id == id){
-                
+
             }
         }
     }

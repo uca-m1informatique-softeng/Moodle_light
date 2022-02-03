@@ -1,6 +1,4 @@
-package Documents;
-
-import java.util.ArrayList;
+package Model.Documents;
 
 /**
  * @Brief Classe represente une question
