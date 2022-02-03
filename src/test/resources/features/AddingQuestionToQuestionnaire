@@ -4,5 +4,5 @@ Feature : Adding Question to Questionnaire
         Given a teacher of name "Marcel" and with teacher id "123"
 
     Scenario : adding a question to a questionnaire
-        When
-        Then
+        When "Marcel" add a question to the questionnaire "UML Quiz 1"
+        Then there is the question "" in the questionnaire "UML Quiz 1"

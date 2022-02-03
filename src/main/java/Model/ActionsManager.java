@@ -75,7 +75,6 @@ public class ActionsManager {
         }
         return null;
     }
-
     /**
      * renvois le teacher correspendant à teahcerid
      * si non renvois null.
