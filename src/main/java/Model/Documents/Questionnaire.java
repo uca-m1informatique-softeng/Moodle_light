@@ -12,7 +12,7 @@ public class Questionnaire extends Ressource {
     }
     public void displayQuestion(){
         for (Question quest : this.ListeQuestions){
-            System.out.println("Model.Documents.Question "+ quest.toString());
+            System.out.println("Model.Model.Documents.Question "+ quest.toString());
 
         }
     }
