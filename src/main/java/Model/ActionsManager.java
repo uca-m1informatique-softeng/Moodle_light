@@ -11,6 +11,7 @@ public class ActionsManager {
     static private ArrayList<Module> modules;
     private ArrayList<Teacher> teachers;
     private ArrayList<Student> students;
+    static private int id = 0;
 
     public ActionsManager() {
         modules = new ArrayList<>();
@@ -22,14 +23,21 @@ public class ActionsManager {
 
     public void addQuestionaireToModule(String modulid, String titel){
         Module module = findModule(modulid);
-        module.ressources.add(new Questionnaire(titel));
+        module.ressources.add(new Questionnaire(titel,getid()));
     }
 
     public void addTextModule(String modulid, String name, String text ){
         Module module = findModule(modulid);
-        module.ressources.add(new Cours(name,text));
+        module.ressources.add(new Cours(name,text,getid()));
     }
 
+    /**
+     * trouve le modul puis le questionaire du module correct
+     * @param modulid
+     * @param name
+     * @param enoncer
+     * @param reponse
+     */
     public void addQuestToQuestionaire(String modulid,String name, String enoncer, String reponse){
         Module module = findModule(modulid);
         for(Ressource ressource: module.ressources) {
@@ -58,6 +66,11 @@ public class ActionsManager {
         Module module = findModule(modulid);
         module.students.add(findStudent(studentid));
     }
+
+
+
+
+
 
     ///////////////////       Help methodes       ///////////////////
 
@@ -103,6 +116,26 @@ public class ActionsManager {
             }
         }
         return null;
+    }
+
+    /**
+     * renvois la ressource correspendant à resourceid
+     * si non renvois null.
+     * @param resourceid
+     * @return Teacher
+     */
+    private Ressource findResource(String resourceid, ArrayList<Ressource> ressources){
+        for (Ressource ressource:ressources) {
+            if (ressource.id == resourceid){
+                return ressource;
+            }
+        }
+        return null;
+    }
+
+    private String getid(){
+        id = id+1;
+        return String.valueOf(id);
     }
 
 

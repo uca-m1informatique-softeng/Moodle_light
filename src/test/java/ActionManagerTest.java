@@ -22,12 +22,12 @@ public class ActionManagerTest {
 
     @When("{string} creates the course {string} in the module {string}")
     public void WhenCreateCourse(String teacherName, String courseName, String moduleName){
-        actionsManager.addElementToModule(moduleName, courseName);
+        actionsManager.createModule(moduleName, courseName);
     }
 
     @When("{string} creates the questionnaire {string} in the module {string}")
     public void WhenCreateQuestionnaire(String teacherName, String questionnaireName, String moduleName){
-        actionsManager.addElementToModule(moduleName, questionnaireName);
+        actionsManager.addQuestionaireToModule(moduleName, questionnaireName);
     }
 
     @When("{string} add a question to the questionnaire {string}")
