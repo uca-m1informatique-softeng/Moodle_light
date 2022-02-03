@@ -18,18 +18,18 @@ public class ActionsManager {
         modules.add(new Module(name,id));
     }
 
-    public void addElementToModule(String id, String titel){
+    public void addElementToModule(String id, String title){
         for(Module module:modules){
-            if(module.id == id){
-                module.ressources.add(new Questionnaire(titel));
+            if(module.id.equals(id)){
+                module.ressources.add(new Questionnaire(title));
             }
         }
     }
 
-    public void addQuestionaireToModule(String id, String titel){
+    public void addQuestionaireToModule(String id, String title){
         for(Module module:modules){
-            if(module.id == id){
-                module.ressources.add(new Questionnaire(titel));
+            if(module.id.equals(id)){
+                module.ressources.add(new Questionnaire(title));
             }
         }
     }
