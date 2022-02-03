@@ -1,5 +1,6 @@
 package Model;
 
+import Model.Documents.Cours;
 import Model.Documents.Module;
 import Model.Documents.Questionnaire;
 
@@ -16,10 +17,10 @@ public class ActionsManager {
         modules.add(new Module(name,id));
     }
 
-    public void addElementToModule(String id, String titel, String text){
+    public void addElementToModule(String id, String titel){
         for(Module module:modules){
             if(module.id == id){
-                module.ressources.add();
+                module.ressources.add(new Questionnaire(titel));
             }
         }
     }
@@ -32,10 +33,10 @@ public class ActionsManager {
         }
     }
 
-    public void modifyTextModule(String id, String ){
+    public void modifyTextModule(String id, String name, String text ){
         for(Module module:modules){
             if(module.id == id){
-
+                module.ressources.add(new Cours(name,text));
             }
         }
     }

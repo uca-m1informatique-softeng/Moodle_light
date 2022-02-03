@@ -6,6 +6,9 @@ public class Teacher {
     String id;
     ActionsManager actionManager;
 
-
-
+    public Teacher(String name, String id, ActionsManager actionManager) {
+        this.name = name;
+        this.id = id;
+        this.actionManager = actionManager;
+    }
 }
