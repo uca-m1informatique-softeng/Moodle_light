@@ -5,12 +5,12 @@ import java.util.ArrayList;
 /**
  * @Brief Classe represente une question
  */
-public class Question {
+public abstract class Question {
     private String enonce_;
-    private TypeReponse reponses_;
 
-    public Question(String enonce_arg, TypeReponse typeReponse_arg){
+    public Question(String enonce_arg){
         this.enonce_=enonce_arg;
-        this.reponses_= typeReponse_arg;
     }
+    public String getEnonce(){return null; }
+    public ArrayList<String> getChoix(){ return null; }
 }
