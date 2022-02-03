@@ -11,6 +11,30 @@ public class ActionsManager {
         modules.add(new Module(name,id));
     }
 
+    public void addElementToModule(String id, String titel, String text){
+        for(Module module:modules){
+            if(module.id == id){
+                module.ressources.add();
+            }
+        }
+    }
+
+    public void addQuestionaireToModule(String id, String titel, String text){
+        for(Module module:modules){
+            if(module.id == id){
+                module.ressources.add(new Questionnaire());
+            }
+        }
+    }
+
+    public void modifyTextModule(String id, String ){
+        for(Module module:modules){
+            if(module.id == id){
+
+            }
+        }
+    }
+
 
 
 }
