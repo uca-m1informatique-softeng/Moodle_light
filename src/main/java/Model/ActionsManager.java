@@ -17,33 +17,45 @@ public class ActionsManager {
         modules = new ArrayList<>();
     }
 
+
+
+
     public void createModule(String name, String id){
         modules.add(new Module(name,id));
     }
+
+    ///////////////////       Teacher methodes       ///////////////////
 
     public void addQuestionaireToModule(String modulid, String titel){
         Module module = findModule(modulid);
         module.ressources.add(new Questionnaire(titel,getid()));
     }
 
-    public void addTextModule(String modulid, String name, String text ){
+    public void addTextModule(String modulid, String name){
         Module module = findModule(modulid);
-        module.ressources.add(new Cours(name,text,getid()));
+        module.ressources.add(new Cours(name,getid()));
+    }
+
+    public void addtextToTextModule(String modulid, String textid, String text){
+        Module module = findModule(modulid);
+        Ressource ressource = findResource(textid, module.ressources);
+        if(ressource.getClass().equals(Cours.class)){
+            ((Cours)ressource).text.add(text);
+        }
     }
 
     /**
      * trouve le modul puis le questionaire du module correct
      * @param modulid
-     * @param name
+     * @param ressourceid
      * @param enoncer
      * @param reponse
      */
-    public void addQuestToQuestionaire(String modulid,String name, String enoncer, String reponse){
+    public void addQuestToQuestionaire(String modulid,String ressourceid, String enoncer, String reponse){
         Module module = findModule(modulid);
-        for(Ressource ressource: module.ressources) {
-            if(ressource.name == name){
-                //((Questionnaire)ressource).addQuestion(new Question(enoncer,));
-            }
+        Ressource ressource = findResource(ressourceid,module.ressources);
+        if(ressource.getClass().equals(Questionnaire.class)){
+            //((Questionnaire)ressource).addQuestion(new Question(enoncer,));
         }
     }
 
@@ -54,7 +66,7 @@ public class ActionsManager {
      */
     public void assigneTeacher(String modulid, String teacherid){
         Module module = findModule(modulid);
-        module.teacher = findTeacher(teacherid);
+        module.teachers.add(findTeacher(teacherid));
     }
 
     /**
@@ -68,6 +80,31 @@ public class ActionsManager {
     }
 
 
+
+    ///////////////////       Student methodes       ///////////////////
+
+
+    /**
+     * renvois la liste des nom id des modules apartenant un teacher ou student
+     * @param personId
+     * @return
+     */
+    public ArrayList<String> getmodulesSuscriped(String personId){
+        ArrayList<String> personmodules = new ArrayList<>();
+        for (Module module:modules) {
+            for(Teacher teacher: module.teachers){
+                if(teacher.id == personId){
+                    personmodules.add(module.id);
+                }
+            }
+            for(Student student: module.students){
+                if(student.id == personId){
+                    personmodules.add(module.name +" "+module.id);
+                }
+            }
+        }
+        return personmodules;
+    }
 
 
 
