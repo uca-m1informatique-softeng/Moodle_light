@@ -14,8 +14,6 @@ public class Question<T> {
     int reponseQcm;
     String reponseText;
 
-    private TypeReponse reponses_;
-
     /**
      * Constructor choix parmis list
      * @param enonce_
