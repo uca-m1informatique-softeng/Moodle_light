@@ -2,12 +2,8 @@ package Model.user;
 
 import Model.ActionsManager;
 
-public class Student {
-    public String name;
-    public String id;
-
+public class Student extends User{
     public Student(String name, String id) {
-        this.name = name;
-        this.id = id;
+        super(name, id);
     }
 }

@@ -3,6 +3,7 @@
  LEFEVRE Olivier 
  PLANTIER Antoine
  SAMY Mokhtar
+ BELHASSEN Mohamed
 
 # cucumber-demo
 Démo Cucumber sur une version ultra-simplifiée d'emprunt de bibliothèque
