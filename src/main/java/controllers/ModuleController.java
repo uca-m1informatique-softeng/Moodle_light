@@ -1,5 +1,4 @@
 package controllers;
-
 import fr.uca.springbootstrap.security.jwt.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

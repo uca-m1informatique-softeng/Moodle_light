@@ -2,8 +2,6 @@
 import Model.ActionsManager;
 import Model.Documents.Cours;
 import Model.Documents.Module;
-import Model.user.Student;
-import Model.user.Teacher;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;

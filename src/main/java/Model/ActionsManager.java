@@ -2,8 +2,6 @@ package Model;
 
 import Model.Documents.*;
 import Model.Documents.Module;
-import Model.user.Student;
-import Model.user.Teacher;
 
 import java.util.ArrayList;
 
@@ -33,7 +31,7 @@ public class ActionsManager {
 
     public void addCourse(String moduleId, String name){
         Module module = findModule(moduleId);
-        module.ressources.add(new Cours(name,getid()));
+        module.ressources.add(new Cours(name));
     }
 
     public void addtextToCourse(String moduleId, String textId, String text){

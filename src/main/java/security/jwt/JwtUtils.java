@@ -1,4 +1,4 @@
-package fr.uca.springbootstrap.security.jwt;
+package security.jwt;
 
 import java.util.Date;
 

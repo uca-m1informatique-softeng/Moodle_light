@@ -1,11 +1,9 @@
 package Model.Documents;
 
-import Model.user.Student;
-import Model.user.Teacher;
+import Model.user.User;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -29,19 +27,16 @@ public class Module {
 
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(	name = "teachers_module",
+    @JoinTable(	name = "user_module",
             joinColumns = @JoinColumn(name = "module_id"),
-            inverseJoinColumns = @JoinColumn(name = "teachers_id"))
-    public Set<Teacher> teachers;
-
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(	name = "students_module",
-            joinColumns = @JoinColumn(name = "module_id"),
-            inverseJoinColumns = @JoinColumn(name = "students_id"))
-    public Set<Student> students;
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    public Set<User> user;
 
     public Module() {
+    }
+
+    public Module(String name) {
+        this.name = name;
     }
 
 

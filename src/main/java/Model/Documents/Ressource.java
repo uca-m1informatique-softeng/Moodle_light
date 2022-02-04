@@ -1,10 +1,20 @@
 package Model.Documents;
 
+
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+
+@Entity
+@Table(	name = "Ressource")
 public class Ressource {
+    @NotBlank
     public String name;
-    public String id;
-    public Ressource(String name_a,String id){
-        this.name=name_a;
-        this.id = id;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Long id;
+    public Ressource(){}
+    public Ressource(String name){
+        this.name = name;
     }
 }

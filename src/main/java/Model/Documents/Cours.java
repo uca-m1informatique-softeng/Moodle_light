@@ -1,19 +1,21 @@
 package Model.Documents;
 
-import Model.user.Teacher;
-
-import java.util.ArrayList;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.Set;
 
-public class Cours extends Ressource {
+@Entity
+@Table(	name = "cours")
+public class Cours extends Ressource{
+
+
     public Set<String> text;
-    public Teacher teacher;
 
-    public Cours(String name_a, String id) {
-        super(name_a,id);
+
+    public Cours() { }
+
+    public Cours(String name_a) {
+        super(name_a);
     }
 
-    public void setTeacher(Teacher t){
-        this.teacher = t;
-    }
 }
