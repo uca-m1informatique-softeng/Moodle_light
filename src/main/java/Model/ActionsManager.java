@@ -26,19 +26,19 @@ public class ActionsManager {
 
     ///////////////////       Teacher methodes       ///////////////////
 
-    public void addQuestionaireToModule(String modulid, String titel){
-        Module module = findModule(modulid);
-        module.ressources.add(new Questionnaire(titel,getid()));
+    public void addQuestionnaireToModule(String moduleId, String title){
+        Module module = findModule(moduleId);
+        module.ressources.add(new Questionnaire(title,getid()));
     }
 
-    public void addTextModule(String modulid, String name){
-        Module module = findModule(modulid);
+    public void addCourse(String moduleId, String name){
+        Module module = findModule(moduleId);
         module.ressources.add(new Cours(name,getid()));
     }
 
-    public void addtextToTextModule(String modulid, String textid, String text){
-        Module module = findModule(modulid);
-        Ressource ressource = findResource(textid, module.ressources);
+    public void addtextToCourse(String moduleId, String textId, String text){
+        Module module = findModule(moduleId);
+        Ressource ressource = findResource(textId, module.ressources);
         if(ressource.getClass().equals(Cours.class)){
             ((Cours)ressource).text.add(text);
         }
@@ -57,6 +57,13 @@ public class ActionsManager {
         if(ressource.getClass().equals(Questionnaire.class)){
             //((Questionnaire)ressource).addQuestion(new Question(enoncer,));
         }
+    }
+
+    /**
+     * set the teacher of a course
+     */
+    public void setTeacher(String course, String teacher){
+
     }
 
     /**
