@@ -5,6 +5,15 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import Model.payload.request.LoginRequest;
+import Model.payload.request.SignupRequest;
+import Model.payload.response.JwtResponse;
+import Model.payload.response.MessageResponse;
+import Model.security.jwt.JwtUtils;
+import Model.security.services.UserDetailsImpl;
+import Model.user.ERole;
+import Model.user.User;
+import Model.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,10 +22,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import Model.repositories.RoleRepository;
-import Model.repositories.UserRepository;
 
-import javax.management.relation.Role;
+
+import Model.user.Role;
+import javax.validation.Valid;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -72,12 +81,6 @@ public class AuthController {
         } else {
             strRoles.forEach(role -> {
                 switch (role) {
-                    case "admin":
-                        Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(adminRole);
-
-                        break;
                     case "teacher":
                         Role modRole = roleRepository.findByName(ERole.ROLE_TEACHER)
                                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));

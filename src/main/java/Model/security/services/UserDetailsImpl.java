@@ -1,11 +1,11 @@
-package fr.uca.springbootstrap.security.services;
+package Model.security.services;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import fr.uca.springbootstrap.models.User;
+import Model.user.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

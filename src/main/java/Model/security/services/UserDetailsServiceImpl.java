@@ -1,13 +1,14 @@
-package fr.uca.springbootstrap.security.services;
+package Model.security.services;
 
-import fr.uca.springbootstrap.models.User;
-import fr.uca.springbootstrap.repository.UserRepository;
+import Model.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import Model.repositories.*;
+
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {

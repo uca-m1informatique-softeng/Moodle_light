@@ -40,4 +40,7 @@ public class Module {
     }
 
 
+    public Set<User> getParticipants() {
+        return this.user;
+    }
 }

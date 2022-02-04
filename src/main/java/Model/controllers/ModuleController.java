@@ -1,5 +1,11 @@
 package Model.controllers;
-import fr.uca.springbootstrap.security.jwt.JwtUtils;
+
+import Model.payload.request.SignupRequest;
+import Model.security.jwt.JwtUtils;
+import Model.user.ERole;
+import Model.user.Role;
+import Model.user.User;
+import Model.Documents.Module;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -7,8 +13,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import Model.payload.response.MessageResponse;
-import Model.repositories.RoleRepository;
-import Model.repositories.UserRepository;
+import Model.repositories.*;
+
 
 import javax.validation.Valid;
 import java.security.Principal;
@@ -82,12 +88,6 @@ public class ModuleController {
 		} else {
 			strRoles.forEach(role -> {
 				switch (role) {
-					case "admin":
-						Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
-								.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-						roles.add(adminRole);
-
-						break;
 					case "mod":
 						Role modRole = roleRepository.findByName(ERole.ROLE_TEACHER)
 								.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
