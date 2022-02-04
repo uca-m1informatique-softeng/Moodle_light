@@ -9,7 +9,7 @@ import java.util.ArrayList;
  */
 public abstract class Question {
     private String enonce_;
-    private TypeReponse reponseCorrecte;
+    private TypeReponse<S> reponseCorrecte;
 
     public Question(String enonce_arg){
         this.enonce_=enonce_arg;
@@ -17,7 +17,7 @@ public abstract class Question {
 
     public String getEnonce(){return null; }
     public ArrayList<String> getChoix(){ return null; }
-    public boolean isReponseCorrecte(TypeReponse reponse){
+    public boolean isReponseCorrecte(TypeReponse<S> reponse){
         //TODO: comparer la reponse
         reponse.getReponse();
         return false;

@@ -1,6 +1,7 @@
 package Model.Documents;
 
-public interface TypeReponse<T> {
-    public T getReponse();
+public interface TypeReponse {
+    public boolean verifReponse(TypeReponse<S> quest_a);
+
 }
 
