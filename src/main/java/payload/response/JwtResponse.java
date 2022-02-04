@@ -1,4 +1,4 @@
-package fr.uca.springbootstrap.payload.response;
+package payload.response;
 
 import java.util.List;
 

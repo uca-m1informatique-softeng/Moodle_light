@@ -1,4 +1,4 @@
-package fr.uca.springbootstrap.payload.request;
+package payload.request;
 
 import java.util.Set;
 
