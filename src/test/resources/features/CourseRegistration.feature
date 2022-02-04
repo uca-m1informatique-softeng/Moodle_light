@@ -5,6 +5,7 @@ Feature : registration to a course
         And a teacher of name "Jean" and with teacher id "456"
         And a student of name "Kevin" and with student id "0001"
         And a course of name "UML intro" and with course id "001"
+        And a module of name "UML S1" with module id "001"
 
     Scenario : teacher register to a course
         When "Marcel" register to the course "UML intro"
@@ -18,4 +19,4 @@ Feature : registration to a course
 
     Scenario : student register to a course
         When "Kevin" register to the course "UML intro"
-        Then 
+        Then
