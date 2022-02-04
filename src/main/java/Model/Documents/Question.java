@@ -7,12 +7,12 @@ import java.util.ArrayList;
  * @Brief Classe represente une question
  */
 public class Question<T> {
-    String enonce_;
-    ArrayList<String> listeEnonces_;
-    String typeQuestion;
-    int [] reponsesMultiples;
-    int reponseQcm;
-    String reponseText;
+   public  String enonce_;
+   public  ArrayList<String> listeEnonces_;
+   public  String typeQuestion;
+   public  int [] reponsesMultiples;
+   public  int reponseQcm;
+   public  String reponseText;
 
     /**
      * Constructor choix parmis list
