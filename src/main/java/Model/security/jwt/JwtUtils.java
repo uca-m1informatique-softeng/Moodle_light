@@ -1,4 +1,4 @@
-package security.jwt;
+package Model.security.jwt;
 
 import java.util.Date;
 

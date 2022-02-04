@@ -1,4 +1,4 @@
-package payload.response;
+package Model.payload.response;
 
 import java.util.List;
 

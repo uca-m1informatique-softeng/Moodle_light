@@ -1,4 +1,4 @@
-package controllers;
+package Model.controllers;
 
 
 import org.springframework.web.bind.annotation.CrossOrigin;

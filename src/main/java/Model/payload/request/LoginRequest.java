@@ -1,4 +1,4 @@
-package payload.request;
+package Model.payload.request;
 
 import javax.validation.constraints.NotBlank;
 

@@ -1,4 +1,4 @@
-package controllers;
+package Model.controllers;
 
 import java.util.HashSet;
 import java.util.List;
@@ -13,8 +13,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import repositories.RoleRepository;
-import repositories.UserRepository;
+import Model.repositories.RoleRepository;
+import Model.repositories.UserRepository;
 
 import javax.management.relation.Role;
 

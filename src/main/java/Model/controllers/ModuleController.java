@@ -1,4 +1,4 @@
-package controllers;
+package Model.controllers;
 import fr.uca.springbootstrap.security.jwt.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -6,9 +6,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import payload.response.MessageResponse;
-import repositories.RoleRepository;
-import repositories.UserRepository;
+import Model.payload.response.MessageResponse;
+import Model.repositories.RoleRepository;
+import Model.repositories.UserRepository;
 
 import javax.validation.Valid;
 import java.security.Principal;
