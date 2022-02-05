@@ -1,7 +1,7 @@
 
 import Model.Documents.Cours;
 import Model.Documents.Module;
-import Model.user.User;
+import Model.User.User;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;

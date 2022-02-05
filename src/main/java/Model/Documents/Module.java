@@ -1,6 +1,6 @@
 package Model.Documents;
 
-import Model.user.User;
+import Model.User.User;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -30,7 +30,7 @@ public class Module {
     @JoinTable(	name = "module_user",
             joinColumns = @JoinColumn(name = "module_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
-    public Set<User> user;
+    public Set<User> users;
 
     public Module() {
     }
@@ -39,8 +39,16 @@ public class Module {
         this.name = name;
     }
 
+    public void setParticipants(Set<User> participants) {
+        this.users = participants;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
 
     public Set<User> getParticipants() {
-        return this.user;
+        return this.users;
     }
 }
