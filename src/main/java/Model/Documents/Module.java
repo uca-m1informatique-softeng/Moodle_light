@@ -19,12 +19,12 @@ public class Module {
     public Long id;
 
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    /*@ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(	name = "ressources_module",
             joinColumns = @JoinColumn(name = "module_id"),
             inverseJoinColumns = @JoinColumn(name = "ressource_id"))
     public Set<Ressource> ressources = new HashSet<>();
-
+    */
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(	name = "user_module",

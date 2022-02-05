@@ -14,6 +14,7 @@ public class Ressource {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
     public Ressource(){}
+
     public Ressource(String name){
         this.name = name;
     }
