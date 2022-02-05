@@ -18,7 +18,7 @@ public class Questionnaire{
     public Long id;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(	name = "ressources_module",
+    @JoinTable(	name = "Questionaire_question",
             joinColumns = @JoinColumn(name = "questionaire_id"),
             inverseJoinColumns = @JoinColumn(name = "question_id"))
     public Set<Question> ListeQuestions = new HashSet<>();

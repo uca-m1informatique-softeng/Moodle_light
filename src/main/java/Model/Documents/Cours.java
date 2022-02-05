@@ -19,7 +19,7 @@ public class Cours extends Ressource{
 
 
     @ElementCollection
-    @CollectionTable(name="text", joinColumns=@JoinColumn(name="text_id"))
+    @CollectionTable(name="cour_text", joinColumns=@JoinColumn(name="cour_id"))
     @Column(name="text_name")
     private Set<String>  text = new HashSet<>();
 

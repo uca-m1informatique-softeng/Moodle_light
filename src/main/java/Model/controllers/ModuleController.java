@@ -77,6 +77,7 @@ public class ModuleController {
 		return ResponseEntity.ok(new MessageResponse("User successfully added to module!"));
 	}
 
+
 	User createUser(String userName, String email, String password, Set<String> strRoles) {
 		User user = new User(userName, email, password);
 		Set<Role> roles = new HashSet<>();

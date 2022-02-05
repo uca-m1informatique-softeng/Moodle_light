@@ -19,4 +19,3 @@ Feature : registration to a course
 
     Scenario : student register to a course
         When "Kevin" register to the course "UML intro"
-        Then
