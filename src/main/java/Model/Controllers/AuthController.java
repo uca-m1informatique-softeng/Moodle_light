@@ -9,10 +9,13 @@ import Model.Payload.request.LoginRequest;
 import Model.Payload.request.SignupRequest;
 import Model.Payload.response.JwtResponse;
 import Model.Payload.response.MessageResponse;
+import Model.Repositories.RoleRepository;
+import Model.Repositories.UserRepository;
 import Model.Security.jwt.JwtUtils;
 import Model.Security.services.UserDetailsImpl;
 import Model.User.ERole;
 import Model.User.User;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
