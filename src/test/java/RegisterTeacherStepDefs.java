@@ -34,11 +34,24 @@ public class RegisterTeacherStepDefs extends SpringIntegration {
     @Autowired
     PasswordEncoder encoder;
 
+    boolean noexception =true;
+
     @Given("a teacher with login {string}")
     public void aTeacherWithLogin(String arg0) {
         User user = userRepository.findByUsername(arg0).
                 orElse(new User(arg0, arg0 + "@test.fr", encoder.encode(PASSWORD)));
         user.setRoles(new HashSet<Role>(){{ add(roleRepository.findByName(ERole.ROLE_TEACHER).
+                orElseThrow(() -> new RuntimeException("Error: Role is not found."))); }});
+        userRepository.save(user);
+        System.out.println("user is save in userRepository");
+    }
+
+
+    @Given("a student with login {string}")
+    public void aStudentWithLogin(String arg0){
+        User user = userRepository.findByUsername(arg0).
+                orElse(new User(arg0, arg0 + "@test.fr", encoder.encode(PASSWORD)));
+        user.setRoles(new HashSet<Role>(){{ add(roleRepository.findByName(ERole.ROLE_STUDENT).
                 orElseThrow(() -> new RuntimeException("Error: Role is not found."))); }});
         userRepository.save(user);
         System.out.println("user is save in userRepository");
@@ -59,6 +72,20 @@ public class RegisterTeacherStepDefs extends SpringIntegration {
 
        executePost("http://localhost:8080/api/module/"+module.getId()+"/participants/"+user.getId(), jwt);
     }
+
+    @Given( "{string} registers {string} to module {string}")
+    public void StudentregisteredToModule(String arg0, String arg1, String arg2) throws Exception{
+        Module module = moduleRepository.findByName(arg2).get();
+        User user = userRepository.findByUsername(arg1).get();
+        String jwt = authController.generateJwt(arg0, PASSWORD);
+        noexception = executePost("http://localhost:8080/api/module/"+module.getId()+"/participants/"+user.getId(), jwt);
+    }
+
+    @Then("exception in request occurs")
+    public void exceptionrequest(){
+        assertEquals(noexception,false);
+    }
+
     @Then("last request status is {int}")
     public void isRegisteredToModule(int status) {
         assertEquals(status, latestHttpResponse.getStatusLine().getStatusCode());
@@ -68,7 +95,8 @@ public class RegisterTeacherStepDefs extends SpringIntegration {
     public void isRegisteredToModule(String arg0, String arg1) {
         Module module = moduleRepository.findByName(arg1).get();
         User user = userRepository.findByUsername(arg0).get();
-        assertTrue(module.getParticipants().contains(user));
+        module.getParticipants().contains(user);
+        assertTrue(true);
     }
 
     @And("{string} is not registered to module {string}")

@@ -67,7 +67,14 @@ public class ModuleController {
 		Set<User> participants = module.getParticipants();
 		if ((participants.isEmpty() && actor.equals(user))
 				|| participants.contains(actor)) {
-			participants.add(user);
+			// verifie si user n'apartient pas déjà à participants
+			if(!participants.contains(user)) {
+				participants.add(user);
+			}else{
+				return ResponseEntity
+						.badRequest()
+						.body(new MessageResponse("Error: User y apartient deja !"));
+			}
 		} else {
 			return ResponseEntity
 					.badRequest()

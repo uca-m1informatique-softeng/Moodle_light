@@ -26,7 +26,7 @@ public class Module {
     public Set<Ressource> ressources = new HashSet<>();
 
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(	name = "module_user",
             joinColumns = @JoinColumn(name = "module_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))

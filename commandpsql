@@ -1,0 +1,4 @@
+\dt; affiche tables
+Select * From table; affiche table
+Drop IF EXIST table; drop la table
+Delete from table where category=specification; enleve dans table les element ou category egal specification

@@ -4,9 +4,11 @@ import java.io.IOException;
 import Model.Main;
 import io.cucumber.spring.CucumberContextConfiguration;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.apache.http.client.methods.HttpPost;
@@ -16,8 +18,14 @@ import org.apache.http.client.methods.HttpPost;
 @SpringBootTest(classes = Main.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class SpringIntegration {
     static ResponseResults latestResponse = null;
-    private final CloseableHttpClient httpClient = HttpClients.createDefault();
     protected HttpResponse latestHttpResponse;
+    int timeout = 5;
+    RequestConfig config = RequestConfig.custom()
+            .setConnectTimeout(timeout * 1000)
+            .setConnectionRequestTimeout(timeout * 1000)
+            .setSocketTimeout(timeout * 1000).build();
+    CloseableHttpClient  httpClient =
+            HttpClientBuilder.create().setDefaultRequestConfig(config).build();
 
     void executeGet(String url) throws IOException {
         HttpGet request = new HttpGet(url);
@@ -25,13 +33,19 @@ public class SpringIntegration {
         latestHttpResponse = httpClient.execute(request);
     }
 
-    void executePost(String url, String jwt) throws IOException {
+    boolean executePost(String url, String jwt) throws IOException {
         HttpPost request = new HttpPost(url);
         request.addHeader("content-type", "application/json");
         if (jwt != null) {
             request.addHeader("Authorization", "Bearer " + jwt);
         }
         request.setEntity(new StringEntity("{}"));
-        latestHttpResponse = httpClient.execute(request);
+        try{
+            latestHttpResponse = httpClient.execute(request);
+        }catch(Throwable t){
+            System.out.println(t.getLocalizedMessage());
+            return false;
+        }
+        return true;
     }
 }
