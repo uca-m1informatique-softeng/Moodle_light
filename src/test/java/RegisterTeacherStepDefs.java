@@ -41,6 +41,7 @@ public class RegisterTeacherStepDefs extends SpringIntegration {
         user.setRoles(new HashSet<Role>(){{ add(roleRepository.findByName(ERole.ROLE_TEACHER).
                 orElseThrow(() -> new RuntimeException("Error: Role is not found."))); }});
         userRepository.save(user);
+        System.out.println("user is save in userRepository");
     }
 
     @And("a module named {string}")

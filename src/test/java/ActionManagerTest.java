@@ -41,22 +41,22 @@ public class ActionManagerTest {
         std1 = new User(name,name + ".fr","06");
     }
 
-    @And("a module of name {string} with module id {string}")
+    @And("and a module of name {string} with module id {string}")
     public void andModule(String moduleName, String moduleId){
         m2 = new Module(moduleName);
     }
 
-    @And("a teacher of name {string} and with teacher id {string}")
+    @And("and a teacher of name {string} and with teacher id {string}")
     public void andTeacher(String teacherName, String teacherId){
         jean = new User(teacherName,teacherName + ".fr","06");
     }
 
-    @And("a course of name {string} and with course id {string}")
+    @And("and a course of name {string} and with course id {string}")
     public void andCourse(String courseName, String courseId){
         cours2 = new Cours(courseName);
     }
 
-    @And("a student of name {string} and with student id {string}")
+    @And("and a student of name {string} and with student id {string}")
     public void andStudent(String studentName, String studentId){
         std2 = new User(studentName, studentName + ".fr",studentId);
     }
