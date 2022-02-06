@@ -18,6 +18,7 @@ import Model.Payload.response.MessageResponse;
 
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -46,6 +47,23 @@ public class ModuleController {
 
 	@Autowired
 	JwtUtils jwtUtils;
+
+
+	@GetMapping("/{name}/getModules")
+	public ArrayList<String> getmodules(@PathVariable String name){
+		ArrayList<String> strings = new ArrayList<>();
+		Optional<User> ouser = userRepository.findByUsername(name);
+		if (!ouser.isPresent()) {
+			return null;
+		}
+		User user= ouser.get();
+
+		Set<Module> modules = user.getModules();
+		for (Module module:modules) {
+			strings.add(module.name + "/" + module.id);
+		}
+		return strings;
+	}
 
 
 	@PutMapping("/{id}/ressource/{ressourceid}")
