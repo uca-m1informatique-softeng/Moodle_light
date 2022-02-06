@@ -21,7 +21,7 @@ public class Cours extends Ressource{
     @ElementCollection
     @CollectionTable(name="cour_text", joinColumns=@JoinColumn(name="cour_id"))
     @Column(name="text_name")
-    private Set<String>  text = new HashSet<>();
+    public Set<String>  text = new HashSet<>();
 
 
     public Cours() { }
@@ -29,5 +29,6 @@ public class Cours extends Ressource{
     public Cours(String name_a) {
         super(name_a);
     }
+
 
 }

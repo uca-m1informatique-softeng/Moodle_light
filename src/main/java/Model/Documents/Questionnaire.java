@@ -9,7 +9,7 @@ import java.util.Set;
 
 @Entity
 @Table(	name = "Questionaire")
-public class Questionnaire{
+public class Questionnaire extends Ressource{
     @NotBlank
     public String name;
 

@@ -33,6 +33,21 @@ public class SpringIntegration {
         latestHttpResponse = httpClient.execute(request);
     }
 
+
+    boolean executePostObj(String url, String obj) throws IOException {
+        HttpPost request = new HttpPost(url);
+        request.addHeader("content-type", "application/json");
+        request.setEntity(new StringEntity(obj));
+        try{
+            latestHttpResponse = httpClient.execute(request);
+        }catch(Throwable t){
+            System.out.println(t.getLocalizedMessage());
+            return false;
+        }
+        System.out.println(latestHttpResponse);
+        return true;
+    }
+
     boolean executePost(String url, String jwt) throws IOException {
         HttpPost request = new HttpPost(url);
         request.addHeader("content-type", "application/json");
@@ -48,4 +63,5 @@ public class SpringIntegration {
         }
         return true;
     }
+
 }

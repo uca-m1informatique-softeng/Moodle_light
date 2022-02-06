@@ -47,6 +47,9 @@ public class Module {
         return id;
     }
 
+    public Set<Ressource> getRessources() {
+        return ressources;
+    }
 
     public Set<User> getParticipants() {
         return this.users;

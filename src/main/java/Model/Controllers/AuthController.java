@@ -57,8 +57,15 @@ public class AuthController {
         return jwtUtils.generateJwtToken(authentication);
     }
 
+
+    @PostMapping("/a")
+    public ResponseEntity<?> authenticateUser(@RequestBody SignupRequest signupRequest){
+
+        return ResponseEntity.ok(new MessageResponse("finded!" + signupRequest.getUsername()));
+    }
+
     @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> authenticateuser( @RequestBody LoginRequest loginRequest) {
 
         String jwt = generateJwt(loginRequest.getUsername(), loginRequest.getPassword());
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
@@ -103,6 +110,7 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+        System.out.println("found" + signUpRequest.getUsername() +signUpRequest.getPassword());
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
             return ResponseEntity
                     .badRequest()
@@ -114,12 +122,13 @@ public class AuthController {
                     .badRequest()
                     .body(new MessageResponse("Error: Email is already in use!"));
         }
-
+        System.out.println("verifier");
         // Create new user's account
         User user = createUser(signUpRequest.getUsername(),
                 signUpRequest.getEmail(),
                 encoder.encode(signUpRequest.getPassword()), signUpRequest.getRole());
         userRepository.save(user);
+
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
 }

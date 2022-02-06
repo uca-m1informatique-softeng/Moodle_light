@@ -1,6 +1,7 @@
 package Model.Controllers;
 
-import Model.Payload.request.SignupRequest;
+import Model.Documents.Questionnaire;
+import Model.Documents.Ressource;
 import Model.Security.jwt.JwtUtils;
 import Model.User.ERole;
 import Model.User.Role;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import Model.Payload.response.MessageResponse;
 
 
-import javax.validation.Valid;
 import java.security.Principal;
 import java.util.HashSet;
 import java.util.Optional;
@@ -39,10 +39,74 @@ public class ModuleController {
 	ModuleRepository moduleRepository;
 
 	@Autowired
+	RessourcesRepository ressourcesRepository;
+
+	@Autowired
 	PasswordEncoder encoder;
 
 	@Autowired
 	JwtUtils jwtUtils;
+
+
+	@PutMapping("/{id}/ressource/{ressourceid}")
+	@PreAuthorize("hasRole('TEACHER')")
+	public ResponseEntity<?> addRessource(Principal principal,@PathVariable long id, @PathVariable long questionaireid){
+		Optional<Module> omodule = moduleRepository.findById(id);
+		Optional<Ressource> oressource = ressourcesRepository.findById(questionaireid);
+		if (!omodule.isPresent()) {
+			return ResponseEntity
+					.badRequest()
+					.body(new MessageResponse("Error: No such module!"));
+		}
+		if (!oressource.isPresent()) {
+			return ResponseEntity
+					.badRequest()
+					.body(new MessageResponse("Error: No such ressource!"));
+		}
+
+		Module module = omodule.get();
+		Ressource ressource = oressource.get();
+		Set<Ressource> ressources = module.getRessources();
+		if(!ressources.contains(ressource)) {
+			ressources.add(ressource);
+		}else{
+			return ResponseEntity
+					.badRequest()
+					.body(new MessageResponse("Error: Ressource y apartient deja !"));
+		}
+		moduleRepository.save(module);
+		return ResponseEntity.ok(new MessageResponse("User successfully added to module!"));
+	}
+
+	@DeleteMapping("/{id}/ressource/{ressourceid}")
+	@PreAuthorize("hasRole('TEACHER')")
+	public ResponseEntity<?> deleteRessource(Principal principal,@PathVariable long id, @PathVariable long questionaireid){
+		Optional<Module> omodule = moduleRepository.findById(id);
+		Optional<Ressource> oressource = ressourcesRepository.findById(questionaireid);
+		if (!omodule.isPresent()) {
+			return ResponseEntity
+					.badRequest()
+					.body(new MessageResponse("Error: No such module!"));
+		}
+		if (!oressource.isPresent()) {
+			return ResponseEntity
+					.badRequest()
+					.body(new MessageResponse("Error: No such ressource!"));
+		}
+
+		Module module = omodule.get();
+		Ressource ressource = oressource.get();
+		Set<Ressource> ressources = module.getRessources();
+		if(ressources.contains(ressource)) {
+			ressources.remove(ressource);
+		}else{
+			return ResponseEntity
+					.badRequest()
+					.body(new MessageResponse("Error: Ressource n'apartient pas a module!"));
+		}
+		moduleRepository.save(module);
+		return ResponseEntity.ok(new MessageResponse("User successfully added to module!"));
+	}
 
 	@PostMapping("/{id}/participants/{userid}")
 	@PreAuthorize("hasRole('TEACHER')")
@@ -84,6 +148,40 @@ public class ModuleController {
 		return ResponseEntity.ok(new MessageResponse("User successfully added to module!"));
 	}
 
+	@DeleteMapping("/{id}/participants/{userid}")
+	@PreAuthorize("hasRole('TEACHER')")
+	public ResponseEntity<?> deleteUser(Principal principal, @PathVariable long id, @PathVariable long userid) {
+		Optional<Module> omodule = moduleRepository.findById(id);
+		Optional<User> ouser = userRepository.findById(userid);
+		if (!omodule.isPresent()) {
+			return ResponseEntity
+					.badRequest()
+					.body(new MessageResponse("Error: No such module!"));
+		}
+		if (!ouser.isPresent()) {
+			return ResponseEntity
+					.badRequest()
+					.body(new MessageResponse("Error: No such user!"));
+		}
+
+		Module module = omodule.get();
+		User user = ouser.get();
+		User actor = userRepository.findByUsername(principal.getName()).get();
+
+		Set<User> participants = module.getParticipants();
+		if(participants.contains(user)) {
+			participants.add(user);
+		}else{
+			return ResponseEntity
+					.badRequest()
+					.body(new MessageResponse("Error: User n'apartient pas au module !"));
+		}
+		moduleRepository.save(module);
+		return ResponseEntity.ok(new MessageResponse("User successfully remouved from module!"));
+	}
+
+
+
 
 	User createUser(String userName, String email, String password, Set<String> strRoles) {
 		User user = new User(userName, email, password);
@@ -111,27 +209,5 @@ public class ModuleController {
 		}
 		user.setRoles(roles);
 		return user;
-	}
-
-	@PostMapping("/signup")
-	public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
-		if (userRepository.existsByUsername(signUpRequest.getUsername())) {
-			return ResponseEntity
-					.badRequest()
-					.body(new MessageResponse("Error: Username is already taken!"));
-		}
-
-		if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-			return ResponseEntity
-					.badRequest()
-					.body(new MessageResponse("Error: Email is already in use!"));
-		}
-
-		// Create new user's account
-		User user = createUser(signUpRequest.getUsername(),
-							 signUpRequest.getEmail(),
-							 encoder.encode(signUpRequest.getPassword()), signUpRequest.getRole());
-		userRepository.save(user);
-		return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
 	}
 }

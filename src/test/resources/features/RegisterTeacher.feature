@@ -1,4 +1,4 @@
-Feature: Register Teacher
+Feature: Register Teacher/Student
 
   Background:
     Given a teacher with login "steve"
