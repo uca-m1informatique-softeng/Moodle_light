@@ -56,13 +56,7 @@ public class RegistrationTest extends SpringIntegration {
         */
     }
 
-    @When("{string} delete {string}")
-    public void  deletePerson(String arg0, String arg1) throws IOException {
-        Optional<User> ouser = userRepository.findByUsername(arg0);
-        User user = ouser.get();
-        String jwt = authController.generateJwt(arg0, PASSWORD);
-        executePost( "http://localhost:8080/api/auth/"+user.getId(), jwt);
-    }
+
 
 
     @When("{string} and code {string} signin")

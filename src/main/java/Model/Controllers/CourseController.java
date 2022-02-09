@@ -52,7 +52,6 @@ public class CourseController {
         return ResponseEntity.ok(new MessageResponse("User successfully added to module!"));
     }
 
-
     @DeleteMapping("/{id}/text/{text}")
     @PreAuthorize("hasRole('TEACHER')")
     public ResponseEntity<?> deletRessource(Principal principal, @PathVariable long id, @PathVariable String text){
@@ -82,6 +81,4 @@ public class CourseController {
         ressourcesRepository.save(ressource);
         return ResponseEntity.ok(new MessageResponse("User successfully added to cours!"));
     }
-
-
 }
