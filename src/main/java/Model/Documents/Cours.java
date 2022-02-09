@@ -17,18 +17,15 @@ public class Cours extends Ressource{
     @NotBlank
     public String name;
 
-
     @ElementCollection
     @CollectionTable(name="cour_text", joinColumns=@JoinColumn(name="cour_id"))
     @Column(name="text_name")
-    public Set<String>  text = new HashSet<>();
-
+    public List<String>  text = new ArrayList<>();
 
     public Cours() { }
 
     public Cours(String name_a) {
         super(name_a);
     }
-
 
 }

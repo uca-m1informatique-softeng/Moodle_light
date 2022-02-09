@@ -19,6 +19,7 @@ public class DeleteTest extends SpringIntegration{
 
     private static final String PASSWORD = "password";
 
+    /*
     @When("{string} delete {string}")
     public void  deletePerson(String arg0, String arg1) throws IOException {
         Optional<User> ouser = userRepository.findByUsername(arg1);
@@ -32,4 +33,6 @@ public class DeleteTest extends SpringIntegration{
         Optional<User> ouser = userRepository.findByUsername(arg0);
         assertFalse(ouser.isPresent());
     }
+
+     */
 }

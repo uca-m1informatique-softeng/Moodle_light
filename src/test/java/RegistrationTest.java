@@ -47,6 +47,7 @@ public class RegistrationTest extends SpringIntegration {
         signup.setRole(mytype);
         Gson g = new Gson();
         String s = g.toJson(signup);
+
         executePostObj("http://localhost:8080/api/auth/signup",s);
         /*HttpPost request = new HttpPost("http://localhost:8080/api/auth/a");
         request.addHeader("content-type", "application/json");
