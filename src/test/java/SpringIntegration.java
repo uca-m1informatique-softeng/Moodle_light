@@ -5,6 +5,7 @@ import Model.Main;
 import io.cucumber.spring.CucumberContextConfiguration;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -55,6 +56,20 @@ public class SpringIntegration {
             request.addHeader("Authorization", "Bearer " + jwt);
         }
         request.setEntity(new StringEntity("{}"));
+        try{
+            latestHttpResponse = httpClient.execute(request);
+        }catch(Throwable t){
+            System.out.println(t.getLocalizedMessage());
+            return false;
+        }
+        return true;
+    }
+
+    boolean executeDelete(String url, String jwt) throws IOException {
+        HttpDelete request = new HttpDelete(url);
+        if (jwt != null) {
+            request.addHeader("Authorization", "Bearer " + jwt);
+        }
         try{
             latestHttpResponse = httpClient.execute(request);
         }catch(Throwable t){

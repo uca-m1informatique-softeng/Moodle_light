@@ -1,7 +1,9 @@
 package Model.Controllers;
 
+import java.security.Principal;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -18,6 +20,7 @@ import Model.User.User;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -129,6 +132,20 @@ public class AuthController {
                 encoder.encode(signUpRequest.getPassword()), signUpRequest.getRole());
         userRepository.save(user);
 
+        return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+    }
+
+    @DeleteMapping("/signup/{id}")
+    @PreAuthorize("hasRole('TEACHER')")
+    public ResponseEntity<?> deletUser(Principal principal, @PathVariable long id) {
+        Optional<User>ouser = userRepository.findById(id);
+        if (!ouser.isPresent()) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: No such module!"));
+        }
+        User user = ouser.get();
+        userRepository.delete(user);
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
 }
