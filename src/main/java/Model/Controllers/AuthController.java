@@ -135,9 +135,10 @@ public class AuthController {
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
 
-    @DeleteMapping("/signup/{id}")
+    @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasRole('TEACHER')")
-    public ResponseEntity<?> deletUser(Principal principal, @PathVariable long id) {
+    public ResponseEntity<?> deletUser( @PathVariable long id) {
+        System.out.println("passer ksldjlqj,qlks,dlkqd");
         Optional<User>ouser = userRepository.findById(id);
         if (!ouser.isPresent()) {
             return ResponseEntity
