@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import Model.Main;
 import io.cucumber.spring.CucumberContextConfiguration;
@@ -42,7 +43,7 @@ public class SpringIntegration {
         this.restTemplate.getForObject(url, String.class);
     }
 
-    Object executeGetReturnObject(String url, Class type, String jwt) throws IOException {
+    Object executeGetReturnObject(String url, String jwt) throws IOException {
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         headers.add("Authorization", "Bearer " + jwt);
@@ -51,12 +52,28 @@ public class SpringIntegration {
 
         ResponseEntity<Object> response = this.restTemplate.exchange(url, HttpMethod.GET, request, Object.class);
         if(response.getStatusCode() == HttpStatus.OK) {
+            System.out.println(" OKKKK ");
+            return response.getBody();
+        } else {
+            System.out.println(" NOT OKKK");
+            return null;
+        }
+    }
+
+    List executeGetReturnListObject(String url, String jwt) throws IOException {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        headers.add("Authorization", "Bearer " + jwt);
+
+        HttpEntity request = new HttpEntity(headers);
+
+        ResponseEntity<List> response = this.restTemplate.exchange(url, HttpMethod.GET, request, List.class);
+        if(response.getStatusCode() == HttpStatus.OK) {
             return response.getBody();
         } else {
             return null;
         }
     }
-
 
     boolean executePostObj(String url, String obj) throws UnsupportedEncodingException {
         HttpPost request = new HttpPost(url);

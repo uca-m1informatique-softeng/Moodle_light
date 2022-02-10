@@ -82,7 +82,6 @@ public class ModuleController {
 		return strings;
 	}
 
-
 	@PutMapping("/{name}/ressource/{ressouceName}")
 	@PreAuthorize("hasRole('TEACHER')")
 	public ResponseEntity<?> addRessource(Principal principal,@PathVariable String name, @PathVariable String ressouceName){
