@@ -65,6 +65,23 @@ public class ModuleController {
 		return strings;
 	}
 
+	@GetMapping("/{id}/getRessources")
+	public ArrayList<String> getRessources(@PathVariable long id){
+		ArrayList<String> strings = new ArrayList<>();
+		Optional<Module> omodule = moduleRepository.findById(id);
+		if (!omodule.isPresent()) {
+			strings.add("Error: No such module!");
+			return strings;
+		}
+
+		Module module = omodule.get();
+		for (Ressource r : module.getRessources()) {
+			strings.add(r.toString());
+		}
+
+		return strings;
+	}
+
 
 	@PutMapping("/{name}/ressource/{ressouceName}")
 	@PreAuthorize("hasRole('TEACHER')")
