@@ -11,8 +11,9 @@ Feature: signup/in User
   Scenario: Teacher good signup
     When "paul" with email "dave@test.fr" and code "password" and is "ROLE_TEACHER" signup
     Then 2 last request status is 200
-    And "dave" is registred like user
+    And "paul" is registred like user
 
   Scenario: Student good signin
-    When "dave" and code "password" signin
+    When "dave" with email "dave@test.fr" and code "password" and is "ROLE_STUDENT" signup
+    Then "dave" and code "password" signin
     Then 2 last request status is 200
