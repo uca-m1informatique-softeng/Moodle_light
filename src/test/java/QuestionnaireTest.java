@@ -42,7 +42,6 @@ public class QuestionnaireTest extends SpringIntegration {
     private static final String PASSWORD = "password";
 
     @And("a questionnaire named {string} in the module {string} does not exist")
-    @Transactional
     public void uniqueQuestionnaire(String QuestionnaireName, String moduleName){
        Module module = moduleRepository.findByName(moduleName).get();
        Questionnaire quest = questionnaireRepository.findByName(QuestionnaireName).get();

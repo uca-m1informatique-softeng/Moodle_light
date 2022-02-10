@@ -22,7 +22,7 @@ Feature: Course
     And "steve" add to "Gestion" a text "shapter2"
     And "steve" add to "Gestion" a text "shapter3"
 
-  Scenario:
+  Scenario: No multiple identical Course
     When "steve" adds a course with name "Gestion" in module "Gestion-de-projet"
     And  "steve" add to "Gestion" a text "shapter1"
     And  "steve" add to "Gestion" a text "shapter1"
