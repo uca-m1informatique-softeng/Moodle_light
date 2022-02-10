@@ -24,7 +24,7 @@ public class CourseController {
 
     @Autowired
     RessourcesRepository ressourcesRepository;
-    @PutMapping("/{id}/content/{text}")
+
 
     @Autowired
     CoursesRepository coursesRepository;
