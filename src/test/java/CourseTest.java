@@ -19,8 +19,11 @@ import io.cucumber.java.en.When;
 import static org.junit.jupiter.api.Assertions.*;
 
 import io.cucumber.messages.internal.com.google.gson.Gson;
+import org.apache.http.client.methods.HttpGet;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.client.RestTemplate;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -46,6 +49,9 @@ public class CourseTest extends SpringIntegration {
     @Autowired
     PasswordEncoder encoder;
 
+    private RestTemplate restTemplate;
+
+
     private static final String PASSWORD = "password";
 
     @Given("a cours named {string}")
@@ -59,6 +65,14 @@ public class CourseTest extends SpringIntegration {
     public void creerCours(String username, String courseName) throws IOException {
         String token = authController.generateJwt(username, PASSWORD);
         executePost("http://localhost:8080/api/course/create/" + courseName, token);
+    }
+
+    @And("Cours {string} is in {string}")
+    public void coursExist(String courseName, String moduleName){
+        Module module = moduleRepository.findByName(moduleName).get();
+        Ressource cours = ressourcesRepository.findByName(courseName).get();
+
+        assertTrue(module.getRessources().contains(cours));
     }
 
     @When("{string} adds a course with name {string} in module {string}")
@@ -84,5 +98,17 @@ public class CourseTest extends SpringIntegration {
     @And("cours {string} has been added")
     public void coursExist(String courseName){
         assertTrue(ressourcesRepository.findByName(courseName).isPresent());
+    }
+
+    @When("{string} gets the content of the course {string} The content is:")
+    public void contentOfCours(String username, String coursGestion, List<String> content) throws IOException {
+        RestTemplateBuilder restTemplateBuilder = null;
+        this.restTemplate = restTemplateBuilder.build();
+
+        executeGet("http://localhost:8080/api/course/"+ coursGestion);
+        System.out.println("passeeeeeeee");
+        List<String> result = (List<String>) latestHttpResponse.getEntity().getContent();
+        System.out.println(result);
+        assertTrue(result == content);
     }
 }
