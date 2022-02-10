@@ -18,7 +18,7 @@ import java.util.Set;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/module/questionaire")
+@RequestMapping("/api/module/questionnaire")
 public class QuestionController {
     @Autowired
     RessourcesRepository ressourcesRepository;
