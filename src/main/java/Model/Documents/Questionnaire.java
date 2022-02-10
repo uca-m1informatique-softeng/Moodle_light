@@ -24,6 +24,9 @@ public class Questionnaire extends Ressource{
     public Set<Question> ListeQuestions = new HashSet<>();
     public  Questionnaire(){}
 
+    public  Questionnaire(String questName_arg){
+        this.name = questName_arg;
+    }
     public void addQuestion(Question quest_a){
         this.addQuestion(quest_a);
     }

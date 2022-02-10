@@ -43,7 +43,7 @@ public class Question {
     @JoinTable(	name = "user_reponse",
             joinColumns = @JoinColumn(name = "question_id"),
             inverseJoinColumns = @JoinColumn(name = "reponse_id"))
-    Set<Reponse> reponses = new HashSet<>();
+    public Set<Reponse> reponses = new HashSet<>();
 
 
  /**
@@ -58,8 +58,25 @@ public class Question {
  }
 
  public boolean reponse(Reponse reponse){
-  return false;
+     switch(reponse.typeReponse) {
+         case "qcm":
+             return reponse.reponseQcm == this.reponseQcm;
 
+         case "choixmult":
+             if ( reponse.reponsesMultiples.length != reponse.reponsesMultiples.length)
+                 return  false ;
+             for (int i = 0 ; i < reponse.reponsesMultiples.length; i++){
+                 if(reponse.reponsesMultiples[i] == this.reponsesMultiples[i]) {
+                     return false;
+                 }
+             }
+             return true;
+         case "text":
+             if(reponse.reponseText.equals(this.reponseText))
+                 return true;
+             else return  false;
+         default : return false;
+     }
  }
 
  /**
