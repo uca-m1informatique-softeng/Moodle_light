@@ -21,6 +21,6 @@ public class Ressource {
 
     @Override
     public String toString(){
-        return this.id + ", " + this.name;
+        return "id : " + this.id + ", name : " + this.name;
     }
 }
