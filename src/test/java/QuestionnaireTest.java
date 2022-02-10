@@ -75,6 +75,6 @@ public class QuestionnaireTest extends SpringIntegration {
 
     @And("Questionnaire {string} has been added")
     public void questionnairExist(String courseName){
-        assertTrue(qut estionnaireRepository.findByName(courseName).isPresent());
+        assertTrue(questionnaireRepository.findByName(courseName).isPresent());
     }
 }
