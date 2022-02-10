@@ -1,12 +1,10 @@
 package Model.Controllers;
 
 
-import Model.Documents.Module;
-import Model.Documents.Question;
-import Model.Documents.Questionnaire;
-import Model.Documents.Ressource;
+import Model.Documents.*;
 import Model.Payload.response.MessageResponse;
 import Model.Repositories.QuestionRepository;
+import Model.Repositories.ReponsesRepository;
 import Model.Repositories.RessourcesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -23,8 +22,13 @@ import java.util.Set;
 public class QuestionController {
     @Autowired
     RessourcesRepository ressourcesRepository;
+
     @Autowired
-    QuestionRepository questionRepository;
+    QuestionRepository questionRepository ;
+
+    @Autowired
+    ReponsesRepository reponsesRepository ;
+
     @PutMapping("/{id}/question/{ressourceid}")
     @PreAuthorize("hasRole('TEACHER')")
     public ResponseEntity<?> addRessource(Principal principal, @PathVariable long id, @PathVariable long questionid){
@@ -101,5 +105,110 @@ public class QuestionController {
         ressourcesRepository.save(ressource);
         return ResponseEntity.ok(new MessageResponse("User successfully added to module!"));
     }
+
+
+    /**
+     * Read - Get all questions of a questionnaire of  a student
+     * @return - An Iterable object of Questions
+     * *
+     *
+     * Les utilisateurs peuvent connaitre la liste des questions
+     * à ajouter:
+     * verif that the student have acces to the list of questions  in this module
+     *
+     */
+    @GetMapping("/api/{idStudent}/module/questions")
+    public List<Question> getQuestions(){
+
+        return questionRepository.findAll();
+
+    }
+
+
+
+    /**
+     * Read - Get a question  of  a student
+     * @return - An course object
+     *
+     *
+     * à ajouter:
+     * verif that the student have acces to the courses in this question
+     *
+     *
+     *
+     */
+    @GetMapping("/api/{idStudent}/module/questions/{idQuestion}")
+    public Optional<Question> getQuestion(final Long idQuestion){
+
+        return questionRepository.findById(idQuestion);
+
+    }
+
+
+    /***
+     *
+     *Les étudiants peuvent saisir une réponse à une question
+     *
+     * @return
+     */
+
+    @PostMapping("/api/{idStudent}/module/questions/{idQuestion}")
+    public Reponse getQuestion(@RequestBody Reponse reponse){
+        Reponse savedReponse = reponsesRepository.save(reponse);
+        return savedReponse;
+
+    }
+
+
+    /***
+     *
+     *Les étudiants peuvent saisir une réponse à une question
+     *
+     * @return
+     */
+
+    @PostMapping("/api/{idStudent}/module/questions/{idQuestion}")
+    public Reponse answerQuestion(@RequestBody Reponse reponse){
+        Reponse savedReponse = reponsesRepository.save(reponse);
+        return savedReponse;
+
+    }
+
+    @PutMapping("/api/{idStudent}/module/questions/{idQuestion}")
+    public Reponse updateAnswer(final Long idQuestion,@RequestBody Reponse reponse) {
+        Optional<Question> question = questionRepository.findById(idQuestion);
+        if(question.isPresent()) {
+            Employee currentEmployee = e.get();
+
+            String firstName = employee.getFirstName();
+            if(firstName != null) {
+                currentEmployee.setFirstName(firstName);
+            }
+            String lastName = employee.getLastName();
+            if(lastName != null) {
+                currentEmployee.setLastName(lastName);;
+            }
+            String mail = employee.getMail();
+            if(mail != null) {
+                currentEmployee.setMail(mail);
+            }
+            String password = employee.getPassword();
+            if(password != null) {
+                currentEmployee.setPassword(password);;
+            }
+            employeeService.saveEmployee(currentEmployee);
+            return currentEmployee;
+        } else {
+            return null;
+        }
+    }
+
+
+
+
+
+
+
+
 
 }
