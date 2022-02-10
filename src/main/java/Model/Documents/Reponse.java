@@ -15,7 +15,13 @@ public class Reponse {
     public String contenu;
 
 
+    public String getContenu() {
+        return contenu;
+    }
 
+    public void setContenu(String contenu) {
+        this.contenu = contenu;
+    }
 
     public Long getId() {
         return id;

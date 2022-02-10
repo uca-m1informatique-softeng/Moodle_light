@@ -174,30 +174,28 @@ public class QuestionController {
 
     }
 
-    @PutMapping("/api/{idStudent}/module/questions/{idQuestion}")
-    public Reponse updateAnswer(final Long idQuestion,@RequestBody Reponse reponse) {
-        Optional<Question> question = questionRepository.findById(idQuestion);
-        if(question.isPresent()) {
-            Employee currentEmployee = e.get();
+    /**
+     *
+     * @param idQuestion
+     * @param idAnswer
+     * @param reponse
+     * @return
+     *
+     * Les étudiants peuvent modifier une réponse à une question
+     */
 
-            String firstName = employee.getFirstName();
-            if(firstName != null) {
-                currentEmployee.setFirstName(firstName);
+    @PutMapping("/api/{idStudent}/module/questions/{idQuestion}/{idAnswer}")
+    public Reponse updateAnswer(final Long idQuestion,final Long idAnswer,@RequestBody Reponse reponse) {
+        Optional<Reponse> r = reponsesRepository.findById(idAnswer);
+        if(r.isPresent()) {
+            Reponse currentReponse = r.get();
+
+            String contenu = reponse.getContenu();
+            if(contenu != null) {
+                currentReponse.setContenu(contenu);;
             }
-            String lastName = employee.getLastName();
-            if(lastName != null) {
-                currentEmployee.setLastName(lastName);;
-            }
-            String mail = employee.getMail();
-            if(mail != null) {
-                currentEmployee.setMail(mail);
-            }
-            String password = employee.getPassword();
-            if(password != null) {
-                currentEmployee.setPassword(password);;
-            }
-            employeeService.saveEmployee(currentEmployee);
-            return currentEmployee;
+            reponsesRepository.save(currentReponse);
+            return currentReponse;
         } else {
             return null;
         }
