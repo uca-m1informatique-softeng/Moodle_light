@@ -107,22 +107,7 @@ public class QuestionController {
     }
 
 
-    /**
-     * Read - Get all questions of a questionnaire of  a student
-     * @return - An Iterable object of Questions
-     * *
-     *
-     * Les utilisateurs peuvent connaitre la liste des questions
-     * à ajouter:
-     * verif that the student have acces to the list of questions  in this module
-     *
-     */
-    @GetMapping("/api/{idStudent}/module/questions")
-    public List<Question> getQuestions(){
 
-        return questionRepository.findAll();
-
-    }
 
 
 
@@ -200,6 +185,13 @@ public class QuestionController {
             return null;
         }
     }
+
+
+
+
+
+
+
 
 
 
