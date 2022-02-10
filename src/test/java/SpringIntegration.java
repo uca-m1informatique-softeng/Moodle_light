@@ -1,5 +1,8 @@
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.Collections;
+import java.util.List;
 
 import Model.Main;
 import io.cucumber.spring.CucumberContextConfiguration;
@@ -11,9 +14,10 @@ import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.HttpClients;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.apache.http.client.methods.HttpPost;
+import org.springframework.http.*;
+import org.springframework.web.client.RestTemplate;
 
 
 @CucumberContextConfiguration
@@ -21,6 +25,8 @@ import org.apache.http.client.methods.HttpPost;
 public class SpringIntegration {
     static ResponseResults latestResponse = null;
     protected HttpResponse latestHttpResponse;
+    private final RestTemplate restTemplate = new RestTemplate();
+
     int timeout = 5;
     RequestConfig config = RequestConfig.custom()
             .setConnectTimeout(timeout * 1000)
@@ -33,10 +39,26 @@ public class SpringIntegration {
         HttpGet request = new HttpGet(url);
         request.addHeader("Accept", "application/json");
         latestHttpResponse = httpClient.execute(request);
+        this.restTemplate.getForObject(url, String.class);
+    }
+
+    Object executeGetReturnObject(String url, Class type, String jwt) throws IOException {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        headers.add("Authorization", "Bearer " + jwt);
+
+        HttpEntity request = new HttpEntity(headers);
+
+        ResponseEntity<Object> response = this.restTemplate.exchange(url, HttpMethod.GET, request, Object.class);
+        if(response.getStatusCode() == HttpStatus.OK) {
+            return response.getBody();
+        } else {
+            return null;
+        }
     }
 
 
-    boolean executePostObj(String url, String obj) throws IOException {
+    boolean executePostObj(String url, String obj) throws UnsupportedEncodingException {
         HttpPost request = new HttpPost(url);
         request.addHeader("content-type", "application/json");
         request.setEntity(new StringEntity(obj));
