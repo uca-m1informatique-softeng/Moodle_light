@@ -65,12 +65,29 @@ public class ModuleController {
 		return strings;
 	}
 
-
-	@PutMapping("/{id}/ressource/{ressourceid}")
-	@PreAuthorize("hasRole('TEACHER')")
-	public ResponseEntity<?> addRessource(Principal principal,@PathVariable long id, @PathVariable long questionaireid){
+	@GetMapping("/{id}/getRessources")
+	public ArrayList<String> getRessources(@PathVariable long id){
+		ArrayList<String> strings = new ArrayList<>();
 		Optional<Module> omodule = moduleRepository.findById(id);
-		Optional<Ressource> oressource = ressourcesRepository.findById(questionaireid);
+		if (!omodule.isPresent()) {
+			strings.add("Error: No such module!");
+			return strings;
+		}
+
+		Module module = omodule.get();
+		for (Ressource r : module.getRessources()) {
+			strings.add(r.toString());
+		}
+
+		return strings;
+	}
+
+
+	@PutMapping("/{name}/ressource/{ressouceName}")
+	@PreAuthorize("hasRole('TEACHER')")
+	public ResponseEntity<?> addRessource(Principal principal,@PathVariable String name, @PathVariable String ressouceName){
+		Optional<Module> omodule = moduleRepository.findByName(name);
+		Optional<Ressource> oressource = ressourcesRepository.findByName(ressouceName);
 		if (!omodule.isPresent()) {
 			return ResponseEntity
 					.badRequest()

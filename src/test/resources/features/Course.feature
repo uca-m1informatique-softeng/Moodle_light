@@ -1,15 +1,26 @@
 Feature: Course
 
-  Background: :
-    Given a teacher with username "steve"
-    And a resource of type cours with id 1
-    And and list of texts:
-      | shapter1 |
-      | shapter2 |
-      | shapter3 |
-      | shapter4 |
+  Background:
+    Given a teacher with login "steve"
+    And a module named "Gestion de projet"
+    And a cours named "Gestion"
 
-  Scenario: the teacher adds text into the cours
-    When "steve" adds text "shapter5" to the cours
-    Then last request status is 200
-    And "shapter5" has been added to the cours
+  Scenario: Teacher create course
+    When "steve" creer cours "mycour"
+    Then CourseTest last request status is 200
+    And cours "Gestion" has been added
+
+  Scenario: Teacher adds the cours Gestion
+    When "steve" adds a course with name "Gestion" in module "Gestion de projet"
+    Then CourseTest last request status is 200
+
+  Scenario: Teacher adds a text in Gestion
+    When "steve" adds a course with name "Gestion" in module "Gestion de projet"
+    And "steve" add to "Gestion" a text "shapter1"
+    Then CourseTest last request status is 200
+
+  Scenario:
+    When "steve" adds a course with name "Gestion" in module "Gestion de projet"
+    And  "steve" add to "Gestion" a text "shapter1"
+    And  "steve" add to "Gestion" a text "shapter1"
+    Then CourseTest last request status is 400

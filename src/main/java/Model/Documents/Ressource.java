@@ -18,4 +18,9 @@ public class Ressource {
     public Ressource(String name){
         this.name = name;
     }
+
+    @Override
+    public String toString(){
+        return "id : " + this.id + ", name : " + this.name;
+    }
 }
