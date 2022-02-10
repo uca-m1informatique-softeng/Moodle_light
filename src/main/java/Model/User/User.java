@@ -6,6 +6,7 @@ import java.util.Set;
 
 import javax.persistence.*;
 import Model.Documents.Module;
+import Model.Documents.Reponse;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -46,6 +47,8 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "module_id"))
     private Set<Module> modules = new HashSet<>();
+
+
 
     public User() {
     }
