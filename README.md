@@ -1,8 +1,8 @@
 # Projet Génie Logiciel 
- KUHL Mathias 
- LEFEVRE Olivier 
- PLANTIER Antoine
- SAMY Mokhtar
+ KUHL Mathias \
+ LEFEVRE Olivier \
+ PLANTIER Antoine \
+ SAMY Mokhtar \
  BELHASSEN Mohamed
 
 # cucumber-demo
