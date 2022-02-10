@@ -58,20 +58,6 @@ public class QuestionnaireTest extends SpringIntegration {
         assertEquals(status, latestHttpResponse.getStatusLine().getStatusCode());
     }
 
-    @When("{string} adds a course with name {string} in module {string}")
-    public void andACours(String username,String coursName, String moduleName) throws IOException {
-
-        String jwt = authController.generateJwt(username, PASSWORD);
-        executePut("http://localhost:8080/api/module/"+ moduleName +"/ressource/"+coursName, jwt);
-    }
-
-    @When("{string} add to {string} a text {string}")
-    public void addsText(String username,String courseName, String text) throws IOException {
-
-        String jwt = authController.generateJwt(username, PASSWORD);
-
-        executePut("http://localhost:8080/api/course/"+ courseName +"/content/"+text, jwt);
-    }
 
     @And("Questionnaire {string} has been added")
     public void questionnairExist(String courseName){
