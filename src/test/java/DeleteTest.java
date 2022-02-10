@@ -19,13 +19,13 @@ public class DeleteTest extends SpringIntegration{
 
     private static final String PASSWORD = "password";
 
-    /*
+
     @When("{string} delete {string}")
     public void  deletePerson(String arg0, String arg1) throws IOException {
         Optional<User> ouser = userRepository.findByUsername(arg1);
         User user = ouser.get();
         String jwt = authController.generateJwt(arg0, PASSWORD);
-        executeDelete( "http://localhost:8080/api/auth//delete/"+user.getId(), jwt);
+        executeDelete( "http://localhost:8080/api/auth/delete/"+user.getId(), jwt);
     }
 
     @Then("{string} is not a student")
@@ -33,6 +33,4 @@ public class DeleteTest extends SpringIntegration{
         Optional<User> ouser = userRepository.findByUsername(arg0);
         assertFalse(ouser.isPresent());
     }
-
-     */
 }
