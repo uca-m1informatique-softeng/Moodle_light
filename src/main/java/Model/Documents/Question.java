@@ -5,6 +5,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @Brief Classe represente une question
@@ -37,6 +39,12 @@ public class Question {
 
     public Question() {}
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(	name = "user_reponse",
+            joinColumns = @JoinColumn(name = "question_id"),
+            inverseJoinColumns = @JoinColumn(name = "reponse_id"))
+    Set<Reponse> reponses = new HashSet<>();
+
 
  /**
   * Constructor choix parmis list
@@ -47,6 +55,11 @@ public class Question {
   this.typeQuestion="qcm";
   this.enonce_ = enonce_;
   this.reponseQcm = reponseQcm;
+ }
+
+ public boolean reponse(Reponse reponse){
+  return false;
+
  }
 
  /**
