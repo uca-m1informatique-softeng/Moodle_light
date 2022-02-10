@@ -18,7 +18,7 @@ import java.util.Set;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/module/questionnaire")
+@RequestMapping("/api/module/question")
 public class QuestionController {
     @Autowired
     RessourcesRepository ressourcesRepository;
@@ -28,6 +28,14 @@ public class QuestionController {
 
     @Autowired
     ReponsesRepository reponsesRepository ;
+
+    @PutMapping("/name/repondre/question/{quetionid}")
+    public ResponseEntity<?> addRessource(String reponse, @PathVariable String name, @PathVariable long questionid){
+        Optional<Question> question = questionRepository.findById(questionid);
+        return  ResponseEntity
+                .badRequest()
+                .body(new MessageResponse("Error: No such ressource!"));
+    }
 
     @PutMapping("/{id}/question/{ressourceid}")
     @PreAuthorize("hasRole('TEACHER')")
@@ -68,7 +76,7 @@ public class QuestionController {
     }
 
 
-    @DeleteMapping("/{id}/question/{ressourceid}")
+    @DeleteMapping("/{id}/delquestion/{ressourceid}")
     @PreAuthorize("hasRole('TEACHER')")
     public ResponseEntity<?> deleteQuestion(Principal principal, @PathVariable long id, @PathVariable long questionid){
         Optional<Ressource> oressource = ressourcesRepository.findById(id);
@@ -122,7 +130,7 @@ public class QuestionController {
      *
      *
      */
-    @GetMapping("/api/{idStudent}/module/questions/{idQuestion}")
+    @GetMapping("/get/questions/{idQuestion}")
     public Optional<Question> getQuestion(final Long idQuestion){
 
         return questionRepository.findById(idQuestion);
@@ -137,11 +145,10 @@ public class QuestionController {
      * @return
      */
 
-    @PostMapping("/api/{idStudent}/module/questions/{idQuestion}")
-    public Reponse getQuestion(@RequestBody Reponse reponse){
+    @PostMapping("/api/module/savereponse/{idQuestion}")
+    public Reponse saverep(@RequestBody Reponse reponse){
         Reponse savedReponse = reponsesRepository.save(reponse);
         return savedReponse;
-
     }
 
 
