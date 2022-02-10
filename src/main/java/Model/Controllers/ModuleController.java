@@ -25,7 +25,7 @@ import java.util.Set;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/module")
+@RequestMapping("/api/modules")
 public class ModuleController {
 	@Autowired
 	AuthenticationManager authenticationManager;
@@ -49,10 +49,10 @@ public class ModuleController {
 	JwtUtils jwtUtils;
 
 
-	@GetMapping("/{name}/getModules")
-	public ArrayList<String> getmodules(@PathVariable String name){
-		ArrayList<String> strings = new ArrayList<>();
-		Optional<User> ouser = userRepository.findByUsername(name);
+	@GetMapping("/{idUser}")
+	public ArrayList<String> getmodules(@PathVariable Long idUser){
+		ArrayList<String> userModules = new ArrayList<>();
+		Optional<User> ouser = userRepository.findById(idUser);
 		if (!ouser.isPresent()) {
 			return null;
 		}
@@ -60,10 +60,14 @@ public class ModuleController {
 
 		Set<Module> modules = user.getModules();
 		for (Module module:modules) {
-			strings.add(module.name + "/" + module.id);
+			userModules.add(module.name + "/" + module.id);
 		}
-		return strings;
+		return userModules;
 	}
+
+
+
+
 
 	@GetMapping("/{id}/getRessources")
 	public ArrayList<String> getRessources(@PathVariable long id){
