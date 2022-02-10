@@ -18,15 +18,15 @@ import java.util.Set;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/module/course")
+@RequestMapping("/api/course")
 public class CourseController {
     @Autowired
     RessourcesRepository ressourcesRepository;
-    @PutMapping("/{id}/content/{text}")
+    @PutMapping("/{name}/content/{text}")
     @PreAuthorize("hasRole('TEACHER')")
-    public ResponseEntity<?> addRessource(Principal principal, @PathVariable long id, @PathVariable String text){
+    public ResponseEntity<?> modifierCours(Principal principal, @PathVariable String name, @PathVariable String text){
         // Vérifier si ce resource existe
-        Optional<Ressource> oressource = ressourcesRepository.findById(id);
+        Optional<Ressource> oressource = ressourcesRepository.findByName(name);
         if (!oressource.isPresent()) {
             return ResponseEntity
                     .badRequest()
@@ -57,17 +57,15 @@ public class CourseController {
         return ResponseEntity.ok(new MessageResponse("User successfully added to module!"));
     }
 
-    @PostMapping("/add/{name}")
+    @PostMapping("create/{name}")
     @PreAuthorize("hasRole('TEACHER')")
-    public ResponseEntity<?> ajoutCours(@PathVariable String name){
-        //TODO: add course
+    public ResponseEntity<?> creerCours(Principal principal,@PathVariable String name){
         Ressource cours = ressourcesRepository.findByName(name).
                 orElse(new Cours(name));
 
         ressourcesRepository.save(cours);
         return ResponseEntity.ok(new MessageResponse("User successfully added to module!"));
     }
-
 
     @DeleteMapping("/{id}/text/{text}")
     @PreAuthorize("hasRole('TEACHER')")

@@ -66,11 +66,11 @@ public class ModuleController {
 	}
 
 
-	@PutMapping("/{id}/ressource/{ressourceid}")
+	@PutMapping("/{name}/ressource/{ressouceName}")
 	@PreAuthorize("hasRole('TEACHER')")
-	public ResponseEntity<?> addRessource(Principal principal,@PathVariable long id, @PathVariable long questionaireid){
-		Optional<Module> omodule = moduleRepository.findById(id);
-		Optional<Ressource> oressource = ressourcesRepository.findById(questionaireid);
+	public ResponseEntity<?> addRessource(Principal principal,@PathVariable String name, @PathVariable String ressouceName){
+		Optional<Module> omodule = moduleRepository.findByName(name);
+		Optional<Ressource> oressource = ressourcesRepository.findByName(ressouceName);
 		if (!omodule.isPresent()) {
 			return ResponseEntity
 					.badRequest()

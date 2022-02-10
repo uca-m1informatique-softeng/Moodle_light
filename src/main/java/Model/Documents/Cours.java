@@ -10,13 +10,6 @@ import java.util.Set;
 @Entity
 @Table(	name = "Cours")
 public class Cours extends Ressource{
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long id;
-
-    @NotBlank
-    public String name;
-
     @ElementCollection
     @CollectionTable(name="cour_text", joinColumns=@JoinColumn(name="cour_id"))
     @Column(name="text_name")
