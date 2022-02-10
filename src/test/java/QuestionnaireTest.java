@@ -1,5 +1,6 @@
 import Model.Controllers.AuthController;
 import Model.Documents.Cours;
+import Model.Documents.Module;
 import Model.Documents.Questionnaire;
 import Model.Repositories.ModuleRepository;
 import Model.Repositories.QuestionnaireRepository;
@@ -11,6 +12,7 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 
@@ -39,12 +41,25 @@ public class QuestionnaireTest extends SpringIntegration {
 
     private static final String PASSWORD = "password";
 
+    @And("a questionnaire named {string} in the module {string} does not exist")
+    @Transactional
+    public void uniqueQuestionnaire(String QuestionnaireName, String moduleName){
+       Module module = moduleRepository.findByName(moduleName).get();
+       Questionnaire quest = questionnaireRepository.findByName(QuestionnaireName).get();
+       if( module.ressources.contains(quest))
+       {
+           module.ressources.remove(quest);
+       }
+
+    }
+
     @Given("a questionnaire named {string}")
     public void coursGestion(String QuestionnaireName){
         Questionnaire questionnaire = (Questionnaire) ressourcesRepository.findByName(QuestionnaireName).
                 orElse(new Questionnaire(QuestionnaireName));
         ressourcesRepository.save(questionnaire);
     }
+
 
     @When("{string} creer questionnaire {string}")
     public void creerQuestionnaire(String username, String questionnaireName) throws IOException {
