@@ -215,9 +215,6 @@ public class ModuleController {
 		return ResponseEntity.ok(new MessageResponse("User successfully remouved from module!"));
 	}
 
-
-
-
 	User createUser(String userName, String email, String password, Set<String> strRoles) {
 		User user = new User(userName, email, password);
 		Set<Role> roles = new HashSet<>();

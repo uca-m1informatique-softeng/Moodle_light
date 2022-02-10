@@ -1,5 +1,6 @@
 package Model.Controllers;
 import Model.Documents.Cours;
+import Model.Documents.Module;
 import Model.Documents.Ressource;
 import Model.Payload.response.MessageResponse;
 import Model.Repositories.CoursesRepository;
@@ -11,6 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -102,7 +104,17 @@ public class CourseController {
         return ResponseEntity.ok(new MessageResponse("User successfully added to cours!"));
     }
 
+    @GetMapping("/{name}")
+    public List<String> getCourseContent(@PathVariable String name){
+        ArrayList<String> content = new ArrayList<>();
+        Optional<Ressource> courseRes = ressourcesRepository.findByName(name);
+        if (!courseRes.isPresent()) {
+            return null;
+        }
+        Cours cours= (Cours) courseRes.get();
 
+        return cours.text;
+    }
 
 
 

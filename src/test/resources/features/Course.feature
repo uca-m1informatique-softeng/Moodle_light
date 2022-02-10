@@ -13,14 +13,23 @@ Feature: Course
   Scenario: Teacher adds the cours Gestion
     When "steve" adds a course with name "Gestion" in module "Gestion de projet"
     Then CourseTest last request status is 200
+    And Cours "Gestion" is in "Gestion de projet"
 
   Scenario: Teacher adds a text in Gestion
     When "steve" adds a course with name "Gestion" in module "Gestion de projet"
     And "steve" add to "Gestion" a text "shapter1"
     Then CourseTest last request status is 200
+    And "steve" add to "Gestion" a text "shapter2"
+    And "steve" add to "Gestion" a text "shapter3"
 
   Scenario:
     When "steve" adds a course with name "Gestion" in module "Gestion de projet"
     And  "steve" add to "Gestion" a text "shapter1"
     And  "steve" add to "Gestion" a text "shapter1"
     Then CourseTest last request status is 400
+
+  Scenario: Teacher gets the content of a course
+    When "steve" gets the content of the course "Gestion" The content is:
+      | "shapter1" |
+      | "shapter2" |
+      | "shapter3" |
