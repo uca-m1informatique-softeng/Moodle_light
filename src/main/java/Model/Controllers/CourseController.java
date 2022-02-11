@@ -95,8 +95,7 @@ public class CourseController {
             textes.remove(text);
         }else{
             return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Text ne apartient pas a Cours !"));
+                    .ok(new MessageResponse("A eter dejat creer!"));
         }
         ressourcesRepository.save(ressource);
         return ResponseEntity.ok(new MessageResponse("User successfully added to cours!"));

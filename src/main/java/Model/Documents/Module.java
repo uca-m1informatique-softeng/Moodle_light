@@ -19,13 +19,11 @@ public class Module {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(	name = "module_ressources",
-            joinColumns = @JoinColumn(name = "module_id"),
-            inverseJoinColumns = @JoinColumn(name = "ressource_id"))
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name="modulid")
     public Set<Ressource> ressources = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(	name = "module_user",
             joinColumns = @JoinColumn(name = "module_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))

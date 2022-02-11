@@ -11,10 +11,9 @@ import java.util.Set;
 @Entity
 @DiscriminatorValue("Q")
 public class Questionnaire extends Ressource{
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(	name = "Questionaire_question",
-            joinColumns = @JoinColumn(name = "questionaire_id"),
-            inverseJoinColumns = @JoinColumn(name = "question_id"))
+
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name="questionaireid")
     public Set<Question> ListeQuestions = new HashSet<>();
     public  Questionnaire(){}
 

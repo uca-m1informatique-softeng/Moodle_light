@@ -24,6 +24,10 @@ public class Question {
     @Size(max = 120)
     public  String listeEnonces_="";
 
+
+    @ManyToOne
+    public Questionnaire questionnaire;
+
     @Size(max = 120)
     public  String typeQuestion="";
 /*    @Range(min=1, max=20)
