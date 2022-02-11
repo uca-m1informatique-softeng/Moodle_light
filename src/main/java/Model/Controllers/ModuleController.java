@@ -53,8 +53,7 @@ public class ModuleController {
 	@GetMapping("/who")
 	public ArrayList<String> getPersonne(Principal principal) {
 		ArrayList<String> data = new ArrayList<>();
-		data.add("louay");
-		data.add(principal.getName());
+		data.add("la personne connectée est " +principal.getName());
 		return data ;
 
 	}
@@ -63,7 +62,6 @@ public class ModuleController {
 	@GetMapping("/{idUser}")
 	public ArrayList<String> getmodules(@PathVariable Long idUser){
 		ArrayList<String> userModules = new ArrayList<>();
-		userModules.add("test1");
 		Optional<User> ouser = userRepository.findById(idUser);
 		if (!ouser.isPresent()) {
 			return null;
@@ -71,8 +69,9 @@ public class ModuleController {
 		User user= ouser.get();
 
 		Set<Module> modules = user.getModules();
+
 		for (Module module:modules) {
-			userModules.add(module.name + "/" + module.id);
+			userModules.add("module name : "+module.name + "| id : " + module.id);
 		}
 		return userModules;
 	}
@@ -179,22 +178,24 @@ public class ModuleController {
 		User actor = userRepository.findByUsername(principal.getName()).get();
 
 		Set<User> participants = module.getParticipants();
-		if ((participants.isEmpty() && actor.equals(user))
-				|| participants.contains(actor)) {
+//		if ((participants.isEmpty() && actor.equals(user))
+//				|| participants.contains(actor)) {
 			// verifie si user n'apartient pas déjà à participants
 			if(!participants.contains(user)) {
 				participants.add(user);
+				user.getModules().add(module);
 			}else{
 				return ResponseEntity
 						.badRequest()
 						.body(new MessageResponse("Error: User y apartient deja !"));
 			}
-		} else {
-			return ResponseEntity
-					.badRequest()
-					.body(new MessageResponse("Error: Not allowed to add user!"));
-		}
+//		} else {
+//			return ResponseEntity
+//					.badRequest()
+//					.body(new MessageResponse("Error: Not allowed to add user!"));
+//		}
 		moduleRepository.save(module);
+		userRepository.save(user);
 		return ResponseEntity.ok(new MessageResponse("User successfully added to module!"));
 	}
 
