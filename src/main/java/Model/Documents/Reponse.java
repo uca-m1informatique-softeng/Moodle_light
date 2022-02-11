@@ -3,6 +3,7 @@ package Model.Documents;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(	name = "Reponse")
@@ -12,16 +13,18 @@ public class Reponse {
     private Long id;
 
     @NotBlank
-    public String contenu;
-
-
-    public String getContenu() {
-        return contenu;
-    }
-
-    public void setContenu(String contenu) {
-        this.contenu = contenu;
-    }
+    public String username;
+    @NotBlank
+    public String typeReponse;
+    @NotBlank
+    @Size(max = 120)
+    public  int [] reponsesMultiples;
+    @NotBlank
+    @Size(max = 120)
+    public  int reponseQcm;
+    @NotBlank
+    @Size(max = 120)
+    public  String reponseText;
 
     public Long getId() {
         return id;

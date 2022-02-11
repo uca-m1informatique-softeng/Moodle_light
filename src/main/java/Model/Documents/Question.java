@@ -43,11 +43,11 @@ public class Question {
     @JoinTable(	name = "user_reponse",
             joinColumns = @JoinColumn(name = "question_id"),
             inverseJoinColumns = @JoinColumn(name = "reponse_id"))
-    Set<Reponse> reponses = new HashSet<>();
+    public Set<Reponse> reponses = new HashSet<>();
 
 
  /**
-  * Constructor choix parmis list
+  * Constructor question QCM
   * @param enonce_
   */
  public Question(String enonce_, String listrReponses_a, int reponse_a) {
@@ -58,8 +58,25 @@ public class Question {
  }
 
  public boolean reponse(Reponse reponse){
-  return false;
+     switch(reponse.typeReponse) {
+         case "qcm":
+             return reponse.reponseQcm == this.reponseQcm;
 
+         case "choixmult":
+             if ( reponse.reponsesMultiples.length != reponse.reponsesMultiples.length)
+                 return  false ;
+             for (int i = 0 ; i < reponse.reponsesMultiples.length; i++){
+                 if(reponse.reponsesMultiples[i] == this.reponsesMultiples[i]) {
+                     return false;
+                 }
+             }
+             return true;
+         case "text":
+             if(reponse.reponseText.equals(this.reponseText))
+                 return true;
+             else return  false;
+         default : return false;
+     }
  }
 
  /**
@@ -74,6 +91,12 @@ public class Question {
   this.reponsesMultiples = reponse_a;
  }
 
+
+    /**
+     * Constructor text question
+     * @param enonce_a
+     * @param reponse_a
+     */
   public Question(String enonce_a, String reponse_a){
     this.typeQuestion="text";
     this.enonce_=enonce_a;

@@ -4,9 +4,7 @@ import Model.Documents.Module;
 import Model.Documents.Ressource;
 import Model.Payload.response.MessageResponse;
 import Model.Repositories.CoursesRepository;
-import Model.Repositories.ModuleRepository;
 import Model.Repositories.RessourcesRepository;
-import Model.Repositories.UserRepository;
 import Model.User.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,11 +12,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -29,18 +26,9 @@ public class CourseController {
     RessourcesRepository ressourcesRepository;
 
     @Autowired
-    ModuleRepository moduleRepository;
-
-    @Autowired
-    UserRepository userRepository;
-
-    @Autowired
     CoursesRepository coursesRepository;
 
-
-
-
-        @PutMapping("/{name}/content/{text}")
+    @PutMapping("/{name}/content/{text}")
     @PreAuthorize("hasRole('TEACHER')")
     public ResponseEntity<?> modifierCours(Principal principal, @PathVariable String name, @PathVariable String text){
         // Vérifier si ce resource existe
@@ -115,7 +103,17 @@ public class CourseController {
         return ResponseEntity.ok(new MessageResponse("User successfully added to cours!"));
     }
 
+    @GetMapping("/{name}")
+    public List<String> getCourseContent(@PathVariable String name){
+        ArrayList<String> content = new ArrayList<>();
+        Optional<Ressource> courseRes = ressourcesRepository.findByName(name);
+        if (!courseRes.isPresent()) {
+            return null;
+        }
+        Cours cours= (Cours) courseRes.get();
 
+        return cours.text;
+    }
 
 
 
@@ -129,29 +127,10 @@ public class CourseController {
      * verif that the student have acces to the courses in this module
      *
      */
-   @GetMapping("/api/{idStudent}/module/{idModule}/courses")
-    public  List<Ressource> getCourses(@PathVariable Long idStudent, @PathVariable Long idModule ){
-       boolean find =false;
-       Optional<Module> m = moduleRepository.findById(idModule);
-       if (m.isPresent()) {
-           Module moduleCurr = m.get();
-           for (User participant : moduleCurr.getParticipants()) {
+   @GetMapping("/api/{idStudent}/module/courses")
+    public List<Cours> getCourses(){
 
-               if(participant.getId() == idStudent)
-               {
-                find =true;
-               }
-
-           }
-           if (find) {
-
-               // verifier si un cours ou pas
-               return moduleCurr.getRessources().stream().filter(r -> r.getClass().equals(Cours.class)).collect(Collectors.toList());
-           }
-
-       }
-
-        return null;
+       return coursesRepository.findAll();
 
    }
 
@@ -175,9 +154,19 @@ public class CourseController {
 
     }
 
-
-
-
+    @DeleteMapping("delete/{name}")
+    @PreAuthorize("hasRole('TEACHER')")
+    public ResponseEntity<?> delete(@PathVariable String name){
+        Optional<Ressource> oressource = ressourcesRepository.findByName(name);
+        if(!oressource.isPresent()){
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: No such ressource!"));
+        }
+        Ressource ressource = oressource.get();
+        ressourcesRepository.delete(ressource);
+        return ResponseEntity.ok(new MessageResponse("User successfully delete cours!"));
+    }
 
 
 

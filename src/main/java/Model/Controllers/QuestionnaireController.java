@@ -1,75 +1,100 @@
 package Model.Controllers;
 
 
-import Model.Documents.Cours;
-import Model.Documents.Module;
-import Model.Documents.Questionnaire;
-import Model.Repositories.ModuleRepository;
+import Model.Documents.*;
+import Model.Payload.response.MessageResponse;
 import Model.Repositories.QuestionnaireRepository;
-import Model.Repositories.UserRepository;
-import Model.User.User;
+import Model.Repositories.RessourcesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/module/questionaire")
+@RequestMapping("/api/questionnaire")
 public class QuestionnaireController {
 
     @Autowired
-    QuestionnaireRepository questionnaireRepository;
+    QuestionnaireRepository  questionnaireRepository ;
 
     @Autowired
-    ModuleRepository moduleRepository;
-
-    @Autowired
-    UserRepository userRepository;
-
+    RessourcesRepository ressourcesRepository ;
 
     /**
      * Read - Get all questions of a questionnaire of  a student
-     *
      * @return - An Iterable object of Questions
      * *
-     * <p>
+     *
      * Les utilisateurs peuvent connaitre la liste des questions
      * à ajouter:
      * verif that the student have acces to the list of questions  in this module
+     *
      */
-    @GetMapping("/api/{idStudent}/module/{idModule}/questionnaires/{idQuestionnaire}")
-    public Optional<Questionnaire> getQuestionnaire(final Long idQuestionnaire, final Long idModule, final Long idUser) {
+    @GetMapping("/api/{idStudent}/module/questionnaires/{idQuestionnaire}")
+    public Optional<Questionnaire> getQuestionnaire(final Long idQuestionnaire){
 
-        if (isHaveAcces(idModule, idUser)) {
-            return questionnaireRepository.findById(idQuestionnaire);
+        return questionnaireRepository.findById(idQuestionnaire) ;
+    }
 
+    /***
+     * valider un questionnaire
+     * @return
+     */
+    @GetMapping("{username}/validate/{idQuestionnaire}")
+    public int validateQuestionnaire(@PathVariable String name, @PathVariable String userName ){
+        Optional<Questionnaire> oquestionnaire = questionnaireRepository.findByName(name);
+        if(!oquestionnaire.isPresent()){
+            return -1;
+        }
+        Questionnaire questionnaire = oquestionnaire.get();
+        int reponsevalide =0;
+        for (Question question:questionnaire.ListeQuestions) {
+            Reponse reponse = findReponse(question,userName);
+            if(reponse == null){
+                return -1;
+            }
+            if(question.reponse(reponse)) {
+                reponsevalide++;
+            }
+        }
+        return reponsevalide;
+    }
+
+    public Reponse findReponse(Question question, String name){
+        for (Reponse reponse :question.reponses) {
+            if(reponse.username == name){
+                return reponse;
+            }
         }
         return null;
-
-
     }
 
 
-    boolean isHaveAcces(Long idModule, Long idUser) {
+    @PostMapping("create/{name}")
+    @PreAuthorize("hasRole('TEACHER')")
+    public ResponseEntity<?> creerQuestionnaire(Principal principal, @PathVariable String name){
+        Ressource questionnaire = ressourcesRepository.findByName(name).
+                orElse(new Questionnaire());
 
-        boolean find = false;
-        Optional<Module> m = moduleRepository.findById(idModule);
-        if (m.isPresent()) {
-            Module moduleCurr = m.get();
-            for (User participant : moduleCurr.getParticipants()) {
+        ressourcesRepository.save(questionnaire);
+        return ResponseEntity.ok(new MessageResponse("Questionnaire successfully created"));
+    }
 
-                if (participant.getId() == idUser) {
-                    find = true;
-                }
-
-            }
-
+    @DeleteMapping("delete/{name}")
+    @PreAuthorize("hasRole('TEACHER')")
+    public ResponseEntity<?> delete(Principal principal, @PathVariable String name){
+        Optional<Ressource> oressource = ressourcesRepository.findByName(name);
+        if(!oressource.isPresent()){
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: No such ressource!"));
         }
-        return find;
-
-
+        Ressource ressource = oressource.get();
+        ressourcesRepository.delete(ressource);
+        return ResponseEntity.ok(new MessageResponse("User successfully delete questionnaire!"));
     }
-
 }

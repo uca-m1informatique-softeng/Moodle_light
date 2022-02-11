@@ -17,15 +17,19 @@ public class Questionnaire extends Ressource{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(	name = "Questionaire_question",
             joinColumns = @JoinColumn(name = "questionaire_id"),
             inverseJoinColumns = @JoinColumn(name = "question_id"))
     public Set<Question> ListeQuestions = new HashSet<>();
     public  Questionnaire(){}
 
+    public  Questionnaire(String questName_arg){
+        super(questName_arg);
+        this.name = questName_arg;
+    }
     public void addQuestion(Question quest_a){
-        this.addQuestion(quest_a);
+        this.ListeQuestions.add(quest_a);
     }
     public void displayQuestion(){
         for (Question quest : this.ListeQuestions){

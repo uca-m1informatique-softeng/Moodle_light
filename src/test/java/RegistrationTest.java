@@ -21,6 +21,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class RegistrationTest extends SpringIntegration {
     //HttpResponse latestHttpResponse;
@@ -68,14 +69,12 @@ public class RegistrationTest extends SpringIntegration {
         Gson g = new Gson();
         String s = g.toJson(loginRequest);
         executePostObj("http://localhost:8080/api/auth/signin",s);
-        /*HttpPost request = new HttpPost("http://localhost:8080/api/auth/a");
-        request.addHeader("content-type", "application/json");
-        StringEntity entity = new StringEntity(s);
-        request.setEntity(entity);
-        latestHttpResponse = httpClient.execute(request);
-        */
     }
 
+    @Then("{string} is registred like user")
+    public void registered(String arg0) throws IOException {
+        assertTrue(userRepository.existsByUsername(arg0));
+    }
 
 
 }

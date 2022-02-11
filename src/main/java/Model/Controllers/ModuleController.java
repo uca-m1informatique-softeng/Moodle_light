@@ -98,7 +98,6 @@ public class ModuleController {
 		return strings;
 	}
 
-
 	@PutMapping("/{name}/ressource/{ressouceName}")
 	@PreAuthorize("hasRole('TEACHER')")
 	public ResponseEntity<?> addRessource(Principal principal,@PathVariable String name, @PathVariable String ressouceName){
@@ -230,9 +229,6 @@ public class ModuleController {
 		moduleRepository.save(module);
 		return ResponseEntity.ok(new MessageResponse("User successfully remouved from module!"));
 	}
-
-
-
 
 	User createUser(String userName, String email, String password, Set<String> strRoles) {
 		User user = new User(userName, email, password);
