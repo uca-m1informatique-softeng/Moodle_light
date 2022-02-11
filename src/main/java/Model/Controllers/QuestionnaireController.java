@@ -83,4 +83,18 @@ public class QuestionnaireController {
         ressourcesRepository.save(questionnaire);
         return ResponseEntity.ok(new MessageResponse("Questionnaire successfully created"));
     }
+
+    @DeleteMapping("delete/{name}")
+    @PreAuthorize("hasRole('TEACHER')")
+    public ResponseEntity<?> delete(Principal principal, @PathVariable String name){
+        Optional<Ressource> oressource = ressourcesRepository.findByName(name);
+        if(!oressource.isPresent()){
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: No such ressource!"));
+        }
+        Ressource ressource = oressource.get();
+        ressourcesRepository.delete(ressource);
+        return ResponseEntity.ok(new MessageResponse("User successfully delete questionnaire!"));
+    }
 }

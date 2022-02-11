@@ -29,7 +29,6 @@ public class CourseController {
     CoursesRepository coursesRepository;
 
     @PutMapping("/{name}/content/{text}")
-
     @PreAuthorize("hasRole('TEACHER')")
     public ResponseEntity<?> modifierCours(Principal principal, @PathVariable String name, @PathVariable String text){
         // Vérifier si ce resource existe
@@ -155,9 +154,19 @@ public class CourseController {
 
     }
 
-
-
-
+    @DeleteMapping("delete/{name}")
+    @PreAuthorize("hasRole('TEACHER')")
+    public ResponseEntity<?> delete(@PathVariable String name){
+        Optional<Ressource> oressource = ressourcesRepository.findByName(name);
+        if(!oressource.isPresent()){
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: No such ressource!"));
+        }
+        Ressource ressource = oressource.get();
+        ressourcesRepository.delete(ressource);
+        return ResponseEntity.ok(new MessageResponse("User successfully delete cours!"));
+    }
 
 
 

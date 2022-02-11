@@ -35,6 +35,7 @@ Feature: Register Teacher/Student
       And "sarah" is registered to module "Gestion de projet"
       And "paul" is registered to module "Gestion de projet"
       And "mari" is not registered to module "Gestion de projet"
+
     Scenario: Teacher registre it self again
       When "sarah" registers to module "Gestion de projet"
       And "sarah" registers to module "Gestion de projet"
