@@ -2,6 +2,9 @@ package Model.Controllers;
 
 
 import Model.Documents.*;
+import Model.Payload.request.CreateQuestionRequest;
+import Model.Payload.request.CreateTextQuestionRequest;
+import Model.Payload.request.SignupRequest;
 import Model.Payload.response.MessageResponse;
 import Model.Repositories.QuestionRepository;
 import Model.Repositories.ReponsesRepository;
@@ -11,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
@@ -35,6 +39,20 @@ public class QuestionController {
         return  ResponseEntity
                 .badRequest()
                 .body(new MessageResponse("Error: No such ressource!"));
+    }
+    @PutMapping("/create")
+    public ResponseEntity<?> createQuestion(@Valid @RequestBody CreateQuestionRequest createQuestionRequest_a){
+        Question questionToAdd ;
+        switch (createQuestionRequest_a.getQuestionType()){
+            case "text":
+                questionToAdd= new Question(createQuestionRequest_a.getEnonce(),((CreateTextQuestionRequest) createQuestionRequest_a).getReponse());
+                break;
+
+        }
+        return  ResponseEntity
+                .badRequest()
+                .body(new MessageResponse("Error: No such ressource!"));
+
     }
 
     @PutMapping("/{id}/question/{ressourceid}")
@@ -74,6 +92,7 @@ public class QuestionController {
         ressourcesRepository.save(ressource);
         return ResponseEntity.ok(new MessageResponse("User successfully added to module!"));
     }
+
 
 
     @DeleteMapping("/{id}/delquestion/{ressourceid}")

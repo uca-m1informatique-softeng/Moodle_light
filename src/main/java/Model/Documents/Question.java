@@ -47,7 +47,7 @@ public class Question {
 
 
  /**
-  * Constructor choix parmis list
+  * Constructor question QCM
   * @param enonce_
   */
  public Question(String enonce_, String listrReponses_a, int reponse_a) {
@@ -91,6 +91,12 @@ public class Question {
   this.reponsesMultiples = reponse_a;
  }
 
+
+    /**
+     * Constructor text question
+     * @param enonce_a
+     * @param reponse_a
+     */
   public Question(String enonce_a, String reponse_a){
     this.typeQuestion="text";
     this.enonce_=enonce_a;

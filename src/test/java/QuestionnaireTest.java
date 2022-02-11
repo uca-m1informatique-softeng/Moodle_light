@@ -49,7 +49,6 @@ public class QuestionnaireTest extends SpringIntegration {
        {
            module.ressources.remove(quest);
        }
-
     }
 
     @Given("a questionnaire named {string}")
@@ -86,4 +85,8 @@ public class QuestionnaireTest extends SpringIntegration {
     public void questionnairExist(String courseName){
         assertTrue(questionnaireRepository.findByName(courseName).isPresent());
     }
+   @When("user {string} create {string} question with enonce {string} and with answer {string}")
+   public void userCreateTextQuestion(String user_a, String questionType, String enonce_a , String answer_a){
+
+   }
 }

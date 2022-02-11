@@ -29,7 +29,7 @@ public class Questionnaire extends Ressource{
         this.name = questName_arg;
     }
     public void addQuestion(Question quest_a){
-        this.addQuestion(quest_a);
+        this.ListeQuestions.add(quest_a);
     }
     public void displayQuestion(){
         for (Question quest : this.ListeQuestions){
