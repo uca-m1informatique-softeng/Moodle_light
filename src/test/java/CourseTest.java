@@ -26,14 +26,14 @@ public class CourseTest extends SpringIntegration {
 
     private static final String PASSWORD = "password";
 
-    @Given("a cours named {string}")
+    @Given("a course named {string}")
     public void coursGestion(String gestion) {
         Cours cours = (Cours) ressourcesRepository.findByName(gestion).
                 orElse(new Cours(gestion));
         ressourcesRepository.save(cours);
     }
 
-    @When("{string} creer cours {string}")
+    @When("{string} create course {string}")
     public void creerCours(String username, String courseName) throws IOException {
         String token = authController.generateJwt(username, PASSWORD);
         executePost("http://localhost:8080/api/course/create/" + courseName, token);
@@ -75,7 +75,7 @@ public class CourseTest extends SpringIntegration {
         assertTrue(latestHttpResponse.getStatusLine().getStatusCode() == statusOK || latestHttpResponse.getStatusLine().getStatusCode() == statusServerError);
     }
 
-    @And("cours {string} has been added")
+    @And("course {string} has been added")
     public void coursExist(String courseName) {
         assertTrue(ressourcesRepository.findByName(courseName).isPresent());
     }
