@@ -63,11 +63,22 @@ public class ModuleController {
 
 	//////////////////////        GET     //////////////////////
 
+
+	/**
+	 * renvois le module
+	 * @param modulename
+	 * @return module
+	 */
 	@GetMapping("/{modulename}")
 	public String getModule(@PathVariable String modulename) {
 		return null;
 	}
 
+	/**
+	 * renvois le Teacher du module : modulename
+	 * @param modulename
+	 * @return Teacher
+	 */
 	@GetMapping("/who/{modulename}")
 	public ArrayList<String> getPersonneModule(@PathVariable String modulename) {
 		ArrayList<String> data = new ArrayList<>();
@@ -81,7 +92,11 @@ public class ModuleController {
 
 	}
 
-
+	/**
+	 * renvois les ressources de user : nameUser
+	 * @param nameUser
+	 * @return ensemble de ressource
+	 */
 	@GetMapping("ressources/{nameUser}")
 	public ArrayList<String> getressourcesofmodules(@PathVariable String nameUser){
 		ArrayList<String> userModules = new ArrayList<>();
@@ -99,7 +114,14 @@ public class ModuleController {
 		return userModules;
 	}
 
+
+	/**
+	 * Renvois les ressources d'un module specifique
+	 * @param modulename
+	 * @return	ensemble de ressource
+	 */
 	@GetMapping("/getressources/{modulename}")
+	@PreAuthorize("hasRole('TEACHER')")
 	public ArrayList<String> getRessources(@PathVariable String modulename){
 		ArrayList<String> strings = new ArrayList<>();
 		Optional<Module> omodule = moduleRepository.findByName(modulename);
@@ -107,7 +129,6 @@ public class ModuleController {
 			strings.add("Error: No such module!");
 			return strings;
 		}
-
 		Module module = omodule.get();
 		for (Ressource r : module.getRessources()) {
 			strings.add(r.toString());
@@ -121,9 +142,15 @@ public class ModuleController {
 	//////////////////////      Post  PUT     //////////////////////
 
 
+	/**
+	 * rajoute une ressource
+	 * @param name
+	 * @param name2
+	 * @return ResponseEntity
+	 */
 	@PutMapping("/{name}/ressource/{name2}")
 	@PreAuthorize("hasRole('TEACHER')")
-	public ResponseEntity<?> addRessource(Principal principal,@PathVariable String name, @PathVariable String name2){
+	public ResponseEntity<?> addRessource(@PathVariable String name, @PathVariable String name2){
 		Optional<Module> omodule = moduleRepository.findByName(name);
 		Optional<Ressource> oressource = ressourcesRepository.findByName(name2);
 		if (!omodule.isPresent()) {
@@ -151,7 +178,13 @@ public class ModuleController {
 		return ResponseEntity.ok(new MessageResponse("User successfully added to module!"));
 	}
 
-
+	/**
+	 * rajoute user: userid to module : id
+	 * @param principal
+	 * @param id
+	 * @param userid
+	 * @return ResponseEntity
+	 */
 	@PostMapping("/{id}/participants/{userid}")
 	@PreAuthorize("hasRole('TEACHER')")
 	public ResponseEntity<?> addUser(Principal principal, @PathVariable long id, @PathVariable long userid) {
@@ -197,6 +230,13 @@ public class ModuleController {
 
 	//////////////////////        Delete     //////////////////////
 
+	/**
+	 * enleve user : userid  from module : id
+	 * @param principal
+	 * @param id
+	 * @param userid
+	 * @return ResponseEntity
+	 */
 	@DeleteMapping("/{id}/participants/{userid}")
 	@PreAuthorize("hasRole('TEACHER')")
 	public ResponseEntity<?> deleteUser(Principal principal, @PathVariable long id, @PathVariable long userid) {
