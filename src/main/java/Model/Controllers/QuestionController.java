@@ -59,8 +59,6 @@ public class QuestionController {
                 questionToAdd= new Question(createQuestionRequest_a.getEnonce(),createQuestionRequest_a.getReponse());
                 break;
             default:
-
-
         }
         if (questionToAdd != null ) {
             questionRepository.save(questionToAdd);
@@ -70,7 +68,6 @@ public class QuestionController {
             return  ResponseEntity
                 .badRequest()
                 .body(new MessageResponse("Error: No such ressource!"));
-
     }
 
     @PutMapping("/{id}/question/{ressourceid}")
@@ -235,6 +232,14 @@ public class QuestionController {
     }
 
 
+    @PutMapping("/a")
+    @PreAuthorize("hasRole('TEACHER')")
+    public ResponseEntity<?> listQuestion(String reponse, @PathVariable String name, @PathVariable long questionid){
+        Optional<Question> question = questionRepository.findById(questionid);
+        return  ResponseEntity
+                .badRequest()
+                .body(new MessageResponse("Error: No such ressource!"));
+    }
 
 
 
