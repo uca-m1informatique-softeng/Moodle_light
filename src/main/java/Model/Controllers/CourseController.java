@@ -37,8 +37,10 @@ public class CourseController {
     @Autowired
     CoursesRepository coursesRepository;
 
-    @PutMapping("/{name}/content/{text}")
 
+
+
+        @PutMapping("/{name}/content/{text}")
     @PreAuthorize("hasRole('TEACHER')")
     public ResponseEntity<?> modifierCours(Principal principal, @PathVariable String name, @PathVariable String text){
         // Vérifier si ce resource existe

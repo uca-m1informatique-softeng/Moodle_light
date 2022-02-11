@@ -49,9 +49,21 @@ public class ModuleController {
 	JwtUtils jwtUtils;
 
 
+	@PreAuthorize("hasRole('TEACHER')")
+	@GetMapping("/who")
+	public ArrayList<String> getPersonne(Principal principal) {
+		ArrayList<String> data = new ArrayList<>();
+		data.add("louay");
+		data.add(principal.getName());
+		return data ;
+
+	}
+
+
 	@GetMapping("/{idUser}")
 	public ArrayList<String> getmodules(@PathVariable Long idUser){
 		ArrayList<String> userModules = new ArrayList<>();
+		userModules.add("test1");
 		Optional<User> ouser = userRepository.findById(idUser);
 		if (!ouser.isPresent()) {
 			return null;
