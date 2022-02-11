@@ -97,11 +97,11 @@ public class ModuleController {
 		return strings;
 	}
 
-	@PutMapping("/{name}/ressource/{ressouceName}")
+	@PutMapping("/{name}/ressource/{ressoucename}")
 	@PreAuthorize("hasRole('TEACHER')")
-	public ResponseEntity<?> addRessource(Principal principal,@PathVariable String name, @PathVariable String ressouceName){
+	public ResponseEntity<?> addRessource(Principal principal,@PathVariable String name, @PathVariable String ressoucename){
 		Optional<Module> omodule = moduleRepository.findByName(name);
-		Optional<Ressource> oressource = ressourcesRepository.findByName(ressouceName);
+		Optional<Ressource> oressource = ressourcesRepository.findByName(ressoucename);
 		if (!omodule.isPresent()) {
 			return ResponseEntity
 					.badRequest()
@@ -127,11 +127,11 @@ public class ModuleController {
 		return ResponseEntity.ok(new MessageResponse("User successfully added to module!"));
 	}
 
-	@DeleteMapping("/{id}/ressource/{ressourceid}")
+	@DeleteMapping("/{name}/ressource/{ressoucename}")
 	@PreAuthorize("hasRole('TEACHER')")
-	public ResponseEntity<?> deleteRessource(Principal principal,@PathVariable long id, @PathVariable long questionaireid){
-		Optional<Module> omodule = moduleRepository.findById(id);
-		Optional<Ressource> oressource = ressourcesRepository.findById(questionaireid);
+	public ResponseEntity<?> deleteRessource(Principal principal,@PathVariable String name, @PathVariable String ressourcename){
+		Optional<Module> omodule = moduleRepository.findByName(name);
+		Optional<Ressource> oressource = ressourcesRepository.findByName(ressourcename);
 		if (!omodule.isPresent()) {
 			return ResponseEntity
 					.badRequest()
