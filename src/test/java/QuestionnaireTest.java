@@ -1,20 +1,18 @@
 import Model.Controllers.AuthController;
-import Model.Documents.Cours;
 import Model.Documents.Module;
 import Model.Documents.Questionnaire;
-import Model.Repositories.ModuleRepository;
-import Model.Repositories.QuestionnaireRepository;
-import Model.Repositories.RessourcesRepository;
-import Model.Repositories.UserRepository;
+import Model.Payload.request.CreateQuestionRequest;
+import Model.Repositories.*;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import io.cucumber.messages.internal.com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -32,6 +30,9 @@ public class QuestionnaireTest extends SpringIntegration {
 
     @Autowired
     QuestionnaireRepository questionnaireRepository;
+
+    @Autowired
+    QuestionRepository questionRepository;
 
     @Autowired
     AuthController authController;
@@ -86,7 +87,20 @@ public class QuestionnaireTest extends SpringIntegration {
         assertTrue(questionnaireRepository.findByName(courseName).isPresent());
     }
    @When("user {string} create {string} question with enonce {string} and with answer {string}")
-   public void userCreateTextQuestion(String user_a, String questionType, String enonce_a , String answer_a){
+   public void userCreateTextQuestion(String user_a, String questionType, String enonce_a , String answer_a) throws UnsupportedEncodingException {
+       CreateQuestionRequest textQuestionRequest = new CreateQuestionRequest();
+       textQuestionRequest.setEnonce(enonce_a);
+       textQuestionRequest.setReponse(answer_a);
+       textQuestionRequest.setQuestionType("text");
+       Gson g = new Gson();
+       String s = g.toJson(textQuestionRequest);
+       String jwt = authController.generateJwt(user_a, PASSWORD);
+       executePostObj("http://localhost:8080/api/module/question/create",s,jwt);
+       System.out.println(latestHttpResponse.getStatusLine().getStatusCode());
 
+   }
+   @Then("Question with enonce {string} exist")
+    public void questionExistByEnone(String enonce){
+        assertTrue(questionRepository.findByEnonce(enonce).isPresent());
    }
 }

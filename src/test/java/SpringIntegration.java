@@ -88,6 +88,22 @@ public class SpringIntegration {
         System.out.println(latestHttpResponse);
         return true;
     }
+    boolean executePostObj(String url, String obj, String jwt) throws UnsupportedEncodingException {
+        HttpPost request = new HttpPost(url);
+        request.addHeader("content-type", "application/json");
+        request.setEntity(new StringEntity(obj));
+        if (jwt != null) {
+            request.addHeader("Authorization", "Bearer " + jwt);
+        }
+        try{
+            latestHttpResponse = httpClient.execute(request);
+        }catch(Throwable t){
+            System.out.println(t.getLocalizedMessage());
+            return false;
+        }
+        System.out.println(latestHttpResponse);
+        return true;
+    }
 
     boolean executePost(String url, String jwt) throws IOException {
         HttpPost request = new HttpPost(url);

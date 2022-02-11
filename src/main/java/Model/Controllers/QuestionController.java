@@ -3,8 +3,6 @@ package Model.Controllers;
 
 import Model.Documents.*;
 import Model.Payload.request.CreateQuestionRequest;
-import Model.Payload.request.CreateTextQuestionRequest;
-import Model.Payload.request.SignupRequest;
 import Model.Payload.response.MessageResponse;
 import Model.Repositories.QuestionRepository;
 import Model.Repositories.ReponsesRepository;
@@ -16,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.Principal;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -40,16 +37,37 @@ public class QuestionController {
                 .badRequest()
                 .body(new MessageResponse("Error: No such ressource!"));
     }
-    @PutMapping("/create")
+
+    /**
+     * Method for a teacher to create a question
+     * @param createQuestionRequest_a
+     * @return
+     */
+    @PostMapping("/create")
+    @PreAuthorize("hasRole('TEACHER')")
     public ResponseEntity<?> createQuestion(@Valid @RequestBody CreateQuestionRequest createQuestionRequest_a){
-        Question questionToAdd ;
+        Question questionToAdd = null ;
+
+        Optional<Question> oquestion = questionRepository.findByEnonce(createQuestionRequest_a.getEnonce());
+        if (oquestion.isPresent()) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Question Already exist"));
+        }
         switch (createQuestionRequest_a.getQuestionType()){
             case "text":
-                questionToAdd= new Question(createQuestionRequest_a.getEnonce(),((CreateTextQuestionRequest) createQuestionRequest_a).getReponse());
+                questionToAdd= new Question(createQuestionRequest_a.getEnonce(),createQuestionRequest_a.getReponse());
                 break;
+            default:
+
 
         }
-        return  ResponseEntity
+        if (questionToAdd != null ) {
+            questionRepository.save(questionToAdd);
+            return ResponseEntity.ok(new MessageResponse("Question successfully "));
+        }
+        else
+            return  ResponseEntity
                 .badRequest()
                 .body(new MessageResponse("Error: No such ressource!"));
 

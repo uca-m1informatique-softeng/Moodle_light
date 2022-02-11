@@ -11,6 +11,5 @@ Feature: Questionnaire
     And Questionnaire "Quest1" has been added
 
   Scenario: Teacher add text question to Questionnaire
-    When "steve" create "text" question with enonce "Enonce1" and with possible answers "answ1"
-    And "steve" add "text"  question to questionnaire "Quest1"
-    Then Questionnaire "Quest1" contain the question with Enonce : "Enonce1"
+    When user "steve" create "text" question with enonce "Enonce1" and with answer "answ1"
+    Then Question with enonce "Enonce1" exist
