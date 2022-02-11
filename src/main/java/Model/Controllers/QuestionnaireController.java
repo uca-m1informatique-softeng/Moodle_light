@@ -27,7 +27,7 @@ import java.util.Set;
  *
  * POST /api/questionnaire/{name}     :    creer questionaire
  *
- * DELETE /api/questionnaire/
+ * DELETE /api/questionnaire/{name}   :    delete questionaire
  *
  */
 @CrossOrigin(origins = "*", maxAge = 3600)
