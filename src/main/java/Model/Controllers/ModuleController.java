@@ -25,7 +25,7 @@ import java.util.Set;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/module")
+@RequestMapping("/api/modules")
 public class ModuleController {
 	@Autowired
 	AuthenticationManager authenticationManager;
@@ -49,21 +49,36 @@ public class ModuleController {
 	JwtUtils jwtUtils;
 
 
-	@GetMapping("/{name}/getModules")
-	public ArrayList<String> getmodules(@PathVariable String name){
-		ArrayList<String> strings = new ArrayList<>();
-		Optional<User> ouser = userRepository.findByUsername(name);
+	@PreAuthorize("hasRole('TEACHER')")
+	@GetMapping("/who")
+	public ArrayList<String> getPersonne(Principal principal) {
+		ArrayList<String> data = new ArrayList<>();
+		data.add("la personne connectée est " +principal.getName());
+		return data ;
+
+	}
+
+
+	@GetMapping("/{idUser}")
+	public ArrayList<String> getmodules(@PathVariable Long idUser){
+		ArrayList<String> userModules = new ArrayList<>();
+		Optional<User> ouser = userRepository.findById(idUser);
 		if (!ouser.isPresent()) {
 			return null;
 		}
 		User user= ouser.get();
 
 		Set<Module> modules = user.getModules();
+
 		for (Module module:modules) {
-			strings.add(module.name + "/" + module.id);
+			userModules.add("module name : "+module.name + "| id : " + module.id);
 		}
-		return strings;
+		return userModules;
 	}
+
+
+
+
 
 	@GetMapping("/{id}/getRessources")
 	public ArrayList<String> getRessources(@PathVariable long id){
@@ -163,22 +178,24 @@ public class ModuleController {
 		User actor = userRepository.findByUsername(principal.getName()).get();
 
 		Set<User> participants = module.getParticipants();
-		if ((participants.isEmpty() && actor.equals(user))
-				|| participants.contains(actor)) {
+//		if ((participants.isEmpty() && actor.equals(user))
+//				|| participants.contains(actor)) {
 			// verifie si user n'apartient pas déjà à participants
 			if(!participants.contains(user)) {
 				participants.add(user);
+				user.getModules().add(module);
 			}else{
 				return ResponseEntity
 						.badRequest()
 						.body(new MessageResponse("Error: User y apartient deja !"));
 			}
-		} else {
-			return ResponseEntity
-					.badRequest()
-					.body(new MessageResponse("Error: Not allowed to add user!"));
-		}
+//		} else {
+//			return ResponseEntity
+//					.badRequest()
+//					.body(new MessageResponse("Error: Not allowed to add user!"));
+//		}
 		moduleRepository.save(module);
+		userRepository.save(user);
 		return ResponseEntity.ok(new MessageResponse("User successfully added to module!"));
 	}
 
