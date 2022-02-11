@@ -9,6 +9,7 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import static org.junit.jupiter.api.Assertions.*;
+import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import java.io.IOException;
 import java.util.*;
@@ -83,13 +84,16 @@ public class CourseTest extends SpringIntegration {
     @Then("{string} gets the content of the course {string}, then we get:")
     public void contentOfCours(String username, String coursGestion, List<String> content) throws IOException {
         String token = authController.generateJwt(username, PASSWORD);
-        List<String> listTexts = (List<String>) executeGetReturnListObject("http://localhost:8080/api/course/" + coursGestion, token);
+        executeGet("http://localhost:8080/api/course/" + coursGestion, token);
+        String response  = EntityUtils.toString(latestHttpResponse.getEntity(), "UTF-8");
+
+        List<String> listTexts = Arrays.asList(response.subSequence(1,response.length()-1).toString().split(","));
         boolean result = true;
 
         System.out.println(listTexts);
         System.out.println(content);
-        for (String txt : content) {
-            if (!listTexts.contains(txt)) {
+        for (int i = 0; i < listTexts.size(); i++){
+            if (!content.get(i).equals(listTexts.get(i))){
                 result = false;
             }
         }

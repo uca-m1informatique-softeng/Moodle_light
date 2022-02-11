@@ -121,8 +121,8 @@ public class ModuleController {
 			ressources.add(ressource);
 		}else{
 			return ResponseEntity
-					.badRequest()
-					.body(new MessageResponse("Error: Ressource y apartient deja !"));
+					.ok()
+					.body(new MessageResponse("Ressource y apartient deja !"));
 		}
 		moduleRepository.save(module);
 		return ResponseEntity.ok(new MessageResponse("User successfully added to module!"));

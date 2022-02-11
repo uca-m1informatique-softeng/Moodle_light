@@ -36,11 +36,20 @@ public class SpringIntegration {
     CloseableHttpClient  httpClient =
             HttpClientBuilder.create().setDefaultRequestConfig(config).build();
 
-    void executeGet(String url) throws IOException {
+    boolean executeGet(String url, String jwt)  {
         HttpGet request = new HttpGet(url);
         request.addHeader("Accept", "application/json");
-        latestHttpResponse = httpClient.execute(request);
-        this.restTemplate.getForObject(url, String.class);
+        if (jwt != null) {
+            request.addHeader("Authorization", "Bearer " + jwt);
+        }
+        try{
+            latestHttpResponse = httpClient.execute(request);
+        }catch(Throwable t){
+            System.out.println(t.getLocalizedMessage());
+            return false;
+        }
+        System.out.println(latestHttpResponse);
+        return true;
     }
 
     Object executeGetReturnObject(String url, String jwt) throws IOException {
@@ -52,10 +61,8 @@ public class SpringIntegration {
 
         ResponseEntity<Object> response = this.restTemplate.exchange(url, HttpMethod.GET, request, Object.class);
         if(response.getStatusCode() == HttpStatus.OK) {
-            System.out.println(" OKKKK ");
             return response.getBody();
         } else {
-            System.out.println(" NOT OKKK");
             return null;
         }
     }

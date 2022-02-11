@@ -6,7 +6,7 @@ Feature: Course
     And a course named "Gestion"
 
   Scenario: Teacher create course
-    When "steve" create course "mycour"
+    When "steve" create course "NewCourse"
     Then CourseTest last request status is 200 or 500
     And course "Gestion" has been added
 
@@ -36,10 +36,10 @@ Feature: Course
 
   Scenario: Teacher gets the content of a course
     Then "steve" gets the content of the course "Gestion", then we get:
-      | chapter1 |
-      | chapter2 |
-      | chapter3 |
-      | chapter5 |
+      | "chapter1" |
+      | "chapter2" |
+      | "chapter3" |
+      | "chapter5" |
 
     Scenario: A teacher creates a course then deletes it
       When "steve" create course "Mathematics"
