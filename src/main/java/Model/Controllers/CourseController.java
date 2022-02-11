@@ -6,6 +6,7 @@ import Model.Repositories.RessourcesRepository;
 import Model.Repositories.UserRepository;
 import Model.User.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -88,14 +89,13 @@ public class CourseController {
     /**
      * Get the content of a course
      * @param coursename
-     * @return string "name | id" or
+     * @return List<String>
      */
     @GetMapping(value = "/{coursename}/content")
-    public List<String> getCourseContent(@PathVariable String coursename){
-        ArrayList<String> content = new ArrayList<>();
+    public List<String> getCourseTexts(@PathVariable String coursename){
         Optional<Ressource> courseRes = ressourcesRepository.findByName(coursename);
         if (!courseRes.isPresent()) {
-            return new ArrayList<>(); /// here is the only answer while there is no content is the course
+            return new ArrayList<>();
         }
         Cours cours= (Cours) courseRes.get();
         return cours.text;

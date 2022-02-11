@@ -15,5 +15,5 @@ Feature: signup/in User
 
   Scenario: Student good sign in
     When "dave" with email "dave@test.fr" and code "password" and is "ROLE_STUDENT" signup
-    Then "dave" and code "password" sign in
+    Then user "dave" with password "password" sign in
     Then 2 last request status is 200

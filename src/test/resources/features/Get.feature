@@ -6,5 +6,5 @@ Feature: Get
     And a course named "Gestion"
 
   Scenario: user check all modules that he subscribe to
-    When "steve" check his modules
+    When "steve" checks his modules
     Then return all modules names

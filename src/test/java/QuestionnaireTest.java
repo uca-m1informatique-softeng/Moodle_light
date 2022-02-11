@@ -29,9 +29,6 @@ public class QuestionnaireTest extends SpringIntegration {
     ModuleRepository moduleRepository;
 
     @Autowired
-    QuestionnaireRepository questionnaireRepository;
-
-    @Autowired
     QuestionRepository questionRepository;
 
     @Autowired
@@ -45,7 +42,7 @@ public class QuestionnaireTest extends SpringIntegration {
     @And("a questionnaire named {string} in the module {string} does not exist")
     public void uniqueQuestionnaire(String QuestionnaireName, String moduleName){
        Module module = moduleRepository.findByName(moduleName).get();
-       Questionnaire quest = questionnaireRepository.findByName(QuestionnaireName).get();
+       Questionnaire quest = (Questionnaire) ressourcesRepository.findByName(QuestionnaireName).get();
        if( module.ressources.contains(quest))
        {
            module.ressources.remove(quest);
@@ -60,7 +57,7 @@ public class QuestionnaireTest extends SpringIntegration {
     }
 
 
-    @When("{string} creer questionnaire {string}")
+    @When("{string} creates questionnaire {string}")
     public void creerQuestionnaire(String username, String questionnaireName) throws IOException {
         String token = authController.generateJwt(username, PASSWORD);
         executePost("http://localhost:8080/api/questionnaire/create/" + questionnaireName, token);
@@ -84,10 +81,10 @@ public class QuestionnaireTest extends SpringIntegration {
 
     @And("Questionnaire {string} has been added")
     public void questionnairExist(String courseName){
-        assertTrue(questionnaireRepository.findByName(courseName).isPresent());
+        assertTrue(ressourcesRepository.findByName(courseName).isPresent());
     }
 
-   @When("user {string} create {string} question with enonce {string} and with answer {string}")
+   @When("user {string} creates {string} question with content {string} and with answer {string}")
    public void userCreateTextQuestion(String user_a, String questionType, String enonce_a , String answer_a) throws UnsupportedEncodingException {
        CreateQuestionRequest textQuestionRequest = new CreateQuestionRequest();
        textQuestionRequest.setEnonce(enonce_a);
@@ -100,7 +97,7 @@ public class QuestionnaireTest extends SpringIntegration {
        System.out.println(latestHttpResponse.getStatusLine().getStatusCode());
 
    }
-   @Then("Question with enonce {string} exist")
+   @Then("Question with content {string} exist")
     public void questionExistByEnone(String enonce){
         assertTrue(questionRepository.findByEnonce(enonce).isPresent());
    }

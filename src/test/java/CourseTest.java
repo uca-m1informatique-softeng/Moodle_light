@@ -37,7 +37,7 @@ public class CourseTest extends SpringIntegration {
     @When("{string} create course {string}")
     public void creerCours(String username, String courseName) throws IOException {
         String token = authController.generateJwt(username, PASSWORD);
-        executePost("http://localhost:8080/api/course/create/" + courseName, token);
+        executePost("http://localhost:8080/api/course/" + courseName, token);
     }
 
     @And("{string} finds the course {string} is in {string}")
@@ -47,9 +47,13 @@ public class CourseTest extends SpringIntegration {
         String token = authController.generateJwt(username, PASSWORD);
         Set<Ressource> result = module.getRessources();
         result.contains(cours);
-        System.out.println(result);
-        ArrayList<String> res = (ArrayList<String> ) executeGetReturnObject("http://localhost:8080/api/modules/"+module.id+"/getRessources", token);
-        System.out.println(res);
+        System.out.println(" RESULT " + result);
+        executeGet("http://localhost:8080/api/modules/getressources/" + moduleName, token);
+        String response  = EntityUtils.toString(latestHttpResponse.getEntity(), "UTF-8");
+        System.out.println(" response " +response);
+
+        List<String> ressources = Arrays.asList(response.subSequence(1,response.length()-1).toString().split(","));
+
     }
 
     @When("{string} adds a course with name {string} in module {string}")
@@ -61,7 +65,7 @@ public class CourseTest extends SpringIntegration {
     @When("{string} deletes a course with name {string}")
     public void andACours(String username, String coursName) throws IOException {
         String jwt = authController.generateJwt(username, PASSWORD);
-        executePut("http://localhost:8080/api/cours/" + coursName, jwt);
+        executeDelete("http://localhost:8080/api/cours/" + coursName, jwt);
     }
 
     @When("{string} add to {string} a text {string}")
@@ -84,12 +88,12 @@ public class CourseTest extends SpringIntegration {
     @Then("{string} gets the content of the course {string}, then we get:")
     public void contentOfCours(String username, String coursGestion, List<String> content) throws IOException {
         String token = authController.generateJwt(username, PASSWORD);
-        executeGet("http://localhost:8080/api/course/" + coursGestion, token);
+        executeGet("http://localhost:8080/api/course/" + coursGestion+ "/content", token);
         String response  = EntityUtils.toString(latestHttpResponse.getEntity(), "UTF-8");
 
         List<String> listTexts = Arrays.asList(response.subSequence(1,response.length()-1).toString().split(","));
-        boolean result = true;
 
+        boolean result = true;
         System.out.println(listTexts);
         System.out.println(content);
         for (int i = 0; i < listTexts.size(); i++){
@@ -112,6 +116,11 @@ public class CourseTest extends SpringIntegration {
     }
     @Given("a user with login {string}")
     public void a_user_with_login(String string) {
+        String jwt = authController.generateJwt(string, PASSWORD);
+    }
+
+    @When("{string} checks his modules")
+    public void checksModules(String string) {
         String jwt = authController.generateJwt(string, PASSWORD);
     }
 

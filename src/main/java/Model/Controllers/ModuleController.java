@@ -103,6 +103,7 @@ public class ModuleController {
 	public ArrayList<String> getRessources(@PathVariable String modulename){
 		ArrayList<String> strings = new ArrayList<>();
 		Optional<Module> omodule = moduleRepository.findByName(modulename);
+
 		if (!omodule.isPresent()) {
 			strings.add("Error: No such module!");
 			return strings;

@@ -61,7 +61,7 @@ public class RegistrationTest extends SpringIntegration {
 
 
 
-    @When("{string} and code {string} signin")
+    @When("user {string} with password {string} sign in")
     public void aPersonTrySignin(String arg0,String arg1) throws IOException {
         LoginRequest loginRequest = new LoginRequest();
         loginRequest.setUsername(arg0);
@@ -71,7 +71,7 @@ public class RegistrationTest extends SpringIntegration {
         executePostObj("http://localhost:8080/api/auth/signin",s);
     }
 
-    @Then("{string} is registred like user")
+    @Then("{string} is registered like user")
     public void registered(String arg0) throws IOException {
         assertTrue(userRepository.existsByUsername(arg0));
     }

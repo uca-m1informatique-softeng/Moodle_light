@@ -15,6 +15,7 @@ import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.apache.http.client.methods.HttpPost;
 import org.springframework.http.*;
@@ -38,6 +39,7 @@ public class SpringIntegration {
 
     boolean executeGet(String url, String jwt)  {
         HttpGet request = new HttpGet(url);
+
         request.addHeader("Accept", "application/json");
         if (jwt != null) {
             request.addHeader("Authorization", "Bearer " + jwt);
@@ -45,10 +47,10 @@ public class SpringIntegration {
         try{
             latestHttpResponse = httpClient.execute(request);
         }catch(Throwable t){
+
             System.out.println(t.getLocalizedMessage());
             return false;
         }
-        System.out.println(latestHttpResponse);
         return true;
     }
 
