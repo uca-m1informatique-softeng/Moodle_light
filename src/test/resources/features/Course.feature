@@ -13,6 +13,7 @@ Feature: Course
   Scenario: Teacher adds the cours Gestion
     When "steve" adds a course with name "Gestion" in module "Gestion-de-projet"
     Then CourseTest last request status is 200 or 500
+    Then "steve" finds the course "Gestion" is in "Gestion-de-projet"
 
   Scenario Outline: Teacher adds 3 texts in the content of Gestion
     When "steve" adds a course with name "Gestion" in module "Gestion-de-projet"

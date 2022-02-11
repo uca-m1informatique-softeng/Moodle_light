@@ -36,6 +36,9 @@ public class CourseTest extends SpringIntegration {
     RessourcesRepository ressourcesRepository;
 
     @Autowired
+    ModuleRepository moduleRepository;
+
+    @Autowired
     AuthController authController;
 
     private static final String PASSWORD = "password";
@@ -53,22 +56,22 @@ public class CourseTest extends SpringIntegration {
         executePost("http://localhost:8080/api/course/create/" + courseName, token);
     }
 
-    /*
     @And("{string} finds the course {string} is in {string}")
     public void coursExist(String username, String courseName, String moduleName) throws IOException {
         Module module = moduleRepository.findByName(moduleName).get();
         Ressource cours = ressourcesRepository.findByName(courseName).get();
-
         String token = authController.generateJwt(username, PASSWORD);
-
-        String res = (String) executeGetReturnObject("http://localhost:8080/api/module/"+module.id+"/getRessources", token);
+        Set<Ressource> result = module.getRessources();
+        result.contains(cours);
+        System.out.println(result);
+        String res = (String) executeGetReturnObject("http://localhost:8080/api/modules/"+module.id+"/getRessources", token);
         System.out.println(res);
     }
-*/
+
     @When("{string} adds a course with name {string} in module {string}")
     public void andACours(String username, String coursName, String moduleName) throws IOException {
         String jwt = authController.generateJwt(username, PASSWORD);
-        executePut("http://localhost:8080/api/module/" + moduleName + "/ressource/" + coursName, jwt);
+        executePut("http://localhost:8080/api/modules/" + moduleName + "/ressource/" + coursName, jwt);
     }
 
     @When("{string} deletes a course with name {string}")
@@ -85,6 +88,7 @@ public class CourseTest extends SpringIntegration {
 
     @Then("CourseTest last request status is {int} or {int}")
     public void isRegisteredToModule(int statusOK, int statusServerError) {
+        System.out.println(latestHttpResponse.getStatusLine().getStatusCode());
         assertTrue(latestHttpResponse.getStatusLine().getStatusCode() == statusOK || latestHttpResponse.getStatusLine().getStatusCode() == statusServerError);
     }
 

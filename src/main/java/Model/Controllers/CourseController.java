@@ -115,8 +115,6 @@ public class CourseController {
         return cours.text;
     }
 
-
-
     /**
      * Read - Get all courses of  a student
      * @return - An Iterable object of courses full filled
@@ -133,8 +131,6 @@ public class CourseController {
        return coursesRepository.findAll();
 
    }
-
-
 
     /**
      * Read - Get a course  of  a student
@@ -163,11 +159,10 @@ public class CourseController {
                     .badRequest()
                     .body(new MessageResponse("Error: No such ressource!"));
         }
+
         Ressource ressource = oressource.get();
         ressourcesRepository.delete(ressource);
         return ResponseEntity.ok(new MessageResponse("User successfully delete cours!"));
     }
-
-
 
 }

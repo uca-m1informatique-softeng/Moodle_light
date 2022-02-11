@@ -49,8 +49,9 @@ public class ModuleController {
 	JwtUtils jwtUtils;
 
 
-	@PreAuthorize("hasRole('TEACHER')")
+
 	@GetMapping("/who")
+	@PreAuthorize("hasRole('TEACHER')")
 	public ArrayList<String> getPersonne(Principal principal) {
 		ArrayList<String> data = new ArrayList<>();
 		data.add("la personne connectée est " +principal.getName());
@@ -97,11 +98,12 @@ public class ModuleController {
 		return strings;
 	}
 
-	@PutMapping("/{name}/ressource/{ressoucename}")
+	@PutMapping("/{name}/ressource/{name2}")
 	@PreAuthorize("hasRole('TEACHER')")
-	public ResponseEntity<?> addRessource(Principal principal,@PathVariable String name, @PathVariable String ressoucename){
+	public ResponseEntity<?> addRessource(@PathVariable String name, @PathVariable String name2){
 		Optional<Module> omodule = moduleRepository.findByName(name);
-		Optional<Ressource> oressource = ressourcesRepository.findByName(ressoucename);
+		Optional<Ressource> oressource = ressourcesRepository.findByName(name2);
+		System.out.println(" PASSED ");
 		if (!omodule.isPresent()) {
 			return ResponseEntity
 					.badRequest()
