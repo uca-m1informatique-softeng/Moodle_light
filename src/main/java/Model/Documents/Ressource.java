@@ -18,7 +18,7 @@ public class Ressource {
     public Ressource(){}
 
     @ManyToOne
-    Module module;
+    public Module module;
 
     public Ressource(String name){
         this.name = name;

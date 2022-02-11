@@ -60,15 +60,6 @@ public class AuthController {
         return jwtUtils.generateJwtToken(authentication);
     }
 
-
-
-
-    @PostMapping("/a")
-    public ResponseEntity<?> authenticateUser(@RequestBody SignupRequest signupRequest){
-
-        return ResponseEntity.ok(new MessageResponse("finded!" + signupRequest.getUsername()));
-    }
-
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateuser( @RequestBody LoginRequest loginRequest) {
 

@@ -7,6 +7,8 @@ import Model.Payload.response.MessageResponse;
 import Model.Repositories.QuestionRepository;
 import Model.Repositories.ReponsesRepository;
 import Model.Repositories.RessourcesRepository;
+import Model.Repositories.UserRepository;
+import Model.User.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,9 +23,23 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+
+/**
+ *          Description commande
+ *
+ * GET /api/question/{username}/question/{idReponse}            :   return reponse
+ * GET /api/question/{username}/question/{idQuestion}           :   return question
+ *
+ * POST /api/question                                           :   creer question
+ * PUT  /api/question/{questionarename}/question/{questionid}   :   rajoute une question dans questionaire
+ * PUT  /api/question/answer/{id question}                      :   rajoute une reponse a une question
+ *
+ * DELETE /api/question/{id}                                    :   delete une question
+ *
+ */
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/module/question")
+@RequestMapping("/api/question")
 public class QuestionController {
     @Autowired
     RessourcesRepository ressourcesRepository;
@@ -34,20 +50,74 @@ public class QuestionController {
     @Autowired
     ReponsesRepository reponsesRepository ;
 
-    @PutMapping("/name/repondre/question/{quetionid}")
-    public ResponseEntity<?> addRessource(String reponse, @PathVariable String name, @PathVariable long questionid){
-        Optional<Question> question = questionRepository.findById(questionid);
-        return  ResponseEntity
-                .badRequest()
-                .body(new MessageResponse("Error: No such ressource!"));
+    @Autowired
+    UserRepository userRepository;
+
+
+    //////////////////////        GET     //////////////////////
+
+
+    /**
+     * Get question of questionaire
+     * @return ResponseEntity
+     * @param username
+     * @param idReponse
+     * @return ResponseEntity
+     */
+    @GetMapping("/{username}/question/{idReponse}")
+    public ResponseEntity<?> getAnswer(@PathVariable String username,@PathVariable final long idReponse) {
+        Optional<Reponse> oreponse = reponsesRepository.findById(idReponse);
+        Optional<User> ouser = userRepository.findByUsername(username);
+        if(oreponse.isEmpty()||ouser.isEmpty()){
+            return  ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: No such reponse or username!"));
+        }
+        Reponse reponse = oreponse.get();
+        User user = ouser.get();
+        if(!(reponse.username == user.getUsername())){
+            return  ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: it is not the reponse of user!"));
+        }
+        return new ResponseEntity<>(reponse, HttpStatus.OK);
     }
+
+    /**
+     * Get question of questionaire
+     * @return ResponseEntity
+     * @param username
+     * @param idQuestion
+     * @return ResponseEntity
+     */
+    @GetMapping("/{username}/question/{idQuestion}")
+    public ResponseEntity<?> getQuestion(@PathVariable String username,@PathVariable final long idQuestion){
+        Optional<Question> oquestion = questionRepository.findById(idQuestion);
+        Optional<User> ouser = userRepository.findByUsername(username);
+        if(oquestion.isEmpty()||ouser.isEmpty()){
+            return  ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: No such ressource or username!"));
+        }
+        Question question = oquestion.get();
+        User user = ouser.get();
+        if(!question.questionnaire.module.users.contains(user)){
+            return  ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: user is not in the module!"));
+        }
+        return new ResponseEntity<>(question, HttpStatus.OK);
+    }
+
+    //////////////////////        PUT POST    //////////////////////
+
 
     /**
      * Method for a teacher to create a question
      * @param createQuestionRequest_a
-     * @return
+     * @return ResponseEntity
      */
-    @PostMapping("/create")
+    @PostMapping("")
     @PreAuthorize("hasRole('TEACHER')")
     public ResponseEntity<?> createQuestion(@Valid @RequestBody CreateQuestionRequest createQuestionRequest_a){
         Question questionToAdd = null ;
@@ -74,10 +144,16 @@ public class QuestionController {
                 .body(new MessageResponse("Error: No such ressource!"));
     }
 
-    @PutMapping("/{id}/question/{ressourceid}")
+    /**
+     * rajoute une question a un questionaire
+     * @param questionarename
+     * @param questionid
+     * @return ResponseEntity
+     */
+    @PutMapping("/{questionarename}/question/{questionid}")
     @PreAuthorize("hasRole('TEACHER')")
-    public ResponseEntity<?> addRessource(Principal principal, @PathVariable long id, @PathVariable long questionid){
-        Optional<Ressource> oressource = ressourcesRepository.findById(id);
+    public ResponseEntity<?> addRessource(@PathVariable String questionarename, @PathVariable long questionid){
+        Optional<Ressource> oressource = ressourcesRepository.findById(questionarename);
         Optional<Question> oquestion = questionRepository.findById(questionid);
         if (!oressource.isPresent()) {
             return ResponseEntity
@@ -89,7 +165,6 @@ public class QuestionController {
                     .badRequest()
                     .body(new MessageResponse("Error: No such question!"));
         }
-
         Ressource ressource = oressource.get();
         Questionnaire questionnaire;
         if(ressource.getClass().equals(Questionnaire.class)){
@@ -112,105 +187,12 @@ public class QuestionController {
         return ResponseEntity.ok(new MessageResponse("User successfully added to module!"));
     }
 
-
-
-    @DeleteMapping("/{id}/delquestion/{ressourceid}")
-    @PreAuthorize("hasRole('TEACHER')")
-    public ResponseEntity<?> deleteQuestion(Principal principal, @PathVariable long id, @PathVariable long questionid){
-        Optional<Ressource> oressource = ressourcesRepository.findById(id);
-        Optional<Question> oquestion = questionRepository.findById(questionid);
-        if (!oressource.isPresent()) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: No such ressource!"));
-        }
-        if (!oquestion.isPresent()) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: No such question!"));
-        }
-
-        Ressource ressource = oressource.get();
-        Questionnaire questionnaire;
-        if(ressource.getClass().equals(Questionnaire.class)){
-            questionnaire = (Questionnaire)ressource;
-        }else{
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Ressource n'est pas un questionaire!"));
-        }
-        Question question = oquestion.get();
-        Set<Question> ressources = questionnaire.ListeQuestions;
-        if(ressources.contains(ressource)) {
-            ressources.remove(question);
-        }else{
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Non trouver question dans questionaire y apartient deja !"));
-        }
-        ressourcesRepository.save(ressource);
-        return ResponseEntity.ok(new MessageResponse("User successfully added to module!"));
-    }
-
-
-
-
-
-
     /**
-     * Read - Get a question  of  a student
-     * @return - An course object
-     *
-     *
-     * à ajouter:
-     * verif that the student have acces to the courses in this question
-     *
-     *
-     *
-     */
-    @GetMapping("/get/questions/{idQuestion}")
-    public Optional<Question> getQuestion(final Long idQuestion){
-
-        return questionRepository.findById(idQuestion);
-
-    }
-
-
-    /***
-     *
-     *Les étudiants peuvent saisir une réponse à une question
-     *
-     * @return
-     */
-
-    @PostMapping("/api/module/savereponse/{idQuestion}")
-    public Reponse saverep(@RequestBody Reponse reponse){
-        Reponse savedReponse = reponsesRepository.save(reponse);
-        return savedReponse;
-    }
-
-
-    /***
-     *
-     *Les étudiants peuvent saisir une réponse à une question
-     *
-     * @return
-     */
-
-    @PostMapping("/api/{idStudent}/module/questions/{idQuestion}")
-    public Reponse answerQuestion(@RequestBody Reponse reponse){
-        Reponse savedReponse = reponsesRepository.save(reponse);
-        return savedReponse;
-
-    }
-
-    /**
-     *
-     * @return
-     *
      * Les étudiants peuvent soummetre une réponse à une question
+     * @param reponse
+     * @param idquestion
+     * @return
      */
-
     @PutMapping("/answer/{id question}")
     public ResponseEntity<?> updateAnswer(@RequestBody Reponse reponse,@PathVariable final long idquestion) {
         Optional<Question> oquestion = questionRepository.findById(idquestion);
@@ -230,29 +212,19 @@ public class QuestionController {
                     .badRequest()
                     .body(new MessageResponse("Error: Given reponse is not same type of questioon  "));
         }
-
         question.reponses.add(reponse);
         return ResponseEntity.ok(new MessageResponse("Question successfully submited "));
     }
 
+
+    //////////////////////        DELETE    //////////////////////
+
     /**
-     * Get for all modules Id
+     * Delete une question
+     * @param id
      * @return
      */
-    @GetMapping(value="/a", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('TEACHER')")
-    public ResponseEntity<?> listQuestion(){
-        List<Question> questions = questionRepository.findAll();
-        if(questions.isEmpty()){
-            return  ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: No such ressource!"));
-        }
-        else{
-            return new ResponseEntity<>(questions, HttpStatus.OK);
-        }
-    }
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('TEACHER')")
     public ResponseEntity<?> deleteQuestion(@PathVariable long id) {
         Optional<Question> questToDel = questionRepository.findById(id);
@@ -260,28 +232,14 @@ public class QuestionController {
         System.out.println(questToDel.get().typeQuestion);
         System.out.println("==============DEBUG============================");
        if(questToDel.isEmpty()) {
-
            return  ResponseEntity
                    .badRequest()
                    .body(new MessageResponse("Error: No such ressource!"));
 
        }
-       else{
-           questionRepository.delete(questToDel.get());
+       questionRepository.delete(questToDel.get());
+       return new ResponseEntity<>("The question id :"+ id+ " Has been succesfully deleted", HttpStatus.OK);
 
-           return new ResponseEntity<>("The question id :"+ id+ " Has been succesfully deleted", HttpStatus.OK);
-       }
     }
-
-
-
-
-
-
-
-
-
-
-
 
 }

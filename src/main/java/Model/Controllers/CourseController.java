@@ -1,10 +1,9 @@
 package Model.Controllers;
 import Model.Documents.Cours;
-import Model.Documents.Module;
 import Model.Documents.Ressource;
 import Model.Payload.response.MessageResponse;
-import Model.Repositories.CoursesRepository;
 import Model.Repositories.RessourcesRepository;
+import Model.Repositories.UserRepository;
 import Model.User.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -16,7 +15,19 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
+
+
+/**
+ *              Description commande :
+ *
+ *  GET  /api/course/{namecours}/StudentCours/{namestudent}      :   Get the textes of a cours if user is in module of cours
+ *
+ *  POST /api/course/{courname}                                 :   Creer cour in ressourceRepository
+ *  PUT  /api/course/{courname}/content/{text}                  :   Rajoute du texte dans cour
+ *
+ *  DELETE  /api/course/{courname}                              :   Delete un cour
+ *  DELETE  /api/course/{courname}/text/{text}                  :   Delete du text d'un cour
+ */
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -27,13 +38,82 @@ public class CourseController {
     RessourcesRepository ressourcesRepository;
 
     @Autowired
-    CoursesRepository coursesRepository;
+    UserRepository userRepository;
 
-    @PutMapping("/{name}/content/{text}")
+
+    //////////////////////      GET     //////////////////////
+
+    /**
+     * Get the name id of cour
+     * @param courname
+     * @return string "name | id" or
+     */
+    @GetMapping(value = "/{courname}",produces = MediaType.TEXT_PLAIN_VALUE)
+    public String getCourseContent(@PathVariable String courname){
+
+        Optional<Ressource> ocour = ressourcesRepository.findByName(courname);
+        if (!ocour.isPresent()||!ocour.get().getClass().equals(Cours.class)) {
+            return null;
+        }
+        Cours cours= (Cours) ocour.get();
+        return cours.name + " | " + cours.id;
+    }
+
+
+    /**
+     * Read - Get all textes of  a cours of a student
+     * @param namecours
+     * @param namestudent
+     * @return - An Iterable object of courses full filled
+     *
+     *
+     * Les utilisateurs peuvent connaitre la liste des textes sur le cours ou ils sont inscrits
+     *
+     */
+    @GetMapping("{namecours}/StudentCours/{namestudent}")
+    public List<String> getCourses(@PathVariable String namecours,@PathVariable String namestudent){
+        Optional<Ressource> ocours = ressourcesRepository.findByName(namecours);
+        Optional<User> ouser = userRepository.findByUsername(namestudent);
+        // not a coursfind userfind or cour is not a cour
+        if(!ocours.isPresent()||!ouser.isPresent()||!ocours.get().getClass().equals(Cours.class)){
+            return null;
+        }
+        Cours cours = (Cours) ocours.get();
+        User user = ouser.get();
+        if(!cours.module.users.contains(user)){
+            return null;
+        }
+        return cours.text;
+    }
+
+    //////////////////////      Post Put     //////////////////////
+
+
+    /**
+     * Create a cours in ressourceRepository
+     * @param courname
+     * @return http reponse info
+     */
+    @PostMapping("/{courname}")
     @PreAuthorize("hasRole('TEACHER')")
-    public ResponseEntity<?> modifierCours(Principal principal, @PathVariable String name, @PathVariable String text){
+    public ResponseEntity<?> creerCours(@PathVariable String courname){
+        Ressource cours = ressourcesRepository.findByName(courname).
+                orElse(new Cours(courname));
+        ressourcesRepository.save(cours);
+        return ResponseEntity.ok(new MessageResponse("User successfully added to module!"));
+    }
+
+    /**
+     * rajoute text a cour
+     * @param courname
+     * @param text
+     * @return http reponse info
+     */
+    @PutMapping("/{courname}/content/{text}")
+    @PreAuthorize("hasRole('TEACHER')")
+    public ResponseEntity<?> modifierCours(@PathVariable String courname, @PathVariable String text){
         // Vérifier si ce resource existe
-        Optional<Ressource> oressource = ressourcesRepository.findByName(name);
+        Optional<Ressource> oressource = ressourcesRepository.findByName(courname);
         if (!oressource.isPresent()) {
             return ResponseEntity
                     .badRequest()
@@ -62,20 +142,41 @@ public class CourseController {
         return ResponseEntity.ok(new MessageResponse("User successfully added to module!"));
     }
 
-    @PostMapping("create/{name}")
-    @PreAuthorize("hasRole('TEACHER')")
-    public ResponseEntity<?> creerCours(Principal principal,@PathVariable String name){
-        Ressource cours = ressourcesRepository.findByName(name).
-                orElse(new Cours(name));
 
-        ressourcesRepository.save(cours);
-        return ResponseEntity.ok(new MessageResponse("User successfully added to module!"));
+
+
+
+    //////////////////////      Delete     //////////////////////
+
+    /**
+     * Delete a cour
+     * @param courname
+     * @return ResponseEntity
+     */
+    @DeleteMapping("/{courname}")
+    @PreAuthorize("hasRole('TEACHER')")
+    public ResponseEntity<?> delete(@PathVariable String courname){
+        Optional<Ressource> oressource = ressourcesRepository.findByName(courname);
+        if(!oressource.isPresent()){
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: No such ressource!"));
+        }
+
+        Ressource ressource = oressource.get();
+        ressourcesRepository.delete(ressource);
+        return ResponseEntity.ok(new MessageResponse("User successfully delete cours!"));
     }
 
-    @DeleteMapping("/{id}/text/{text}")
+    /**
+     * Delete a text in cour
+     * @param courname
+     * @return ResponseEntity
+     */
+    @DeleteMapping("/{courname}/text/{text}")
     @PreAuthorize("hasRole('TEACHER')")
-    public ResponseEntity<?> deletRessource(Principal principal, @PathVariable long id, @PathVariable String text){
-        Optional<Ressource> oressource = ressourcesRepository.findById(id);
+    public ResponseEntity<?> deletRessource(@PathVariable String courname, @PathVariable String text){
+        Optional<Ressource> oressource = ressourcesRepository.findByName(courname);
         if (!oressource.isPresent()) {
             return ResponseEntity
                     .badRequest()
@@ -97,70 +198,6 @@ public class CourseController {
             return ResponseEntity
                     .ok(new MessageResponse("A eter dejat creer!"));
         }
-        ressourcesRepository.save(ressource);
         return ResponseEntity.ok(new MessageResponse("User successfully added to cours!"));
     }
-
-    @GetMapping(value = "/{name}",produces = MediaType.TEXT_PLAIN_VALUE)
-    public String getCourseContent(@PathVariable String name){
-        ArrayList<String> content = new ArrayList<>();
-        Optional<Ressource> courseRes = ressourcesRepository.findByName(name);
-        if (!courseRes.isPresent()) {
-            return "Hello 2"; /// here is the only answer while there is no content is the course
-        }
-        Cours cours= (Cours) courseRes.get();
-        //return cours.text;
-        return "HELLO";
-    }
-
-    /**
-     * Read - Get all courses of  a student
-     * @return - An Iterable object of courses full filled
-     *
-     *
-     * Les utilisateurs peuvent connaitre la liste des cours sur lesquels ils sont inscrits
-     * à ajouter:
-     * verif that the student have acces to the courses in this module
-     *
-     */
-   @GetMapping("/api/{idStudent}/module/courses")
-    public List<Cours> getCourses(){
-
-       return coursesRepository.findAll();
-
-   }
-
-    /**
-     * Read - Get a course  of  a student
-     * @return - An course object
-     *
-     * Les utilisateurs peuvent connaitre la liste des cours sur lesquels ils sont inscrits
-     * à ajouter:
-     * verif that the student have acces to the courses in this module
-     *
-     *
-     *
-     */
-    @GetMapping("/api/{idStudent}/module/courses/{idCourse}")
-    public Optional<Cours> getCourse(final Long idCourse){
-
-        return coursesRepository.findById(idCourse);
-
-    }
-
-    @DeleteMapping("delete/{name}")
-    @PreAuthorize("hasRole('TEACHER')")
-    public ResponseEntity<?> delete(@PathVariable String name){
-        Optional<Ressource> oressource = ressourcesRepository.findByName(name);
-        if(!oressource.isPresent()){
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: No such ressource!"));
-        }
-
-        Ressource ressource = oressource.get();
-        ressourcesRepository.delete(ressource);
-        return ResponseEntity.ok(new MessageResponse("User successfully delete cours!"));
-    }
-
 }
