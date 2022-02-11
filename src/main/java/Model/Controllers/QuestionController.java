@@ -27,7 +27,7 @@ import java.util.Set;
 /**
  *          Description commande
  *
- * GET /api/question/{username}/question/{idReponse}            :   return reponse
+ * GET /api/question/{username}/reponse/{idReponse}            :   return reponse
  * GET /api/question/{username}/question/{idQuestion}           :   return question
  *
  * POST /api/question                                           :   creer question
@@ -58,13 +58,13 @@ public class QuestionController {
 
 
     /**
-     * Get question of questionaire
+     * Get reponse of user
      * @return ResponseEntity
      * @param username
      * @param idReponse
      * @return ResponseEntity
      */
-    @GetMapping("/{username}/question/{idReponse}")
+    @GetMapping("/{username}/reponse/{idReponse}")
     public ResponseEntity<?> getAnswer(@PathVariable String username,@PathVariable final long idReponse) {
         Optional<Reponse> oreponse = reponsesRepository.findById(idReponse);
         Optional<User> ouser = userRepository.findByUsername(username);
