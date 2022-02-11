@@ -28,7 +28,7 @@ public class DeleteTest extends SpringIntegration{
     private static final String PASSWORD = "password";
 
 
-    @Given("{string} not Existe")
+    @Given("{string} not exist")
     public void  notExistePerson(String arg0) throws IOException {
         Optional<User> ouser = userRepository.findByUsername(arg0);
         if(ouser.isPresent()){
@@ -44,19 +44,19 @@ public class DeleteTest extends SpringIntegration{
         executeDelete( "http://localhost:8080/api/auth/delete/"+user.getId(), jwt);
     }
 
-    @When("{string} delete cours {string}")
+    @When("{string} delete course {string}")
     public void deleteCour(String arg0, String arg1) throws  IOException {
         String jwt = authController.generateJwt(arg0, PASSWORD);
         executeDelete( "http://localhost:8080/api/course/delete/"+arg1, jwt);
     }
 
-    @When("{string} delete questionaire {string}")
+    @When("{string} delete Questionnaire {string}")
     public void deleteQuestionaire(String arg0, String arg1) throws  IOException {
         String jwt = authController.generateJwt(arg0, PASSWORD);
         executeDelete( "http://localhost:8080/api/questionnaire/delete/"+arg1, jwt);
     }
 
-    @When("{string} remouve cours {string} de module {string}")
+    @When("{string} remove course {string} de module {string}")
     public void remouveCours(String arg0, String arg1, String arg2) throws  IOException {
         String jwt = authController.generateJwt(arg0, PASSWORD);
         executeDelete("http://localhost:8080/api/modules/"+ arg2 + "/deliteressource/" + arg1,jwt);
