@@ -67,9 +67,18 @@ public class QuestionnaireTest extends SpringIntegration {
     }
 
 
-    @Then("QuestionnaireTest last request status is {int}")
-    public void isRegisteredToModule(int status) {
-        assertEquals(status, latestHttpResponse.getStatusLine().getStatusCode());
+    @Then("QuestionnaireTest last request status is {int} or {int}")
+    public void isRegisteredToModule(int status, int status2) {
+        boolean testValid = false ;
+        if(
+            latestHttpResponse.getStatusLine().getStatusCode() == status ||
+            latestHttpResponse.getStatusLine().getStatusCode() == status2
+        ){
+            assertTrue(true);
+        }
+        else {
+            assertTrue(false);
+        }
     }
 
 
