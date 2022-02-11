@@ -1,32 +1,15 @@
 import Model.Controllers.AuthController;
 import Model.Documents.Cours;
 import Model.Documents.Module;
-import Model.Documents.Question;
 import Model.Documents.Ressource;
-import Model.Payload.request.LoginRequest;
-import Model.Payload.request.SignupRequest;
 import Model.Repositories.ModuleRepository;
 import Model.Repositories.RessourcesRepository;
-import Model.Repositories.RoleRepository;
-import Model.Repositories.UserRepository;
-import Model.User.ERole;
-import Model.User.Role;
-import Model.User.User;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import static org.junit.jupiter.api.Assertions.*;
-
-import io.cucumber.messages.internal.com.google.gson.Gson;
-import org.apache.http.client.methods.HttpGet;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
-
-import javax.swing.*;
 import java.io.IOException;
 import java.util.*;
 
@@ -64,7 +47,7 @@ public class CourseTest extends SpringIntegration {
         Set<Ressource> result = module.getRessources();
         result.contains(cours);
         System.out.println(result);
-        String res = (String) executeGetReturnObject("http://localhost:8080/api/modules/"+module.id+"/getRessources", token);
+        ArrayList<String> res = (ArrayList<String> ) executeGetReturnObject("http://localhost:8080/api/modules/"+module.id+"/getRessources", token);
         System.out.println(res);
     }
 
@@ -130,6 +113,5 @@ public class CourseTest extends SpringIntegration {
 
     @Then("return all modules names")
     public void returnAllModulesNames() {
-
     }
 }

@@ -4,6 +4,7 @@ package Model.Documents;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.Objects;
 
 @Entity
 @Table(	name = "Reponse")
@@ -34,5 +35,16 @@ public class Reponse {
         this.id = id;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Reponse rep = (Reponse) o;
+        return id.equals(rep.id);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }
