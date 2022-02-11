@@ -60,7 +60,7 @@ public class ModuleController {
 	}
 
 
-	@GetMapping("/{idUser}")
+	@GetMapping("/get/{idUser}")
 	public ArrayList<String> getmodules(@PathVariable Long idUser){
 		ArrayList<String> userModules = new ArrayList<>();
 		Optional<User> ouser = userRepository.findById(idUser);
@@ -100,10 +100,9 @@ public class ModuleController {
 
 	@PutMapping("/{name}/ressource/{name2}")
 	@PreAuthorize("hasRole('TEACHER')")
-	public ResponseEntity<?> addRessource(@PathVariable String name, @PathVariable String name2){
+	public ResponseEntity<?> addRessource(Principal principal,@PathVariable String name, @PathVariable String name2){
 		Optional<Module> omodule = moduleRepository.findByName(name);
 		Optional<Ressource> oressource = ressourcesRepository.findByName(name2);
-		System.out.println(" PASSED ");
 		if (!omodule.isPresent()) {
 			return ResponseEntity
 					.badRequest()
@@ -129,11 +128,12 @@ public class ModuleController {
 		return ResponseEntity.ok(new MessageResponse("User successfully added to module!"));
 	}
 
-	@DeleteMapping("/{name}/ressource/{ressoucename}")
+	@DeleteMapping("/{name}/deliteressource/{name2}")
 	@PreAuthorize("hasRole('TEACHER')")
-	public ResponseEntity<?> deleteRessource(Principal principal,@PathVariable String name, @PathVariable String ressourcename){
+	public ResponseEntity<?> deleteRessource(@PathVariable String name, @PathVariable String name2){
+		System.out.println("delete");
 		Optional<Module> omodule = moduleRepository.findByName(name);
-		Optional<Ressource> oressource = ressourcesRepository.findByName(ressourcename);
+		Optional<Ressource> oressource = ressourcesRepository.findByName(name2);
 		if (!omodule.isPresent()) {
 			return ResponseEntity
 					.badRequest()
@@ -148,7 +148,9 @@ public class ModuleController {
 		Module module = omodule.get();
 		Ressource ressource = oressource.get();
 		Set<Ressource> ressources = module.getRessources();
+
 		if(ressources.contains(ressource)) {
+			System.out.println("delete3");
 			ressources.remove(ressource);
 		}else{
 			return ResponseEntity
@@ -156,6 +158,7 @@ public class ModuleController {
 					.body(new MessageResponse("Error: Ressource n'apartient pas a module!"));
 		}
 		moduleRepository.save(module);
+		System.out.println("delete4");
 		return ResponseEntity.ok(new MessageResponse("User successfully added to module!"));
 	}
 
