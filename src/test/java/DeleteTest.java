@@ -59,7 +59,7 @@ public class DeleteTest extends SpringIntegration{
     @When("{string} remouve cours {string} de module {string}")
     public void remouveCours(String arg0, String arg1,String arg2) throws  IOException {
         String jwt = authController.generateJwt(arg0, PASSWORD);
-        executeDelete("http://localhost:8080/api/modules/"+ arg2 + "/ressource/" + arg1,jwt);
+        executeDelete("http://localhost:8080/api/modules/"+ arg2 + "/deliteressource/" + arg1,jwt);
     }
 
     @Then("{string} is not a student")
