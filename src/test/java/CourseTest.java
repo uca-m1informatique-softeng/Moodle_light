@@ -122,7 +122,6 @@ public class CourseTest extends SpringIntegration {
     @Given("a user with login {string}")
     public void a_user_with_login(String string) {
         String jwt = authController.generateJwt(string, PASSWORD);
-        throw new io.cucumber.java.PendingException();
     }
 
     @Then("return all modules names")

@@ -8,12 +8,16 @@ import Model.Repositories.QuestionRepository;
 import Model.Repositories.ReponsesRepository;
 import Model.Repositories.RessourcesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -231,15 +235,44 @@ public class QuestionController {
         return ResponseEntity.ok(new MessageResponse("Question successfully submited "));
     }
 
-
-    @PutMapping("/a")
+    /**
+     * Get for all modules Id
+     * @return
+     */
+    @GetMapping(value="/a", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('TEACHER')")
-    public ResponseEntity<?> listQuestion(String reponse, @PathVariable String name, @PathVariable long questionid){
-        Optional<Question> question = questionRepository.findById(questionid);
-        return  ResponseEntity
-                .badRequest()
-                .body(new MessageResponse("Error: No such ressource!"));
+    public ResponseEntity<?> listQuestion(){
+        List<Question> questions = questionRepository.findAll();
+        if(questions.isEmpty()){
+            return  ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: No such ressource!"));
+        }
+        else{
+            return new ResponseEntity<>(questions, HttpStatus.OK);
+        }
     }
+    @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasRole('TEACHER')")
+    public ResponseEntity<?> deleteQuestion(@PathVariable long id) {
+        Optional<Question> questToDel = questionRepository.findById(id);
+        System.out.println("==========================================");
+        System.out.println(questToDel.get().typeQuestion);
+        System.out.println("==============DEBUG============================");
+       if(questToDel.isEmpty()) {
+
+           return  ResponseEntity
+                   .badRequest()
+                   .body(new MessageResponse("Error: No such ressource!"));
+
+       }
+       else{
+           questionRepository.delete(questToDel.get());
+
+           return new ResponseEntity<>("The question id :"+ id+ " Has been succesfully deleted", HttpStatus.OK);
+       }
+    }
+
 
 
 
