@@ -56,10 +56,8 @@ public class CourseController {
             textes.add(text);
         }else{
             return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Ressource y apartient deja !"));
+                    .ok(new MessageResponse("A eter dejat creer!"));
         }
-
         ressourcesRepository.save(ressource);
         return ResponseEntity.ok(new MessageResponse("User successfully added to module!"));
     }
