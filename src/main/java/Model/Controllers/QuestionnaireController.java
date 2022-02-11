@@ -97,4 +97,19 @@ public class QuestionnaireController {
         ressourcesRepository.delete(ressource);
         return ResponseEntity.ok(new MessageResponse("User successfully delete questionnaire!"));
     }
+
+    /**
+     * Add question to questionnaire
+     * @param principal
+     * @param name name of questionnaire to add
+     * @param idQuestion id of question to add
+     * @return
+     */
+    @DeleteMapping("/add/{name}/{id}")
+    @PreAuthorize("hasRole('TEACHER')")
+    public ResponseEntity<?> addQuestion(Principal principal,@PathVariable String name, @PathVariable Long idQuestion) {
+
+
+        return ResponseEntity.ok(new MessageResponse("Question id :"+idQuestion+" successfully added to  questionnaire:"+name));
+    }
 }

@@ -7,6 +7,7 @@ import Model.Repositories.CoursesRepository;
 import Model.Repositories.RessourcesRepository;
 import Model.User.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -103,16 +104,16 @@ public class CourseController {
         return ResponseEntity.ok(new MessageResponse("User successfully added to cours!"));
     }
 
-    @GetMapping("/{name}")
-    public List<String> getCourseContent(@PathVariable String name){
+    @GetMapping(value = "/{name}",produces = MediaType.TEXT_PLAIN_VALUE)
+    public String getCourseContent(@PathVariable String name){
         ArrayList<String> content = new ArrayList<>();
         Optional<Ressource> courseRes = ressourcesRepository.findByName(name);
         if (!courseRes.isPresent()) {
-            return null;
+            return "Hello 2"; /// here is the only answer while there is no content is the course
         }
         Cours cours= (Cours) courseRes.get();
-
-        return cours.text;
+        //return cours.text;
+        return "HELLO";
     }
 
 

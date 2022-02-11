@@ -119,4 +119,13 @@ public class CourseTest extends SpringIntegration {
     public void coursDoesNotExist(String courseName) {
         assertFalse(ressourcesRepository.findByName(courseName).isPresent());
     }
+    @Given("a user with login {string}")
+    public void a_user_with_login(String string) {
+        String jwt = authController.generateJwt(string, PASSWORD);
+    }
+
+    @Then("return all modules names")
+    public void returnAllModulesNames() {
+
+    }
 }
