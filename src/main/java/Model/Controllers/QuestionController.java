@@ -120,28 +120,29 @@ public class QuestionController {
     @PostMapping("")
     @PreAuthorize("hasRole('TEACHER')")
     public ResponseEntity<?> createQuestion(@Valid @RequestBody CreateQuestionRequest createQuestionRequest_a){
-        Question questionToAdd = null ;
-
-        Optional<Question> oquestion = questionRepository.findByEnonce(createQuestionRequest_a.getEnonce());
-        if (oquestion.isPresent()) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Question Already exist"));
+        System.out.println("je passe dans createQuestion");
+        Question questionToAdd;
+        if (questionRepository.existsByEnonce(createQuestionRequest_a.listeEnonces_)) {
+            return ResponseEntity.ok(new MessageResponse("La question existe deja"));
         }
         switch (createQuestionRequest_a.getQuestionType()){
             case TEXT:
-                questionToAdd= new Question(createQuestionRequest_a.getEnonce(),createQuestionRequest_a.getReponse());
+                questionToAdd = new Question(createQuestionRequest_a.getEnonce(),createQuestionRequest_a.getReponse());
                 break;
             default:
+                //rajouter plus tard program python string
+                questionToAdd = null;
         }
         if (questionToAdd != null ) {
+            System.out.println("je passe dans save");
             questionRepository.save(questionToAdd);
             return ResponseEntity.ok(new MessageResponse("Question successfully "));
         }
-        else
-            return  ResponseEntity
-                .badRequest()
-                .body(new MessageResponse("Error: No such ressource!"));
+        else {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: No such ressource!"));
+        }
     }
 
     /**

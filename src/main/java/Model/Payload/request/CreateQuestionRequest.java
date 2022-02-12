@@ -3,6 +3,8 @@ package Model.Payload.request;
 import Model.Documents.EQuestion;
 import org.hibernate.validator.constraints.Range;
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
@@ -11,11 +13,11 @@ public class CreateQuestionRequest {
     @Size(min = 3, max = 20)
     private String enonce;
 
-    @NotBlank
+    @Enumerated()
     EQuestion questionType;
 
     @Size(min = 3, max = 20)
-    private String reponse;
+    private String reponse = "";
 
     @Size(max = 120)
     public  String listeEnonces_="";

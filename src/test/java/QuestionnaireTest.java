@@ -2,6 +2,7 @@ import Model.Controllers.AuthController;
 import Model.Documents.EQuestion;
 import Model.Documents.Module;
 import Model.Documents.Questionnaire;
+import Model.Payload.request.AddRessourceRequest;
 import Model.Payload.request.CreateQuestionRequest;
 import Model.Repositories.*;
 import io.cucumber.java.en.And;
@@ -15,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
+import static Model.Documents.EQuestion.TEXT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -61,7 +63,10 @@ public class QuestionnaireTest extends SpringIntegration {
     @When("{string} creates questionnaire {string}")
     public void creerQuestionnaire(String username, String questionnaireName) throws IOException {
         String token = authController.generateJwt(username, PASSWORD);
-        executePost("http://localhost:8080/api/questionnaire/create/" + questionnaireName, token,null);
+        AddRessourceRequest ressourceRequest = new AddRessourceRequest(questionnaireName);
+        Gson g = new Gson();
+        String obj = g.toJson(ressourceRequest);
+        executePost("http://localhost:8080/api/questionnaire" , token,obj);
     }
 
 
@@ -90,11 +95,11 @@ public class QuestionnaireTest extends SpringIntegration {
        CreateQuestionRequest textQuestionRequest = new CreateQuestionRequest();
        textQuestionRequest.setEnonce(enonce_a);
        textQuestionRequest.setReponse(answer_a);
-       textQuestionRequest.setQuestionType(EQuestion.TEXT);
+       textQuestionRequest.setQuestionType(TEXT);
        Gson g = new Gson();
        String s = g.toJson(textQuestionRequest);
        String jwt = authController.generateJwt(user_a, PASSWORD);
-       executePost("http://localhost:8080/api/module/question/create",jwt,s);
+       executePost("http://localhost:8080/api/question",jwt,s);
        System.out.println(latestHttpResponse.getStatusLine().getStatusCode());
 
    }

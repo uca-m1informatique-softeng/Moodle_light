@@ -12,5 +12,6 @@ public interface QuestionRepository  extends JpaRepository<Question, Long> {
 
     Optional<Question> findById(Long name);
 
-    Optional<Question> findByEnonce(String enonce_);
+    Optional<Question> findByEnonce(String enonce);
+    Boolean existsByEnonce(String enonce);
 }

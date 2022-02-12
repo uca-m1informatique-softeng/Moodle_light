@@ -1,5 +1,6 @@
 package Model.Documents;
 
+import org.hibernate.type.EnumType;
 import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
@@ -8,6 +9,8 @@ import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+
+import static Model.Documents.EQuestion.TEXT;
 
 /**
  * @Brief Classe represente une question
@@ -28,7 +31,7 @@ public class Question {
     @ManyToOne
     public Questionnaire questionnaire;
 
-    @NotBlank
+    @Enumerated()
     public EQuestion typeQuestion;
 /*    @Range(min=1, max=20)
     public  int [] reponsesMultiples={};*/
@@ -98,7 +101,7 @@ public class Question {
      * @param reponse_a
      */
     public Question(String enonce_a, String reponse_a){
-        this.typeQuestion=EQuestion.TEXT;
+        this.typeQuestion=TEXT;
         this.enonce =enonce_a;
         this.reponseText=reponse_a;
     }
@@ -113,6 +116,6 @@ public class Question {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(id,enonce);
     }
 }
