@@ -37,7 +37,7 @@ public class CourseTest extends SpringIntegration {
     @When("{string} create course {string}")
     public void creerCours(String username, String courseName) throws IOException {
         String token = authController.generateJwt(username, PASSWORD);
-        executePost("http://localhost:8080/api/course/" + courseName, token);
+        executePost("http://localhost:8080/api/course/" + courseName, token,null);
     }
 
     @And("{string} finds the course {string} is in {string}")
@@ -59,7 +59,7 @@ public class CourseTest extends SpringIntegration {
     @When("{string} adds a course with name {string} in module {string}")
     public void andACours(String username, String coursName, String moduleName) throws IOException {
         String jwt = authController.generateJwt(username, PASSWORD);
-        executePut("http://localhost:8080/api/modules/" + moduleName + "/ressource/" + coursName, jwt);
+        executePut("http://localhost:8080/api/modules/" + moduleName + "/ressource/" + coursName, jwt,null);
     }
 
     @When("{string} deletes a course with name {string}")
@@ -71,7 +71,7 @@ public class CourseTest extends SpringIntegration {
     @When("{string} add to {string} a text {string}")
     public void addsText(String username, String courseName, String text) throws IOException {
         String jwt = authController.generateJwt(username, PASSWORD);
-        executePut("http://localhost:8080/api/course/" + courseName + "/content/" + text, jwt);
+        executePut("http://localhost:8080/api/course/" + courseName + "/content/" + text, jwt,null);
     }
 
     @Then("CourseTest last request status is {int} or {int}")

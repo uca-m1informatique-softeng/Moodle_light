@@ -61,7 +61,7 @@ public class QuestionnaireTest extends SpringIntegration {
     @When("{string} creates questionnaire {string}")
     public void creerQuestionnaire(String username, String questionnaireName) throws IOException {
         String token = authController.generateJwt(username, PASSWORD);
-        executePost("http://localhost:8080/api/questionnaire/create/" + questionnaireName, token);
+        executePost("http://localhost:8080/api/questionnaire/create/" + questionnaireName, token,null);
     }
 
 
