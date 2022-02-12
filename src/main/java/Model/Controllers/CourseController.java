@@ -24,6 +24,7 @@ import java.util.Optional;
  *              Description commande :
  *
  *  GET  /api/course/{namecours}/StudentCours/{namestudent}     :   Get the textes of a cours if user is in module of cours
+ *  GET   /api/course/{coursename}                              :   Get cour text
  *
  *  POST /api/course                                            :   Creer cour in ressourceRepository
  *  PUT  /api/course/{courname}                                 :   Rajoute du texte dans cour
@@ -45,23 +46,6 @@ public class CourseController {
 
 
     //////////////////////      GET     //////////////////////
-
-    /**
-     * Get the name id of cour
-     * @param courname
-     * @return string "name | id" or
-     */
-    @GetMapping(value = "/{courname}",produces = MediaType.TEXT_PLAIN_VALUE)
-    public String getCourseContent(@PathVariable String courname){
-
-        Optional<Ressource> ocour = ressourcesRepository.findByName(courname);
-        if (!ocour.isPresent()||!ocour.get().getClass().equals(Cours.class)) {
-            return null;
-        }
-        Cours cours= (Cours) ocour.get();
-        return cours.name + " | " + cours.id;
-    }
-
 
     /**
      * Read - Get all textes of  a cours of a student
@@ -127,7 +111,7 @@ public class CourseController {
      * @param addTextRequest
      * @return http reponse info
      */
-    @PutMapping("/{courname}/content")
+    @PutMapping("/{courname}")
     @PreAuthorize("hasRole('TEACHER')")
     public ResponseEntity<?> modifierCours(@Valid @RequestBody AddTextRequest addTextRequest, @PathVariable String courname){
         // Vérifier si ce resource existe

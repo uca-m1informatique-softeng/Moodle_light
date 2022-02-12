@@ -8,22 +8,18 @@ public class AddRessourceRequest {
     @NotBlank
     private String name;
 
-    @NotBlank
-    private Long moduleid;
-
     public String getName() {
         return name;
-    }
-
-    public Long getModuleid() {
-        return moduleid;
     }
 
     public void setName(String name) {
         this.name = name;
     }
+    public AddRessourceRequest(){
+        this.name = "defaultuser";
+    }
 
-    public void setModuleid(Long moduleid) {
-        this.moduleid = moduleid;
+    public AddRessourceRequest(String name){
+        this.name = name;
     }
 }
