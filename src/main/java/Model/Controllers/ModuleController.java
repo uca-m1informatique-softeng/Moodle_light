@@ -173,6 +173,8 @@ public class ModuleController {
 			ressource.module = module;
 		}else{
 			ressource.module = module;
+			System.out.println(ressource.module);
+			moduleRepository.save(module);
 			return ResponseEntity
 					.ok()
 					.body(new MessageResponse("Ressource y apartient deja !"));
