@@ -170,7 +170,9 @@ public class ModuleController {
 		Set<Ressource> ressources = module.getRessources();
 		if(!ressources.contains(ressource)) {
 			ressources.add(ressource);
+			ressource.module = module;
 		}else{
+			ressource.module = module;
 			return ResponseEntity
 					.ok()
 					.body(new MessageResponse("Ressource y apartient deja !"));

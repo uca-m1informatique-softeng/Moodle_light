@@ -35,6 +35,8 @@ Feature: Course
 
 
   Scenario: Teacher gets the content of a course
+    When "steve" registers to module "Gestion-de-projet"
+    And "steve" adds a course with name "Gestion" in module "Gestion-de-projet"
     Then "steve" gets the content of the course "Gestion", then we get:
       | "chapter1" |
       | "chapter2" |

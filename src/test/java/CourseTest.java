@@ -100,7 +100,7 @@ public class CourseTest extends SpringIntegration {
     @Then("{string} gets the content of the course {string}, then we get:")
     public void contentOfCours(String username, String coursGestion, List<String> content) throws IOException {
         String token = authController.generateJwt(username, PASSWORD);
-        executeGet("http://localhost:8080/api/course/" + coursGestion+ "/content", token);
+        executeGet("http://localhost:8080/api/course/" + coursGestion+ "/StudentCours/" +username, token);
         String response  = EntityUtils.toString(latestHttpResponse.getEntity(), "UTF-8");
 
         List<String> listTexts = Arrays.asList(response.subSequence(1,response.length()-1).toString().split(","));

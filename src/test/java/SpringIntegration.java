@@ -1,5 +1,6 @@
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Collections;
 import java.util.List;
@@ -8,6 +9,8 @@ import java.util.Set;
 import Model.Main;
 import io.cucumber.spring.CucumberContextConfiguration;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.*;
 import org.apache.http.entity.StringEntity;
@@ -36,6 +39,8 @@ public class SpringIntegration {
     CloseableHttpClient  httpClient =
             HttpClientBuilder.create().setDefaultRequestConfig(config).build();
 
+
+    //pas utiliser pour le moment
     Object executeGetReturnObject(String url, String jwt) throws IOException {
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
@@ -145,6 +150,8 @@ public class SpringIntegration {
     private boolean throwRequest(HttpRequestBase request){
         try{
             latestHttpResponse = httpClient.execute(request);
+            String response  = EntityUtils.toString(latestHttpResponse.getEntity(), "UTF-8");
+            System.out.println(response);
         }catch(Throwable t){
             System.out.println(t.getLocalizedMessage());
             return false;
