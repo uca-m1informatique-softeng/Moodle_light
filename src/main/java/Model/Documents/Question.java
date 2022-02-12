@@ -28,8 +28,8 @@ public class Question {
     @ManyToOne
     public Questionnaire questionnaire;
 
-    @Size(max = 120)
-    public  String typeQuestion="";
+    @NotBlank
+    public EQuestion typeQuestion;
 /*    @Range(min=1, max=20)
     public  int [] reponsesMultiples={};*/
     @Range(min=0, max=20)
@@ -39,30 +39,19 @@ public class Question {
 
     public Question() {}
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(	name = "user_reponse",
-            joinColumns = @JoinColumn(name = "question_id"),
-            inverseJoinColumns = @JoinColumn(name = "reponse_id"))
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name="questionid")
     public Set<Reponse> reponses = new HashSet<>();
 
 
- /**
-  * Constructor question QCM
-  * @param enonce_
-  */
- public Question(String enonce_, String listrReponses_a, int reponse_a) {
-  this.listeEnonces_ = listrReponses_a;
-  this.typeQuestion="qcm";
-  this.enonce = enonce_;
-  this.reponseQcm =reponse_a;
- }
+
 
  public boolean reponse(Reponse reponse){
      switch(reponse.typeReponse) {
-         case "qcm":
+         case QCM:
              return reponse.reponseQcm == this.reponseQcm;
 
-         case "choixmult":
+         case CHOIXMULTIPLE:
             /* if ( reponse.reponsesMultiples.length != reponse.reponsesMultiples.length)
                  return  false ;
              for (int i = 0 ; i < reponse.reponsesMultiples.length; i++){
@@ -71,7 +60,7 @@ public class Question {
                  }
              }*/
              return true;
-         case "text":
+         case TEXT:
              if(reponse.reponseText.equals(this.reponseText))
                  return true;
              else return  false;
@@ -79,17 +68,28 @@ public class Question {
      }
  }
 
- /**
-  * COnstructor question choix multiple
-  * @param listrReponses_a
-  * @param reponse_a
-  */
- public Question(String enonce_a, String listrReponses_a, int [] reponse_a) {
-  this.typeQuestion="choixmult";
-  this.listeEnonces_ = listrReponses_a;
-  this.enonce = enonce_a;
-  //this.reponsesMultiples = reponse_a;
- }
+
+    /**
+     * Constructor question QCM
+     * @param enonce_
+     */
+    public Question(String enonce_, String listrReponses_a, int reponse_a) {
+        this.listeEnonces_ = listrReponses_a;
+        this.typeQuestion=EQuestion.QCM;
+        this.enonce = enonce_;
+        this.reponseQcm =reponse_a;
+    }
+
+     /**
+      * COnstructor question choix multiple
+      * @param listrReponses_a
+      * @param reponse_a
+      */
+     public Question(String enonce_a, String listrReponses_a, int [] reponse_a) {
+         this.typeQuestion=EQuestion.CHOIXMULTIPLE;
+         this.listeEnonces_ = listrReponses_a;
+         this.enonce = enonce_a;
+     }
 
 
     /**
@@ -97,11 +97,11 @@ public class Question {
      * @param enonce_a
      * @param reponse_a
      */
-  public Question(String enonce_a, String reponse_a){
-    this.typeQuestion="text";
-    this.enonce =enonce_a;
-    this.reponseText=reponse_a;
-  }
+    public Question(String enonce_a, String reponse_a){
+        this.typeQuestion=EQuestion.TEXT;
+        this.enonce =enonce_a;
+        this.reponseText=reponse_a;
+    }
 
     @Override
     public boolean equals(Object o) {

@@ -2,6 +2,7 @@ package Model.Controllers;
 
 
 import Model.Documents.*;
+import Model.Payload.request.AddRessourceRequest;
 import Model.Payload.response.MessageResponse;
 import Model.Repositories.QuestionRepository;
 import Model.Repositories.RessourcesRepository;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
@@ -23,9 +25,9 @@ import java.util.Set;
  *          Description commande
  *
  * GET  /api/questionnaire/{username}/questionnaires/{nameQuestionnaire}    :   return question de questionaires
- * GET  /api/questionnaire/{username}/validate/{idQuestionnaire}            :   evalue questionaire et return points
+ * GET  /api/questionnaire/{username}/validate/{questionairename}            :   evalue questionaire et return points
  *
- * POST /api/questionnaire/{name}     :    creer questionaire
+ * POST /api/questionnaire    :    creer questionaire
  *
  * DELETE /api/questionnaire/{name}   :    delete questionaire
  *
@@ -67,9 +69,9 @@ public class QuestionnaireController {
      * valider un questionnaire
      * @return int represent reponse correcte dans questionaire
      */
-    @GetMapping("{username}/validate/{idQuestionnaire}")
-    public int validateQuestionnaire(@PathVariable String name, @PathVariable String userName ){
-        Optional<Ressource> oquestionnaire = ressourcesRepository.findByName(name);
+    @GetMapping("{username}/validate/{questionairename}")
+    public int validateQuestionnaire(@PathVariable String userName , @PathVariable String questionairename ){
+        Optional<Ressource> oquestionnaire = ressourcesRepository.findByName(questionairename);
         if(!oquestionnaire.isPresent()||oquestionnaire.get().getClass().equals(Questionnaire.class)){
             return -1;
         }
@@ -106,16 +108,16 @@ public class QuestionnaireController {
     //////////////////////        POST PUT     //////////////////////
 
     /**
-     * create the questionaire with name : name
-     * @param name
+     * save new questionaire in body
      * @return ResponseEntity
      */
-    @PostMapping("/{name}")
+    @PostMapping("")
     @PreAuthorize("hasRole('TEACHER')")
-    public ResponseEntity<?> creerQuestionnaire(@PathVariable String name){
-        Ressource questionnaire = ressourcesRepository.findByName(name).
-                orElse(new Questionnaire());
-
+    public ResponseEntity<?> creerQuestionnaire(@Valid @RequestBody AddRessourceRequest addRessourceRequest){
+        if(ressourcesRepository.existsByName(addRessourceRequest.getName())){
+            return ResponseEntity.ok(new MessageResponse("est deja creer"));
+        }
+        Questionnaire questionnaire = new Questionnaire(addRessourceRequest.getName());
         ressourcesRepository.save(questionnaire);
         return ResponseEntity.ok(new MessageResponse("Questionnaire successfully created"));
     }

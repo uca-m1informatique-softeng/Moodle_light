@@ -16,7 +16,7 @@ public class Reponse {
     @NotBlank
     public String username;
     @NotBlank
-    public String typeReponse;
+    public EQuestion typeReponse;
     @NotBlank
     @Size(max = 120)
     public  int [] reponsesMultiples;
@@ -26,6 +26,9 @@ public class Reponse {
     @NotBlank
     @Size(max = 120)
     public  String reponseText;
+
+    @ManyToOne
+    Question question;
 
     public Long getId() {
         return id;

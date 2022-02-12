@@ -1,6 +1,8 @@
 package Model.Controllers;
 import Model.Documents.Cours;
 import Model.Documents.Ressource;
+import Model.Payload.request.AddRessourceRequest;
+import Model.Payload.request.AddTextRequest;
 import Model.Payload.response.MessageResponse;
 import Model.Repositories.RessourcesRepository;
 import Model.Repositories.UserRepository;
@@ -11,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,10 +23,10 @@ import java.util.Optional;
 /**
  *              Description commande :
  *
- *  GET  /api/course/{namecours}/StudentCours/{namestudent}      :   Get the textes of a cours if user is in module of cours
+ *  GET  /api/course/{namecours}/StudentCours/{namestudent}     :   Get the textes of a cours if user is in module of cours
  *
- *  POST /api/course/{courname}                                 :   Creer cour in ressourceRepository
- *  PUT  /api/course/{courname}/content/{text}                  :   Rajoute du texte dans cour
+ *  POST /api/course                                            :   Creer cour in ressourceRepository
+ *  PUT  /api/course/{courname}                                 :   Rajoute du texte dans cour
  *
  *  DELETE  /api/course/{courname}                              :   Delete un cour
  *  DELETE  /api/course/{courname}/text/{text}                  :   Delete du text d'un cour
@@ -91,7 +94,7 @@ public class CourseController {
      * @param coursename
      * @return List<String>
      */
-    @GetMapping(value = "/{coursename}/content")
+    @GetMapping(value = "/{coursename}")
     public List<String> getCourseTexts(@PathVariable String coursename){
         Optional<Ressource> courseRes = ressourcesRepository.findByName(coursename);
         if (!courseRes.isPresent()) {
@@ -106,27 +109,27 @@ public class CourseController {
 
     /**
      * Create a cours in ressourceRepository
-     * @param courname
      * @return http reponse info
      */
-    @PostMapping("/{courname}")
+    @PostMapping("")
     @PreAuthorize("hasRole('TEACHER')")
-    public ResponseEntity<?> creerCours(@PathVariable String courname){
-        Ressource cours = ressourcesRepository.findByName(courname).
-                orElse(new Cours(courname));
-        ressourcesRepository.save(cours);
+    public ResponseEntity<?> creerCours(@Valid @RequestBody AddRessourceRequest addRessourceRequest){
+        if(ressourcesRepository.existsByName(addRessourceRequest.getName())){
+            ResponseEntity.ok(new MessageResponse("user existe!"));
+        }
+        ressourcesRepository.save(new Cours(addRessourceRequest.getName()));
         return ResponseEntity.ok(new MessageResponse("User successfully added to module!"));
     }
 
     /**
      * rajoute text a cour
      * @param courname
-     * @param text
+     * @param addTextRequest
      * @return http reponse info
      */
-    @PutMapping("/{courname}/content/{text}")
+    @PutMapping("/{courname}/content")
     @PreAuthorize("hasRole('TEACHER')")
-    public ResponseEntity<?> modifierCours(@PathVariable String courname, @PathVariable String text){
+    public ResponseEntity<?> modifierCours(@Valid @RequestBody AddTextRequest addTextRequest, @PathVariable String courname){
         // Vérifier si ce resource existe
         Optional<Ressource> oressource = ressourcesRepository.findByName(courname);
         if (!oressource.isPresent()) {
@@ -147,6 +150,7 @@ public class CourseController {
 
         //Si le text passé dans les paramètre existe dans le text dans le cours on renvoie une erreur
         List<String> textes = cours.text;
+        String text = addTextRequest.getText();
         if(!textes.contains(text)) {
             textes.add(text);
         }else{
@@ -158,9 +162,6 @@ public class CourseController {
     }
 
 
-
-
-
     //////////////////////      Delete     //////////////////////
 
     /**
@@ -168,7 +169,7 @@ public class CourseController {
      * @param courname
      * @return ResponseEntity
      */
-    @DeleteMapping("/{courname}")
+    @DeleteMapping("")
     @PreAuthorize("hasRole('TEACHER')")
     public ResponseEntity<?> delete(@PathVariable String courname){
         Optional<Ressource> oressource = ressourcesRepository.findByName(courname);

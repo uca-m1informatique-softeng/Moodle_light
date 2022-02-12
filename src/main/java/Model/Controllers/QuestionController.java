@@ -129,7 +129,7 @@ public class QuestionController {
                     .body(new MessageResponse("Question Already exist"));
         }
         switch (createQuestionRequest_a.getQuestionType()){
-            case "text":
+            case TEXT:
                 questionToAdd= new Question(createQuestionRequest_a.getEnonce(),createQuestionRequest_a.getReponse());
                 break;
             default:

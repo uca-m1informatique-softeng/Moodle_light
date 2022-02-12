@@ -1,4 +1,5 @@
 import Model.Controllers.AuthController;
+import Model.Documents.EQuestion;
 import Model.Documents.Module;
 import Model.Documents.Questionnaire;
 import Model.Payload.request.CreateQuestionRequest;
@@ -89,7 +90,7 @@ public class QuestionnaireTest extends SpringIntegration {
        CreateQuestionRequest textQuestionRequest = new CreateQuestionRequest();
        textQuestionRequest.setEnonce(enonce_a);
        textQuestionRequest.setReponse(answer_a);
-       textQuestionRequest.setQuestionType("text");
+       textQuestionRequest.setQuestionType(EQuestion.TEXT);
        Gson g = new Gson();
        String s = g.toJson(textQuestionRequest);
        String jwt = authController.generateJwt(user_a, PASSWORD);

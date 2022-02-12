@@ -1,5 +1,6 @@
 package Model.Payload.request;
 
+import Model.Documents.EQuestion;
 import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.NotBlank;
@@ -11,8 +12,7 @@ public class CreateQuestionRequest {
     private String enonce;
 
     @NotBlank
-    @Size(min = 0, max = 20)
-    String questionType;
+    EQuestion questionType;
 
     @Size(min = 3, max = 20)
     private String reponse;
@@ -36,14 +36,14 @@ public class CreateQuestionRequest {
     public void  setReponse(String reponseText){this.reponse=reponseText;}
     public CreateQuestionRequest(){
         this.enonce="[DEFAULT ENONCE]";
-        this.questionType="[DEFAULT QUESTION TYPE]";
+        this.questionType= EQuestion.QCM;
     }
 
-    public String getQuestionType(){
+    public EQuestion getQuestionType(){
         return  this.questionType;
     }
 
-    public void setQuestionType(String questionType_a){
+    public void setQuestionType(EQuestion questionType_a){
         this.questionType = questionType_a;
     }
     public  String getEnonce(){
