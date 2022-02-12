@@ -94,7 +94,7 @@ public class QuestionnaireTest extends SpringIntegration {
        Gson g = new Gson();
        String s = g.toJson(textQuestionRequest);
        String jwt = authController.generateJwt(user_a, PASSWORD);
-       executePostObj("http://localhost:8080/api/module/question/create",s,jwt);
+       executePost("http://localhost:8080/api/module/question/create",jwt,s);
        System.out.println(latestHttpResponse.getStatusLine().getStatusCode());
 
    }

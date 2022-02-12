@@ -2,6 +2,8 @@ import Model.Controllers.AuthController;
 import Model.Documents.Cours;
 import Model.Documents.Module;
 import Model.Documents.Ressource;
+import Model.Payload.request.AddRessourceRequest;
+import Model.Payload.request.AddTextRequest;
 import Model.Repositories.ModuleRepository;
 import Model.Repositories.RessourcesRepository;
 import io.cucumber.java.en.And;
@@ -9,6 +11,8 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import static org.junit.jupiter.api.Assertions.*;
+
+import io.cucumber.messages.internal.com.google.gson.Gson;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import java.io.IOException;
@@ -37,7 +41,11 @@ public class CourseTest extends SpringIntegration {
     @When("{string} create course {string}")
     public void creerCours(String username, String courseName) throws IOException {
         String token = authController.generateJwt(username, PASSWORD);
-        executePost("http://localhost:8080/api/course/" + courseName, token,null);
+        AddRessourceRequest ressourceRequest = new AddRessourceRequest();
+        ressourceRequest.setName(courseName);
+        Gson g = new Gson();
+        String obj = g.toJson(ressourceRequest);
+        executePost("http://localhost:8080/api/course", token,obj);
     }
 
     @And("{string} finds the course {string} is in {string}")
@@ -71,7 +79,11 @@ public class CourseTest extends SpringIntegration {
     @When("{string} add to {string} a text {string}")
     public void addsText(String username, String courseName, String text) throws IOException {
         String jwt = authController.generateJwt(username, PASSWORD);
-        executePut("http://localhost:8080/api/course/" + courseName + "/content/" + text, jwt,null);
+        AddTextRequest textRequest = new AddTextRequest();
+        textRequest.setText(text);
+        Gson g = new Gson();
+        String obj = g.toJson(textRequest);
+        executePut("http://localhost:8080/api/course/" + courseName, jwt,obj);
     }
 
     @Then("CourseTest last request status is {int} or {int}")
