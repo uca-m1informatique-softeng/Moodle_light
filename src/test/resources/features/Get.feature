@@ -8,3 +8,5 @@ Feature: Get
   Scenario: user check all modules that he subsccribe to
     When "steve" check his modules
     Then return all modules names
+
+    Scenario:

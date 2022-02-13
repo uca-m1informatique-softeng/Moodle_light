@@ -1,0 +1,29 @@
+version: "0.1"
+services:
+  api_service:
+    image: "openjdk:8-jdk-alpine"
+    restart: always
+    ports:
+      - 8080:8080
+    depends_on:
+      - postgres_user_db
+      - postgres_api_db
+    links:
+      - postgres_user_db:database
+      - postgres_api_db:database
+  postgres_user_db:
+    image: "postgres:11.4"
+    restart: always
+    ports:
+      - 5435:5432
+    environment:
+      POSTGRES_ROOT: postgres
+      POSTGRES_PASSWORD: p34kleiorntk09kslQ
+  postgres_api_db:
+    image: "postgres:11.4"
+    restart: always
+    ports:
+      - 5436:5432
+    environment:
+      POSTGRES_ROOT: postgres
+      POSTGRES_PASSWORD: p34kleiorntk09kslQ
