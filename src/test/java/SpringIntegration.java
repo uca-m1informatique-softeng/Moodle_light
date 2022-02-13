@@ -150,8 +150,8 @@ public class SpringIntegration {
     private boolean throwRequest(HttpRequestBase request){
         try{
             latestHttpResponse = httpClient.execute(request);
-            String response  = EntityUtils.toString(latestHttpResponse.getEntity(), "UTF-8");
-            System.out.println(response);
+            //String response  = EntityUtils.toString(latestHttpResponse.getEntity(), "UTF-8");
+            //System.out.println(response);
         }catch(Throwable t){
             System.out.println(t.getLocalizedMessage());
             return false;

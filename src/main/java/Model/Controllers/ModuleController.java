@@ -193,6 +193,7 @@ public class ModuleController {
 	@PostMapping("/{id}/participants/{userid}")
 	@PreAuthorize("hasRole('TEACHER')")
 	public ResponseEntity<?> addUser(Principal principal, @PathVariable long id, @PathVariable long userid) {
+		System.out.println("passe ici");
 		Optional<Module> omodule = moduleRepository.findById(id);
 		Optional<User> ouser = userRepository.findById(userid);
 		if (!omodule.isPresent()) {
@@ -209,12 +210,14 @@ public class ModuleController {
 		Module module = omodule.get();
 		User user = ouser.get();
 		User actor = userRepository.findByUsername(principal.getName()).get();
-
+		System.out.println("passe ici 2");
 		Set<User> participants = module.getParticipants();
 		if ((participants.isEmpty() && actor.equals(user))
 				|| participants.contains(actor)) {
+			System.out.println("passe ici 3");
 			// verifie si user n'apartient pas déjà à participants
 			if(!participants.contains(user)) {
+				System.out.println("passe ici 4");
 				participants.add(user);
 				user.getModules().add(module);
 			}else{
@@ -227,6 +230,7 @@ public class ModuleController {
 					.badRequest()
 					.body(new MessageResponse("Error: Not allowed to add user!"));
 		}
+		System.out.println("User realtion creer");
 		moduleRepository.save(module);
 		userRepository.save(user);
 		return ResponseEntity.ok(new MessageResponse("User successfully added to module!"));

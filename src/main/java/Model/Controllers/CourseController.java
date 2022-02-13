@@ -68,8 +68,10 @@ public class CourseController {
         Cours cours = (Cours) ocours.get();
         User user = ouser.get();
         if(!cours.module.users.contains(user)){
+            System.out.println("user");
             return null;
         }
+        System.out.println("text : " + cours.text);
         return cours.text;
     }
 
@@ -99,7 +101,8 @@ public class CourseController {
     @PreAuthorize("hasRole('TEACHER')")
     public ResponseEntity<?> creerCours(@Valid @RequestBody AddRessourceRequest addRessourceRequest){
         if(ressourcesRepository.existsByName(addRessourceRequest.getName())){
-            ResponseEntity.ok(new MessageResponse("user existe!"));
+
+            return ResponseEntity.ok(new MessageResponse("user existe!"));
         }
         ressourcesRepository.save(new Cours(addRessourceRequest.getName()));
         return ResponseEntity.ok(new MessageResponse("User successfully added to module!"));
