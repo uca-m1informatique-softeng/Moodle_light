@@ -156,7 +156,7 @@ public class CourseController {
      * @param courname
      * @return ResponseEntity
      */
-    @DeleteMapping("")
+    @DeleteMapping("/{courname}")
     @PreAuthorize("hasRole('TEACHER')")
     public ResponseEntity<?> delete(@PathVariable String courname){
         Optional<Ressource> oressource = ressourcesRepository.findByName(courname);

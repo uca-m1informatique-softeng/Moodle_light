@@ -119,7 +119,7 @@ public class CourseTest extends SpringIntegration {
     @And("{string} deletes the course {string}")
     public void deleteCourse(String username, String courseName) throws IOException {
         String jwt = authController.generateJwt(username, PASSWORD);
-        executeDelete("http://localhost:8080/api/course/delete/" + courseName, jwt);
+        executeDelete("http://localhost:8080/api/course/" + courseName, jwt);
     }
 
     @Then("course {string} does not exist")
