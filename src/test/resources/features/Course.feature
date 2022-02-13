@@ -7,18 +7,18 @@ Feature: Course
 
   Scenario: Teacher create course
     When "steve" create course "NewCourse"
-    Then CourseTest last request status is 200 or 500
+    Then CourseTest last request status is 200
     And course "Gestion" has been added
 
   Scenario: Teacher adds the course Gestion
     When "steve" adds a course with name "Gestion" in module "Gestion-de-projet"
-    Then CourseTest last request status is 200 or 500
+    Then CourseTest last request status is 200
     Then "steve" finds the course "Gestion" is in "Gestion-de-projet"
 
   Scenario Outline: Teacher adds 3 texts in the content of Gestion
     When "steve" adds a course with name "Gestion" in module "Gestion-de-projet"
     And "steve" add to "Gestion" a text <text>
-    Then CourseTest last request status is 200 or 500
+    Then CourseTest last request status is 200
     Examples:
       | text |
       | "chapter1" |

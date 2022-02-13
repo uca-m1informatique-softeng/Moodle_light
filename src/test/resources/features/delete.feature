@@ -10,16 +10,24 @@ Feature: Delete
 
   Scenario: teacher delete course
     Given a course named "Gestion"
-    When "steve" delete course "Gestion"
-    Then deleteTest last request status is 200
+    When "steve" deletes the course "Gestion"
+    Then CourseTest last request status is 200
+    And course "Gestion" does not exist
 
   Scenario: teacher delete Questionnaire
     Given a questionnaire named "Quest1"
     When "steve" delete questionaire "Quest1"
     Then deleteTest last request status is 200
 
-  Scenario: teacher drop Course du Module
+  Scenario: teacher delete cours that is connected to a module
     Given a course named "Gestion"
     And "steve" adds a course with name "Gestion" in module "Gestion-de-projet"
-    When "steve" remove course "Gestion" de module "Gestion-de-projet"
-    Then deleteTest last request status is 200
+    When "steve" deletes the course "Gestion"
+    Then CourseTest last request status is 200
+    And course "Gestion" does not exist
+
+  Scenario: teacher delete text from cours
+
+  Scenario: teacher delete question
+
+  Scenario: teacher delete question that is connected to a questionaire

@@ -86,10 +86,10 @@ public class CourseTest extends SpringIntegration {
         executePut("http://localhost:8080/api/course/" + courseName, jwt,obj);
     }
 
-    @Then("CourseTest last request status is {int} or {int}")
-    public void isRegisteredToModule(int statusOK, int statusServerError) {
+    @Then("CourseTest last request status is {int}")
+    public void isRegisteredToModule(int statusOK) {
         System.out.println(latestHttpResponse.getStatusLine().getStatusCode());
-        assertTrue(latestHttpResponse.getStatusLine().getStatusCode() == statusOK || latestHttpResponse.getStatusLine().getStatusCode() == statusServerError);
+        assertTrue(latestHttpResponse.getStatusLine().getStatusCode() == statusOK);
     }
 
     @And("course {string} has been added")
@@ -116,7 +116,7 @@ public class CourseTest extends SpringIntegration {
         assertTrue(result);
     }
 
-    @And("{string} deletes the course {string}")
+    @When("{string} deletes the course {string}")
     public void deleteCourse(String username, String courseName) throws IOException {
         String jwt = authController.generateJwt(username, PASSWORD);
         executeDelete("http://localhost:8080/api/course/" + courseName, jwt);

@@ -159,6 +159,7 @@ public class CourseController {
     @DeleteMapping("/{courname}")
     @PreAuthorize("hasRole('TEACHER')")
     public ResponseEntity<?> delete(@PathVariable String courname){
+        System.out.println("delete cours 1");
         Optional<Ressource> oressource = ressourcesRepository.findByName(courname);
         if(!oressource.isPresent()){
             return ResponseEntity
@@ -167,7 +168,12 @@ public class CourseController {
         }
 
         Ressource ressource = oressource.get();
+        System.out.println("delete cours 2");
+        if(ressource.module!=null && ressource.module.ressources.contains(ressource)){
+            ressource.module.ressources.remove(ressource);
+        }
         ressourcesRepository.delete(ressource);
+        System.out.println("delete cours 3");
         return ResponseEntity.ok(new MessageResponse("User successfully delete cours!"));
     }
 
