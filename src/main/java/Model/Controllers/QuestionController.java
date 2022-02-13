@@ -133,7 +133,7 @@ public class QuestionController {
                 //rajouter plus tard program python string
                 questionToAdd = null;
         }
-        if (questionToAdd != null ) {
+        if (questionToAdd != null && !questionRepository.existsByEnonce(questionToAdd.enonce)) {
             System.out.println("je passe dans save");
             questionRepository.save(questionToAdd);
             return ResponseEntity.ok(new MessageResponse("Question successfully "));
@@ -178,6 +178,8 @@ public class QuestionController {
         Question question = oquestion.get();
         Set<Question> ressources = questionnaire.ListeQuestions;
         if(!ressources.contains(ressource)) {
+            //pour remonter a la source questionaire lorsqu'on suprime question ou en get
+            question.questionnaire=questionnaire;
             ressources.add(question);
         }else{
             return ResponseEntity
