@@ -16,7 +16,7 @@ Feature: Delete
 
   Scenario: teacher delete Questionnaire
     Given a questionnaire named "Quest1"
-    When "steve" delete questionaire "Quest1"
+    When "steve" delete questionnaire "Quest1"
     Then deleteTest last request status is 200
 
   Scenario: teacher delete cours that is connected to a module

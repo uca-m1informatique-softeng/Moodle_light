@@ -44,10 +44,10 @@ public class DeleteTest extends SpringIntegration{
         executeDelete( "http://localhost:8080/api/auth/delete/"+user.getId(), jwt);
     }
 
-    @When("{string} delete Questionnaire {string}")
+    @When("{string} delete questionnaire {string}")
     public void deleteQuestionaire(String arg0, String arg1) throws  IOException {
         String jwt = authController.generateJwt(arg0, PASSWORD);
-        executeDelete( "http://localhost:8080/api/questionnaire/delete/"+arg1, jwt);
+        executeDelete( "http://localhost:8080/api/questionnaire/"+arg1, jwt);
     }
 
     @Then("{string} is not a student")
