@@ -24,7 +24,14 @@ Feature: Questionnaire
       | 2 |
     Then Question with content "Enonce3" exist
 
+  Scenario: Teacher add module to questionaire
+    When "steve" creates questionnaire "Quest1"
+    And "steve" adds questionnaire "Quest1" to module "Gestion-de-projet"
+    Then "steve" finds questionnaire "Quest1" is in module "Gestion-de-projet"
+
   Scenario: Teacher add qestion to questionaire
     When user "steve" creates "text" question with content "Enonce1" and with answer "answ1"
     And user "steve" add question "Enonce1" to "Quest1"
-    Then question "Enonce1" is in questionaire "Quest1"
+    And "steve" registers "paul" to module "Gestion-de-projet"
+    And "steve" adds questionnaire "Quest1" to module "Gestion-de-projet"
+    Then "paul" finds question "Enonce1" is in questionaire "Quest1"

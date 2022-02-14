@@ -46,7 +46,6 @@ public class RegisterTeacherStepDefs extends SpringIntegration {
         System.out.println("user is save in userRepository");
     }
 
-
     @Given("a student with login {string}")
     public void aStudentWithLogin(String arg0){
         User user = userRepository.findByUsername(arg0).

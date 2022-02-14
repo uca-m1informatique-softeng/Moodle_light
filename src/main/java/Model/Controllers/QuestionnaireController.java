@@ -2,8 +2,10 @@ package Model.Controllers;
 
 
 import Model.Documents.*;
+import Model.Documents.Module;
 import Model.Payload.request.AddRessourceRequest;
 import Model.Payload.response.MessageResponse;
+import Model.Repositories.ModuleRepository;
 import Model.Repositories.QuestionRepository;
 import Model.Repositories.RessourcesRepository;
 import Model.Repositories.UserRepository;
@@ -14,8 +16,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.security.Principal;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -26,10 +26,10 @@ import java.util.Set;
  *
  * GET  /api/questionnaire/{username}/questionnaires/{nameQuestionnaire}    :   return question de questionaires
  * GET  /api/questionnaire/{username}/validate/{questionairename}            :   evalue questionaire et return points
- *
+ * GET /api/questionnaire/{username}/{nameQuestionnaire}/   : get the questionnaire object
  * POST /api/questionnaire    :    creer questionaire
  * PUT  /api/questionnaire/{questionarename}/question/{questionid}   :   rajoute une question dans questionaire
- *
+ * PUT api/questionnaire/{questionarename}/module/{moduleName}  : attache un module à une questionnaire
  *
  * DELETE /api/questionnaire/{name}   :    delete questionaire
  *
@@ -44,6 +44,9 @@ public class QuestionnaireController {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    ModuleRepository moduleRepository;
 
     @Autowired
     QuestionRepository questionRepository;
@@ -68,6 +71,27 @@ public class QuestionnaireController {
             return null;
         }
         return questionnaire.ListeQuestions ;
+    }
+
+    /**
+     * Get the questionnaire object
+     * @param nameQuestionnaire
+     * @return ResponseEntity
+     */
+    @GetMapping("/{username}/{nameQuestionnaire}")
+    @PreAuthorize("hasRole('TEACHER')")
+    public Questionnaire getsModule(@PathVariable String username, @PathVariable String nameQuestionnaire){
+        Optional<Ressource> oquestionaire = ressourcesRepository.findByName(nameQuestionnaire);
+        Optional<User> ouser = userRepository.findByUsername(username);
+        if(!oquestionaire.isPresent()||!ouser.isPresent()||!oquestionaire.get().getClass().equals(Questionnaire.class)){
+            return null;
+        }
+        Questionnaire questionnaire = (Questionnaire) oquestionaire.get();
+        User user = ouser.get();
+        if(!questionnaire.module.users.contains(user)){
+            return null;
+        }
+        return questionnaire;
     }
 
     /***
@@ -128,6 +152,31 @@ public class QuestionnaireController {
     }
 
     /**
+     * Adds a questionnaire to a module
+     * @param questionarename
+     * @param moduleName
+     * @return ResponseEntity
+     */
+    @PutMapping("/{questionarename}/module/{moduleName}")
+    @PreAuthorize("hasRole('TEACHER')")
+    public ResponseEntity<?> addsQuestionnaire(@PathVariable String questionarename, @PathVariable String moduleName){
+        Optional<Module> omodule = moduleRepository.findByName(moduleName);
+        if(!omodule.isPresent()){
+            return ResponseEntity.badRequest().body(new MessageResponse("This module doesn't exist"));
+        }
+
+        Module module = omodule.get();
+
+        Optional<Ressource> oquestionnaire = ressourcesRepository.findByName(questionarename);
+
+        Questionnaire questionnaire = (Questionnaire) oquestionnaire.get();
+        questionnaire.module = module;
+
+        ressourcesRepository.save(questionnaire);
+        return ResponseEntity.ok(new MessageResponse("Questionnaire successfully updated"));
+    }
+
+    /**
      * rajoute une question a un questionaire
      * @param questionarename
      * @param questionid
@@ -136,7 +185,6 @@ public class QuestionnaireController {
     @PutMapping("/{questionarename}/question/{questionid}")
     @PreAuthorize("hasRole('TEACHER')")
     public ResponseEntity<?> addRessource(@PathVariable String questionarename, @PathVariable long questionid){
-        System.out.println("Essais de creer");
         Optional<Ressource> oressource = ressourcesRepository.findByName(questionarename);
         Optional<Question> oquestion = questionRepository.findById(questionid);
         if (!oressource.isPresent()) {
@@ -144,6 +192,7 @@ public class QuestionnaireController {
                     .badRequest()
                     .body(new MessageResponse("Error: No such ressource!"));
         }
+
         if (!oquestion.isPresent()) {
             return ResponseEntity
                     .badRequest()

@@ -106,8 +106,6 @@ public class CourseTest extends SpringIntegration {
         List<String> listTexts = Arrays.asList(response.subSequence(1,response.length()-1).toString().split(","));
 
         boolean result = true;
-        System.out.println(listTexts);
-        System.out.println(content);
         for (int i = 0; i < listTexts.size(); i++){
             if (!content.get(i).equals(listTexts.get(i))){
                 result = false;

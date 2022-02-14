@@ -89,7 +89,7 @@ public class QuestionController {
      * @param idQuestion
      * @return ResponseEntity
      */
-    @GetMapping("/{username}/question/{idQuestion}")
+    @GetMapping("/question/{idQuestion}")
     public ResponseEntity<?> getQuestion(@PathVariable String username,@PathVariable final long idQuestion){
         Optional<Question> oquestion = questionRepository.findById(idQuestion);
         Optional<User> ouser = userRepository.findByUsername(username);
@@ -105,6 +105,25 @@ public class QuestionController {
                     .badRequest()
                     .body(new MessageResponse("Error: user is not in the module!"));
         }
+        return new ResponseEntity<>(question, HttpStatus.OK);
+    }
+
+    /**
+     * Get question of questionaire
+     * @return ResponseEntity
+     * @param idQuestion
+     * @return ResponseEntity
+     */
+    @GetMapping("/{idQuestion}")
+    public ResponseEntity<?> getQuestionById(@PathVariable final long idQuestion){
+        Optional<Question> oquestion = questionRepository.findById(idQuestion);
+        if(oquestion.isEmpty()){
+            return  ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: No such ressource or username!"));
+        }
+        Question question = oquestion.get();
+
         return new ResponseEntity<>(question, HttpStatus.OK);
     }
 

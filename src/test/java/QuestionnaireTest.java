@@ -11,11 +11,13 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.cucumber.messages.internal.com.google.gson.Gson;
+import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -144,12 +146,21 @@ public class QuestionnaireTest extends SpringIntegration {
         executePut("http://localhost:8080/api/questionnaire/"+questionairename+"/question/"+questionid,jwt,null);
     }
 
-    @Then("question {string} is in questionaire {string}")
-    public void isquestioninQuestionaire( String questionenonce,String questionairename){
-        System.out.println("passe ici "+questionairename+questionenonce);
-        Questionnaire questionaire = (Questionnaire) ressourcesRepository.findByName(questionairename).get();
+    @Then("{string} finds question {string} is in questionaire {string}")
+    public void isquestioninQuestionaire(String username, String questionenonce,String questionairename) throws IOException {
+        String token = authController.generateJwt(username, PASSWORD);
+        List<Question> responseQuestionnaire = (List<Question>) executeGetReturnObject("http://localhost:8080/api/questionnaire/"+username+"/questionnaires/"+questionairename, token);
+        // responseQuestionnaire  = EntityUtils.toString(latestHttpResponse.getEntity(), "UTF-8");
         Question question = questionRepository.findByEnonce(questionenonce).get();
-        assertEquals(true, questionaire.ListeQuestions.contains(question));
+        executeGet("http://localhost:8080/api/question/"+question.id, token);
+        String responseQuestion = EntityUtils.toString(latestHttpResponse.getEntity(), "UTF-8");
+
+        //List<String> listOfQuestions = Arrays.asList(responseQuestionnaire.subSequence(1,responseQuestionnaire.length()-1).toString().split(","));
+        List<String> questionRes = Arrays.asList(responseQuestion.subSequence(1,responseQuestion.length()-1).toString().split(","));
+
+        System.out.println("QUESTION " + questionRes);
+        System.out.println("LIST OF QUES " + responseQuestionnaire);
+        assertTrue(responseQuestionnaire.contains(questionRes));
     }
 
 
@@ -157,4 +168,18 @@ public class QuestionnaireTest extends SpringIntegration {
     public void questionExistByEnone(String enonce){
         assertTrue(questionRepository.findByEnonce(enonce).isPresent());
    }
+
+    @And("{string} adds questionnaire {string} to module {string}")
+    public void addsAuestionToModule(String username, String questionnaireName, String moduleName) throws UnsupportedEncodingException {
+        String jwt = authController.generateJwt(username, PASSWORD);
+        //TODO: change to id instead of name ? as the prof said ?
+        executePut("http://localhost:8080/api/questionnaire/"+questionnaireName+"/module/"+moduleName,jwt,null);
+    }
+
+    @Then("{string} finds questionnaire {string} is in module {string}")
+    public void findsQuestionnaireIsInModule(String username, String questionairename, String moduleName) throws IOException {
+        String jwt = authController.generateJwt(username, PASSWORD);
+        Questionnaire ques = (Questionnaire) executeGetReturnObject("http://localhost:8080/api/questionnaire/"+username+"/"+questionairename, jwt);
+        assertTrue(ques.module.name == moduleName);
+    }
 }
