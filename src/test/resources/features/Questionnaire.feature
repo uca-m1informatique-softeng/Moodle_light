@@ -27,4 +27,4 @@ Feature: Questionnaire
   Scenario: Teacher add qestion to questionaire
     When user "steve" creates "text" question with content "Enonce1" and with answer "answ1"
     And user "steve" add question "Enonce1" to "Quest1"
-    Then question "Enonce1" is in questionaire "Quset1"
+    Then question "Enonce1" is in questionaire "Quest1"

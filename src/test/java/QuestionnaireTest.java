@@ -1,6 +1,7 @@
 import Model.Controllers.AuthController;
 import Model.Documents.EQuestion;
 import Model.Documents.Module;
+import Model.Documents.Question;
 import Model.Documents.Questionnaire;
 import Model.Payload.request.AddRessourceRequest;
 import Model.Payload.request.CreateQuestionRequest;
@@ -16,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
+import java.util.Optional;
 
 import static Model.Documents.EQuestion.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -136,7 +138,18 @@ public class QuestionnaireTest extends SpringIntegration {
     @When("user {string} add question {string} to {string}")
     public void addquestiontoquestionaire(String username, String questionenonce, String questionairename) throws UnsupportedEncodingException{
         String jwt = authController.generateJwt(username, PASSWORD);
-        executePost("http://localhost:8080/api/questionnaire",jwt,null);
+        Optional<Question> oquestion = questionRepository.findByEnonce(questionenonce);
+        if(oquestion.isEmpty())return;
+        long questionid = oquestion.get().id;
+        executePut("http://localhost:8080/api/questionnaire/"+questionairename+"/question/"+questionid,jwt,null);
+    }
+
+    @Then("question {string} is in questionaire {string}")
+    public void isquestioninQuestionaire( String questionenonce,String questionairename){
+        System.out.println("passe ici "+questionairename+questionenonce);
+        Questionnaire questionaire = (Questionnaire) ressourcesRepository.findByName(questionairename).get();
+        Question question = questionRepository.findByEnonce(questionenonce).get();
+        assertEquals(true, questionaire.ListeQuestions.contains(question));
     }
 
 

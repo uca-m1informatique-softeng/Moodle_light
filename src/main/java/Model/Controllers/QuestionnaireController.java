@@ -28,6 +28,8 @@ import java.util.Set;
  * GET  /api/questionnaire/{username}/validate/{questionairename}            :   evalue questionaire et return points
  *
  * POST /api/questionnaire    :    creer questionaire
+ * PUT  /api/questionnaire/{questionarename}/question/{questionid}   :   rajoute une question dans questionaire
+ *
  *
  * DELETE /api/questionnaire/{name}   :    delete questionaire
  *
@@ -42,6 +44,9 @@ public class QuestionnaireController {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    QuestionRepository questionRepository;
 
     //////////////////////        GET     //////////////////////
 
@@ -120,6 +125,50 @@ public class QuestionnaireController {
         Questionnaire questionnaire = new Questionnaire(addRessourceRequest.getName());
         ressourcesRepository.save(questionnaire);
         return ResponseEntity.ok(new MessageResponse("Questionnaire successfully created"));
+    }
+
+    /**
+     * rajoute une question a un questionaire
+     * @param questionarename
+     * @param questionid
+     * @return ResponseEntity
+     */
+    @PutMapping("/{questionarename}/question/{questionid}")
+    @PreAuthorize("hasRole('TEACHER')")
+    public ResponseEntity<?> addRessource(@PathVariable String questionarename, @PathVariable long questionid){
+        System.out.println("Essais de creer");
+        Optional<Ressource> oressource = ressourcesRepository.findByName(questionarename);
+        Optional<Question> oquestion = questionRepository.findById(questionid);
+        if (!oressource.isPresent()) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: No such ressource!"));
+        }
+        if (!oquestion.isPresent()) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: No such question!"));
+        }
+        Ressource ressource = oressource.get();
+        Questionnaire questionnaire;
+        if(ressource.getClass().equals(Questionnaire.class)){
+            questionnaire = (Questionnaire)ressource;
+        }else{
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Ressource n'est pas un questionaire!"));
+        }
+        Question question = oquestion.get();
+        Set<Question> ressources = questionnaire.ListeQuestions;
+        if(ressources.contains(ressource)) {
+            return ResponseEntity.ok(new MessageResponse("Question was added before!"));
+        }
+        //pour remonter a la source questionaire lorsqu'on suprime question ou en get
+        question.questionnaire=questionnaire;
+        ressources.add(question);
+        ressourcesRepository.save(ressource);
+        System.out.println("rajouter question a questionaire");
+        return ResponseEntity.ok(new MessageResponse("User successfully added to questionaire!"));
     }
 
 

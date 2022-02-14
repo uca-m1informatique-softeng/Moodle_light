@@ -31,7 +31,6 @@ import java.util.Set;
  * GET /api/question/{username}/question/{idQuestion}           :   return question
  *
  * POST /api/question                                           :   creer question
- * PUT  /api/question/{questionarename}/question/{questionid}   :   rajoute une question dans questionaire
  * PUT  /api/question/answer/{id question}                      :   rajoute une reponse a une question
  *
  * DELETE /api/question/{id}                                    :   delete une question
@@ -162,47 +161,7 @@ public class QuestionController {
         }
     }
 
-    /**
-     * rajoute une question a un questionaire
-     * @param questionarename
-     * @param questionid
-     * @return ResponseEntity
-     */
-    @PutMapping("/{questionarename}/question/{questionid}")
-    @PreAuthorize("hasRole('TEACHER')")
-    public ResponseEntity<?> addRessource(@PathVariable String questionarename, @PathVariable long questionid){
-        Optional<Ressource> oressource = ressourcesRepository.findById(questionarename);
-        Optional<Question> oquestion = questionRepository.findById(questionid);
-        if (!oressource.isPresent()) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: No such ressource!"));
-        }
-        if (!oquestion.isPresent()) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: No such question!"));
-        }
-        Ressource ressource = oressource.get();
-        Questionnaire questionnaire;
-        if(ressource.getClass().equals(Questionnaire.class)){
-            questionnaire = (Questionnaire)ressource;
-        }else{
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Ressource n'est pas un questionaire!"));
-        }
-        Question question = oquestion.get();
-        Set<Question> ressources = questionnaire.ListeQuestions;
-        if(ressources.contains(ressource)) {
-            return ResponseEntity.ok(new MessageResponse("Question was added before!"));
-        }
-        //pour remonter a la source questionaire lorsqu'on suprime question ou en get
-        question.questionnaire=questionnaire;
-        ressources.add(question);
-        ressourcesRepository.save(ressource);
-        return ResponseEntity.ok(new MessageResponse("User successfully added to questionaire!"));
-    }
+
 
     /**
      * Les étudiants peuvent soummetre une réponse à une question
