@@ -32,7 +32,6 @@ public class CreateQuestionRequest {
     @Size(max = 120)
     public  String reponseText="";
 
-
     public String getReponse(){
         return this.reponse;
     }

@@ -1,6 +1,8 @@
 package Model.Documents;
 
 
+import org.hibernate.validator.constraints.Range;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -15,15 +17,15 @@ public class Reponse {
 
     @NotBlank
     public String username;
-    @NotBlank
+
+    @Enumerated()
     public EQuestion typeReponse;
-    @NotBlank
-    @Size(max = 120)
-    public  int [] reponsesMultiples;
-    @NotBlank
-    @Size(max = 120)
+
+    public  int [] reponsesMultiples = {};
+
+    @Range(min=0, max=20)
     public  int reponseQcm;
-    @NotBlank
+
     @Size(max = 120)
     public  String reponseText;
 

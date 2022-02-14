@@ -169,8 +169,9 @@ public class QuestionController {
      * @param idquestion
      * @return
      */
-    @PutMapping("/answer/{id question}")
-    public ResponseEntity<?> updateAnswer(@RequestBody Reponse reponse,@PathVariable final long idquestion) {
+    @PutMapping("/answer/{idquestion}")
+    public ResponseEntity<?> updateAnswer(@Valid @RequestBody Reponse reponse,@PathVariable long idquestion) {
+        System.out.println("Try add answer");
         Optional<Question> oquestion = questionRepository.findById(idquestion);
         if (!oquestion.isPresent()) {
             return ResponseEntity
@@ -179,8 +180,9 @@ public class QuestionController {
         }
         Question question = oquestion.get();
         for (Reponse reponses:question.reponses) {
-            if(reponses.username == reponse.username) {
+            if(reponses.username.equals(reponse.username)) {
                 question.reponses.remove(reponses);
+                reponsesRepository.delete(reponses);
             }
         }
         if(reponse.typeReponse != question.typeQuestion) {
@@ -188,7 +190,9 @@ public class QuestionController {
                     .badRequest()
                     .body(new MessageResponse("Error: Given reponse is not same type of questioon  "));
         }
+        reponsesRepository.save(reponse);
         question.reponses.add(reponse);
+        questionRepository.save(question);
         return ResponseEntity.ok(new MessageResponse("Question successfully submited "));
     }
 
