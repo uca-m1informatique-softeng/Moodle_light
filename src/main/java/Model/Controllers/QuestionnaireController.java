@@ -81,7 +81,7 @@ public class QuestionnaireController {
             return -1;
         }
         Questionnaire questionnaire = (Questionnaire) oquestionnaire.get();
-        int reponsevalide =0;
+        int reponsevalide = 0;
         for (Question question:questionnaire.ListeQuestions) {
             Reponse reponse = findReponse(question,userName);
             if(reponse == null){

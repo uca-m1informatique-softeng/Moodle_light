@@ -13,8 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
-import static Model.Documents.EQuestion.TEXT;
+import static Model.Documents.EQuestion.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class AnswerTest extends SpringIntegration {
@@ -41,12 +42,43 @@ public class AnswerTest extends SpringIntegration {
 
 
     @When("user {string} answer {string} with {string}")
-    public void userCreateTextQuestion(String user_a, String enonce_a , String answer_a) throws UnsupportedEncodingException {
+    public void answerQuestionText(String user_a, String enonce_a , String answer_a) throws UnsupportedEncodingException {
         Question question = questionRepository.findByEnonce(enonce_a).get();
         Reponse reponse = new Reponse();
         reponse.typeReponse = TEXT;
         reponse.username = user_a;
         reponse.reponseText = answer_a;
+        Gson g = new Gson();
+        String s = g.toJson(reponse);
+        String jwt = authController.generateJwt(user_a, PASSWORD);
+        System.out.println(question.id);
+        executePut("http://localhost:8080/api/question/answer/"+question.id,jwt,s);
+        System.out.println(latestHttpResponse.getStatusLine().getStatusCode());
+    }
+
+    @When("user {string} answer {string} with {int}")
+    public void answerQuestionQcm(String user_a, String enonce_a , int answer_a) throws UnsupportedEncodingException {
+        Question question = questionRepository.findByEnonce(enonce_a).get();
+        Reponse reponse = new Reponse();
+        reponse.typeReponse = QCM;
+        reponse.username = user_a;
+        reponse.reponseQcm = answer_a;
+        Gson g = new Gson();
+        String s = g.toJson(reponse);
+        String jwt = authController.generateJwt(user_a, PASSWORD);
+        System.out.println(question.id);
+        executePut("http://localhost:8080/api/question/answer/"+question.id,jwt,s);
+        System.out.println(latestHttpResponse.getStatusLine().getStatusCode());
+    }
+
+    @When("user {string} answer multi {string} with")
+    public void answerQuestionMultiQcm(String user_a, String enonce_a , List<Integer> content) throws UnsupportedEncodingException {
+        Question question = questionRepository.findByEnonce(enonce_a).get();
+        int[] lrep = content.stream().mapToInt(i->i).toArray();
+        Reponse reponse = new Reponse();
+        reponse.typeReponse = CHOIXMULTIPLE;
+        reponse.username = user_a;
+        reponse.reponsesMultiples = lrep;
         Gson g = new Gson();
         String s = g.toJson(reponse);
         String jwt = authController.generateJwt(user_a, PASSWORD);

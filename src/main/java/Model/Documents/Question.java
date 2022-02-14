@@ -55,14 +55,15 @@ public class Question {
              return reponse.reponseQcm == this.reponseQcm;
 
          case CHOIXMULTIPLE:
-            /* if ( reponse.reponsesMultiples.length != reponse.reponsesMultiples.length)
+             if ( reponse.reponsesMultiples.length != reponse.reponsesMultiples.length)
                  return  false ;
              for (int i = 0 ; i < reponse.reponsesMultiples.length; i++){
                  if(reponse.reponsesMultiples[i] == this.reponsesMultiples[i]) {
                      return false;
                  }
-             }*/
+             }
              return true;
+
          case TEXT:
              if(reponse.reponseText.equals(this.reponseText))
                  return true;
