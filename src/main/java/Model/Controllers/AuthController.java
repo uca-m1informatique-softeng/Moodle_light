@@ -7,10 +7,12 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import Model.Documents.Module;
 import Model.Payload.request.LoginRequest;
 import Model.Payload.request.SignupRequest;
 import Model.Payload.response.JwtResponse;
 import Model.Payload.response.MessageResponse;
+import Model.Repositories.ModuleRepository;
 import Model.Repositories.RoleRepository;
 import Model.Repositories.UserRepository;
 import Model.Security.jwt.JwtUtils;
@@ -47,6 +49,9 @@ public class AuthController {
 
     @Autowired
     PasswordEncoder encoder;
+
+    @Autowired
+    ModuleRepository moduleRepository;
 
     @Autowired
     JwtUtils jwtUtils;
@@ -112,7 +117,6 @@ public class AuthController {
                     .badRequest()
                     .body(new MessageResponse("Error: Username is already taken!"));
         }
-
         if (userRepository.existsByEmail(signUpRequest.getEmail())) {
             return ResponseEntity
                     .badRequest()
@@ -128,18 +132,24 @@ public class AuthController {
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{name}")
     @PreAuthorize("hasRole('TEACHER')")
-    public ResponseEntity<?> deletUser( @PathVariable long id) {
+    public ResponseEntity<?> deletUser( @PathVariable String name) {
         System.out.println("passer ksldjlqj,qlks,dlkqd");
-        Optional<User>ouser = userRepository.findById(id);
+        Optional<User>ouser = userRepository.findByUsername(name);
         if (!ouser.isPresent()) {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Error: No such module!"));
         }
         User user = ouser.get();
+        for (Module moduleu:user.getModules()) {
+            System.out.println("delete user");
+            moduleu.users.remove(user);
+            moduleRepository.save(moduleu);
+        }
         userRepository.delete(user);
+        System.out.println("delete user");
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
 }

@@ -1,11 +1,14 @@
 Feature: Register Teacher/Student
 
   Background:
-    Given a teacher with login "steve"
+
+    Given clean
+    And a teacher with login "steve"
     And a teacher with login "sarah"
     And a student with login "paul"
     And a student with login "mari"
     And a module named "Gestion de projet"
+
 
 
   Scenario: Register Teacher
@@ -14,6 +17,7 @@ Feature: Register Teacher/Student
     And "steve" is registered to module "Gestion-de-projet"
 
   Scenario: Register Second Teacher
+
     When "sarah" registers to module "Gestion-de-projet"
     And "steve" registers to module "Gestion-de-projet"
     Then last request status is 400
@@ -39,7 +43,7 @@ Feature: Register Teacher/Student
     Scenario: Teacher register it self again
       When "sarah" registers to module "Gestion de projet"
       And "sarah" registers to module "Gestion de projet"
-      Then last request status is 400
+      Then last request status is 200
       And "sarah" is registered to module "Gestion de projet"
 
     Scenario: Teacher not registered registre Student

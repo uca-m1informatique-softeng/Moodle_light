@@ -129,11 +129,28 @@ public class QuestionController {
             case TEXT:
                 questionToAdd = new Question(createQuestionRequest_a.getEnonce(),createQuestionRequest_a.getReponse());
                 break;
+            case QCM:
+                questionToAdd = new Question(
+                        createQuestionRequest_a.getEnonce(),
+                        createQuestionRequest_a.listeEnonces_,
+                        createQuestionRequest_a.reponseQcm
+                );
+                break;
+            case CHOIXMULTIPLE:
+                questionToAdd = new Question(
+                        createQuestionRequest_a.getEnonce(),
+                        createQuestionRequest_a.listeEnonces_,
+                        createQuestionRequest_a.reponsesMultiples
+                );
+                break;
             default:
                 //rajouter plus tard program python string
                 questionToAdd = null;
         }
-        if (questionToAdd != null && !questionRepository.existsByEnonce(questionToAdd.enonce)) {
+        if (questionToAdd != null){
+            if(questionRepository.existsByEnonce(questionToAdd.enonce)) {
+                return ResponseEntity.ok(new MessageResponse("Question existed before"));
+            }
             System.out.println("je passe dans save");
             questionRepository.save(questionToAdd);
             return ResponseEntity.ok(new MessageResponse("Question successfully "));
@@ -177,17 +194,14 @@ public class QuestionController {
         }
         Question question = oquestion.get();
         Set<Question> ressources = questionnaire.ListeQuestions;
-        if(!ressources.contains(ressource)) {
-            //pour remonter a la source questionaire lorsqu'on suprime question ou en get
-            question.questionnaire=questionnaire;
-            ressources.add(question);
-        }else{
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Ressource y apartient deja !"));
+        if(ressources.contains(ressource)) {
+            return ResponseEntity.ok(new MessageResponse("Question was added before!"));
         }
+        //pour remonter a la source questionaire lorsqu'on suprime question ou en get
+        question.questionnaire=questionnaire;
+        ressources.add(question);
         ressourcesRepository.save(ressource);
-        return ResponseEntity.ok(new MessageResponse("User successfully added to module!"));
+        return ResponseEntity.ok(new MessageResponse("User successfully added to questionaire!"));
     }
 
     /**

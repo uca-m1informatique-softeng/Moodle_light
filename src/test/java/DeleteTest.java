@@ -1,12 +1,16 @@
 import Model.Controllers.AuthController;
 import Model.Documents.Cours;
 import Model.Documents.Ressource;
+import Model.Documents.Module;
+import Model.Repositories.ModuleRepository;
+import Model.Repositories.QuestionRepository;
 import Model.Repositories.RessourcesRepository;
 import Model.Repositories.UserRepository;
 import Model.User.User;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
@@ -21,6 +25,10 @@ public class DeleteTest extends SpringIntegration{
 
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    ModuleRepository moduleRepository;
+    @Autowired
+    QuestionRepository questionRepository;
 
     @Autowired
     RessourcesRepository ressourcesRepository;
@@ -32,16 +40,19 @@ public class DeleteTest extends SpringIntegration{
     public void  notExistePerson(String arg0) throws IOException {
         Optional<User> ouser = userRepository.findByUsername(arg0);
         if(ouser.isPresent()){
-            userRepository.delete(ouser.get());
+            User user = ouser.get();
+            for(Module module : user.getModules()){
+                module.users.remove(user);
+                moduleRepository.save(module);
+            }
+            userRepository.delete(user);
         }
     }
 
     @When("{string} delete {string}")
     public void  deletePerson(String arg0, String arg1) throws IOException {
-        Optional<User> ouser = userRepository.findByUsername(arg1);
-        User user = ouser.get();
         String jwt = authController.generateJwt(arg0, PASSWORD);
-        executeDelete( "http://localhost:8080/api/auth/delete/"+user.getId(), jwt);
+        executeDelete( "http://localhost:8080/api/auth/"+arg1, jwt);
     }
 
     @When("{string} delete questionnaire {string}")
@@ -59,5 +70,17 @@ public class DeleteTest extends SpringIntegration{
     @Then("deleteTest last request status is {int}")
     public void isRegisteredToModule(int status) {
         assertEquals(status, latestHttpResponse.getStatusLine().getStatusCode());
+    }
+
+    @Given("clean")
+    public void clean(){
+        for(Module module: moduleRepository.findAll()){
+            module.users = null;
+            module.ressources = null;
+            moduleRepository.save(module);
+        }
+        ressourcesRepository.deleteAll();
+        questionRepository.deleteAll();
+        userRepository.deleteAll();
     }
 }

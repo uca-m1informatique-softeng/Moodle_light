@@ -5,6 +5,7 @@ import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
@@ -16,7 +17,7 @@ public class CreateQuestionRequest {
     @Enumerated()
     EQuestion questionType;
 
-    @Size(min = 3, max = 20)
+    @Size(max = 20)
     private String reponse = "";
 
     @Size(max = 120)
@@ -24,8 +25,8 @@ public class CreateQuestionRequest {
 
     @Size(max = 120)
     public  String typeQuestion="";
-   /* @Range(min=1, max=20)
-    public  int [] reponsesMultiples={};*/
+
+    public  int [] reponsesMultiples={};
     @Range(min=0, max=20)
     public  int reponseQcm=0;
     @Size(max = 120)

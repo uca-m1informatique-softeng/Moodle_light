@@ -15,8 +15,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
-import static Model.Documents.EQuestion.TEXT;
+import static Model.Documents.EQuestion.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -101,8 +102,44 @@ public class QuestionnaireTest extends SpringIntegration {
        String jwt = authController.generateJwt(user_a, PASSWORD);
        executePost("http://localhost:8080/api/question",jwt,s);
        System.out.println(latestHttpResponse.getStatusLine().getStatusCode());
-
    }
+
+   @When("user {string} creates {string} question with content {string}, answers {string} and with answer {int}")
+   public void userCreateQcmQuestion(String user_a, String questionType, String enonce_a , String possibleanswer,int rep) throws UnsupportedEncodingException {
+       CreateQuestionRequest textQuestionRequest = new CreateQuestionRequest();
+       textQuestionRequest.setEnonce(enonce_a);
+       textQuestionRequest.listeEnonces_= possibleanswer;
+       textQuestionRequest.reponseQcm = rep;
+       textQuestionRequest.setQuestionType(QCM);
+       Gson g = new Gson();
+       String s = g.toJson(textQuestionRequest);
+       String jwt = authController.generateJwt(user_a, PASSWORD);
+       executePost("http://localhost:8080/api/question",jwt,s);
+       System.out.println(latestHttpResponse.getStatusLine().getStatusCode());
+    }
+
+    @When("user {string} creates {string} multi question with content {string}, answers {string} and with answer")
+    public void userCreateMultiQcmQuestion(String user_a, String questionType, String enonce_a , String possibleanswer, List<Integer> content) throws UnsupportedEncodingException  {
+        CreateQuestionRequest textQuestionRequest = new CreateQuestionRequest();
+        textQuestionRequest.setEnonce(enonce_a);
+        textQuestionRequest.listeEnonces_= possibleanswer;
+        int[] lrep = content.stream().mapToInt(i->i).toArray();
+        textQuestionRequest.reponsesMultiples = lrep;
+        textQuestionRequest.setQuestionType(CHOIXMULTIPLE);
+        Gson g = new Gson();
+        String s = g.toJson(textQuestionRequest);
+        String jwt = authController.generateJwt(user_a, PASSWORD);
+        executePost("http://localhost:8080/api/question",jwt,s);
+        System.out.println(latestHttpResponse.getStatusLine().getStatusCode());
+    }
+
+    @When("user {string} add question {string} to {string}")
+    public void addquestiontoquestionaire(String username, String questionenonce, String questionairename) throws UnsupportedEncodingException{
+        String jwt = authController.generateJwt(username, PASSWORD);
+        executePost("http://localhost:8080/api/questionnaire",jwt,null);
+    }
+
+
    @Then("Question with content {string} exist")
     public void questionExistByEnone(String enonce){
         assertTrue(questionRepository.findByEnonce(enonce).isPresent());

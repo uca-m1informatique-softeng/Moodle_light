@@ -33,8 +33,8 @@ public class Question {
 
     @Enumerated()
     public EQuestion typeQuestion;
-/*    @Range(min=1, max=20)
-    public  int [] reponsesMultiples={};*/
+
+    public  int [] reponsesMultiples={};
     @Range(min=0, max=20)
     public  int reponseQcm=0;
     @Size(max = 120)

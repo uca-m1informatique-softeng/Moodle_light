@@ -212,8 +212,8 @@ public class ModuleController {
 		User actor = userRepository.findByUsername(principal.getName()).get();
 		System.out.println("passe ici 2");
 		Set<User> participants = module.getParticipants();
-		if ((participants.isEmpty() && actor.equals(user))
-				|| participants.contains(actor)) {
+		if ((participants.isEmpty() && actor.equals(user)) ||
+			participants.contains(actor)) {
 			System.out.println("passe ici 3");
 			// verifie si user n'apartient pas déjà à participants
 			if(!participants.contains(user)) {
@@ -221,9 +221,7 @@ public class ModuleController {
 				participants.add(user);
 				user.getModules().add(module);
 			}else{
-				return ResponseEntity
-						.badRequest()
-						.body(new MessageResponse("Error: User y apartient deja !"));
+				return ResponseEntity.ok(new MessageResponse("is created before"));
 			}
 		} else {
 		return ResponseEntity
@@ -268,7 +266,8 @@ public class ModuleController {
 
 		Set<User> participants = module.getParticipants();
 		if(participants.contains(user)) {
-			participants.add(user);
+			user.getModules().remove(module);
+			participants.remove(user);
 		}else{
 			return ResponseEntity
 					.badRequest()
