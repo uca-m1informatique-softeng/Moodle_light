@@ -39,7 +39,6 @@ public class SpringIntegration {
     CloseableHttpClient  httpClient =
             HttpClientBuilder.create().setDefaultRequestConfig(config).build();
 
-
     //pas utiliser pour le moment
     Object executeGetReturnObject(String url, String jwt) throws IOException {
         HttpHeaders headers = new HttpHeaders();
@@ -156,7 +155,6 @@ public class SpringIntegration {
             System.out.println(t.getLocalizedMessage());
             return false;
         }
-        System.out.println(latestHttpResponse);
         return true;
     }
 }

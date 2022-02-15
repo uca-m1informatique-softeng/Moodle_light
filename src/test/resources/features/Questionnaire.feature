@@ -24,6 +24,13 @@ Feature: Questionnaire
       | 2 |
     Then Question with content "Enonce3" exist
 
+  Scenario: Teacher gets a questionnaire
+    When "steve" creates questionnaire "Quest1"
+    And "steve" registers to module "Gestion-de-projet"
+    And "steve" adds questionnaire "Quest1" to module "Gestion-de-projet"
+    And "steve" sends a get request for questionnaire "Quest1"
+    Then "steve" gets the questionnaire with name "Quest1"
+
   Scenario: Teacher add module to questionaire
     When "steve" creates questionnaire "Quest1"
     And "steve" adds questionnaire "Quest1" to module "Gestion-de-projet"

@@ -2,7 +2,6 @@ package Model.Controllers;
 
 
 import Model.Documents.*;
-import Model.Documents.Module;
 import Model.Payload.request.AddRessourceRequest;
 import Model.Payload.response.MessageResponse;
 import Model.Repositories.ModuleRepository;
@@ -16,6 +15,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import java.util.Optional;
 import java.util.Set;
 
@@ -80,18 +80,29 @@ public class QuestionnaireController {
      */
     @GetMapping("/{username}/{nameQuestionnaire}")
     @PreAuthorize("hasRole('TEACHER')")
-    public Questionnaire getsModule(@PathVariable String username, @PathVariable String nameQuestionnaire){
+    public String getsModule(@PathVariable String username, @PathVariable String nameQuestionnaire){
+        System.out.println(" GET QUESTIONNAIRE ");
         Optional<Ressource> oquestionaire = ressourcesRepository.findByName(nameQuestionnaire);
-        Optional<User> ouser = userRepository.findByUsername(username);
+        Questionnaire questionnaire = (Questionnaire) oquestionaire.get();
+
+        /* Optional<User> ouser = userRepository.findByUsername(username);
         if(!oquestionaire.isPresent()||!ouser.isPresent()||!oquestionaire.get().getClass().equals(Questionnaire.class)){
             return null;
         }
+        System.out.println(" GET QUESTIONNAIRE 2");
+
         Questionnaire questionnaire = (Questionnaire) oquestionaire.get();
         User user = ouser.get();
         if(!questionnaire.module.users.contains(user)){
+            System.out.println(" GET QUESTIONNAIRE 3");
+
             return null;
         }
-        return questionnaire;
+
+        System.out.println(" GET QUESTIONNAIRE 4");
+        */
+
+        return questionnaire.name;
     }
 
     /***
@@ -104,6 +115,7 @@ public class QuestionnaireController {
         if(!oquestionnaire.isPresent()||oquestionnaire.get().getClass().equals(Questionnaire.class)){
             return -1;
         }
+
         Questionnaire questionnaire = (Questionnaire) oquestionnaire.get();
         int reponsevalide = 0;
         for (Question question:questionnaire.ListeQuestions) {
@@ -149,31 +161,6 @@ public class QuestionnaireController {
         Questionnaire questionnaire = new Questionnaire(addRessourceRequest.getName());
         ressourcesRepository.save(questionnaire);
         return ResponseEntity.ok(new MessageResponse("Questionnaire successfully created"));
-    }
-
-    /**
-     * Adds a questionnaire to a module
-     * @param questionarename
-     * @param moduleName
-     * @return ResponseEntity
-     */
-    @PutMapping("/{questionarename}/module/{moduleName}")
-    @PreAuthorize("hasRole('TEACHER')")
-    public ResponseEntity<?> addsQuestionnaire(@PathVariable String questionarename, @PathVariable String moduleName){
-        Optional<Module> omodule = moduleRepository.findByName(moduleName);
-        if(!omodule.isPresent()){
-            return ResponseEntity.badRequest().body(new MessageResponse("This module doesn't exist"));
-        }
-
-        Module module = omodule.get();
-
-        Optional<Ressource> oquestionnaire = ressourcesRepository.findByName(questionarename);
-
-        Questionnaire questionnaire = (Questionnaire) oquestionnaire.get();
-        questionnaire.module = module;
-
-        ressourcesRepository.save(questionnaire);
-        return ResponseEntity.ok(new MessageResponse("Questionnaire successfully updated"));
     }
 
     /**

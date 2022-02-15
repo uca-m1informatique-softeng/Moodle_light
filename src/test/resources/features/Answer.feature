@@ -34,5 +34,5 @@ Feature: Questionnaire
     And user "paul" answer multi "Enonce3" with
       | 1 |
       | 2 |
-    Then user "paul" validate and get 2 points
+    Then user "paul" validate "Quest1" and get 2 points
 

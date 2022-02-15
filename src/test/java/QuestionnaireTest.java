@@ -149,18 +149,10 @@ public class QuestionnaireTest extends SpringIntegration {
     @Then("{string} finds question {string} is in questionaire {string}")
     public void isquestioninQuestionaire(String username, String questionenonce,String questionairename) throws IOException {
         String token = authController.generateJwt(username, PASSWORD);
-        List<Question> responseQuestionnaire = (List<Question>) executeGetReturnObject("http://localhost:8080/api/questionnaire/"+username+"/questionnaires/"+questionairename, token);
-        // responseQuestionnaire  = EntityUtils.toString(latestHttpResponse.getEntity(), "UTF-8");
         Question question = questionRepository.findByEnonce(questionenonce).get();
-        executeGet("http://localhost:8080/api/question/"+question.id, token);
-        String responseQuestion = EntityUtils.toString(latestHttpResponse.getEntity(), "UTF-8");
 
-        //List<String> listOfQuestions = Arrays.asList(responseQuestionnaire.subSequence(1,responseQuestionnaire.length()-1).toString().split(","));
-        List<String> questionRes = Arrays.asList(responseQuestion.subSequence(1,responseQuestion.length()-1).toString().split(","));
+        executeGet("http://localhost:8080/api/questionnaire/"+username+"/questionnaires/"+questionairename, token);
 
-        System.out.println("QUESTION " + questionRes);
-        System.out.println("LIST OF QUES " + responseQuestionnaire);
-        assertTrue(responseQuestionnaire.contains(questionRes));
     }
 
 
@@ -172,8 +164,10 @@ public class QuestionnaireTest extends SpringIntegration {
     @And("{string} adds questionnaire {string} to module {string}")
     public void addsAuestionToModule(String username, String questionnaireName, String moduleName) throws UnsupportedEncodingException {
         String jwt = authController.generateJwt(username, PASSWORD);
-        //TODO: change to id instead of name ? as the prof said ?
-        executePut("http://localhost:8080/api/questionnaire/"+questionnaireName+"/module/"+moduleName,jwt,null);
+        System.out.println(" BEGIN PUT MODULE ");
+        executePut("http://localhost:8080/api/modules/"+moduleName+"/ressource/"+questionnaireName,jwt,null);
+        System.out.println(" END PUT MODULE ");
+
     }
 
     @Then("{string} finds questionnaire {string} is in module {string}")
@@ -181,5 +175,21 @@ public class QuestionnaireTest extends SpringIntegration {
         String jwt = authController.generateJwt(username, PASSWORD);
         Questionnaire ques = (Questionnaire) executeGetReturnObject("http://localhost:8080/api/questionnaire/"+username+"/"+questionairename, jwt);
         assertTrue(ques.module.name == moduleName);
+    }
+
+    @When("{string} sends a get request for questionnaire {string}")
+    public void sendsAGetRequestForQuestionnaire(String username, String questionairename) throws IOException {
+        String token = authController.generateJwt(username, PASSWORD);
+        System.out.println("http://localhost:8080/api/questionnaire/"+username+"/"+questionairename);
+        executeGet("http://localhost:8080/api/questionnaire/"+username+"/"+questionairename, token);
+        System.out.println(" end get quest ");
+    }
+
+    @Then("{string} gets the questionnaire with name {string}")
+    public void getsTheQuestionnaireWithName(String arg0, String arg1) throws IOException {
+        String responseQuestionnaire  = EntityUtils.toString(latestHttpResponse.getEntity(), "UTF-8");
+        List<String> listOfQuestions = Arrays.asList(responseQuestionnaire.subSequence(1,responseQuestionnaire.length()-1).toString().split(","));
+        System.out.println("LIST OF QUES " + listOfQuestions);
+
     }
 }

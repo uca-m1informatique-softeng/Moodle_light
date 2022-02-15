@@ -9,9 +9,11 @@ import Model.Repositories.UserRepository;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.cucumber.messages.internal.com.google.gson.Gson;
+import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
@@ -36,10 +38,6 @@ public class AnswerTest extends SpringIntegration {
 
     @Autowired
     AuthController authController;
-
-    @Autowired
-    PasswordEncoder encoder;
-
 
     @When("user {string} answer {string} with {string}")
     public void answerQuestionText(String user_a, String enonce_a , String answer_a) throws UnsupportedEncodingException {
@@ -98,5 +96,13 @@ public class AnswerTest extends SpringIntegration {
             }
         }
         assertTrue(find);
+    }
+
+    @Then("user {string} validate {string} and get {int} points")
+    public void userValidateAndGetPoints(String username, String questionnaireName, int points) throws IOException {
+        String jwt = authController.generateJwt(username, PASSWORD);
+        int validation = (int) executeGetReturnObject("http://localhost:8080/api/questionnaire/"+username+"/validate/"+questionnaireName, jwt);
+        //String response  = EntityUtils.toString(latestHttpResponse.getEntity(), "UTF-8");
+        System.out.println("REPONSE " + validation);
     }
 }

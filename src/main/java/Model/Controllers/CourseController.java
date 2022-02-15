@@ -71,7 +71,6 @@ public class CourseController {
             System.out.println("user");
             return null;
         }
-        System.out.println("text : " + cours.text);
         return cours.text;
     }
 
