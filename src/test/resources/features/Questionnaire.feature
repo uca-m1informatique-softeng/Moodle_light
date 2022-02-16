@@ -47,7 +47,8 @@ Feature: Questionnaire
 
 
   Scenario: student answer question text
-    When user "paul" answer "Enonce1" with "text"
+    When user "steve" creates "text" question with content "Enonce1" and with answer "answ1"
+    And user "paul" answer "Enonce1" with "text"
     Then Answer of "paul" is saved in "Enonce1"
 
   Scenario: student answer question qcm
