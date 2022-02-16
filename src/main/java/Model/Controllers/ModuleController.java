@@ -25,7 +25,7 @@ import java.util.Set;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/modules")
+@RequestMapping("/api/{idUser}/modules")
 public class ModuleController {
 	@Autowired
 	AuthenticationManager authenticationManager;
@@ -49,17 +49,20 @@ public class ModuleController {
 	JwtUtils jwtUtils;
 
 
-	@PreAuthorize("hasRole('TEACHER')")
-	@GetMapping("/who")
-	public ArrayList<String> getPersonne(Principal principal) {
-		ArrayList<String> data = new ArrayList<>();
-		data.add("la personne connectée est " +principal.getName());
-		return data ;
-
-	}
 
 
-	@GetMapping("/{idUser}")
+
+	/**
+	 * Read - Get all subjects of  a student
+	 * @return - An Iterable object of modules
+	 *
+	 *
+	 * Les utilisateurs peuvent connaitre la liste des cours sur lesquels ils sont inscrits
+	 * à ajouter:
+	 * verif that the student have acces to the courses in this module
+	 *
+	 */
+	@GetMapping("")
 	public ArrayList<String> getmodules(@PathVariable Long idUser){
 		ArrayList<String> userModules = new ArrayList<>();
 		Optional<User> ouser = userRepository.findById(idUser);
@@ -76,88 +79,32 @@ public class ModuleController {
 		return userModules;
 	}
 
-
-
-
-
-	@GetMapping("/{id}/getRessources")
-	public ArrayList<String> getRessources(@PathVariable long id){
-		ArrayList<String> strings = new ArrayList<>();
-		Optional<Module> omodule = moduleRepository.findById(id);
-		if (!omodule.isPresent()) {
-			strings.add("Error: No such module!");
-			return strings;
-		}
-
-		Module module = omodule.get();
-		for (Ressource r : module.getRessources()) {
-			strings.add(r.toString());
-		}
-
-		return strings;
+	/**
+	 *
+	 * add a Module to the list of modules
+	 * @param principal
+	 * @param module
+	 * @return
+	 */
+	@PostMapping("")
+	public  Module addModule(Principal principal , @RequestBody Module module)
+	{
+			// verifier si user est un teacher avant d'ajouter un module
+			moduleRepository.save(module);
+			return module ;
 	}
 
-	@PutMapping("/{name}/ressource/{ressouceName}")
-	@PreAuthorize("hasRole('TEACHER')")
-	public ResponseEntity<?> addRessource(Principal principal,@PathVariable String name, @PathVariable String ressouceName){
-		Optional<Module> omodule = moduleRepository.findByName(name);
-		Optional<Ressource> oressource = ressourcesRepository.findByName(ressouceName);
-		if (!omodule.isPresent()) {
-			return ResponseEntity
-					.badRequest()
-					.body(new MessageResponse("Error: No such module!"));
-		}
-		if (!oressource.isPresent()) {
-			return ResponseEntity
-					.badRequest()
-					.body(new MessageResponse("Error: No such ressource!"));
-		}
 
-		Module module = omodule.get();
-		Ressource ressource = oressource.get();
-		Set<Ressource> ressources = module.getRessources();
-		if(!ressources.contains(ressource)) {
-			ressources.add(ressource);
-		}else{
-			return ResponseEntity
-					.badRequest()
-					.body(new MessageResponse("Error: Ressource y apartient deja !"));
-		}
-		moduleRepository.save(module);
-		return ResponseEntity.ok(new MessageResponse("User successfully added to module!"));
-	}
+	/**
+	 * add a user (student/ teacher ) to the module
+	 * @param principal
+	 * @param id
+	 * @param userid
+	 * @return
+	 */
 
-	@DeleteMapping("/{id}/ressource/{ressourceid}")
-	@PreAuthorize("hasRole('TEACHER')")
-	public ResponseEntity<?> deleteRessource(Principal principal,@PathVariable long id, @PathVariable long questionaireid){
-		Optional<Module> omodule = moduleRepository.findById(id);
-		Optional<Ressource> oressource = ressourcesRepository.findById(questionaireid);
-		if (!omodule.isPresent()) {
-			return ResponseEntity
-					.badRequest()
-					.body(new MessageResponse("Error: No such module!"));
-		}
-		if (!oressource.isPresent()) {
-			return ResponseEntity
-					.badRequest()
-					.body(new MessageResponse("Error: No such ressource!"));
-		}
 
-		Module module = omodule.get();
-		Ressource ressource = oressource.get();
-		Set<Ressource> ressources = module.getRessources();
-		if(ressources.contains(ressource)) {
-			ressources.remove(ressource);
-		}else{
-			return ResponseEntity
-					.badRequest()
-					.body(new MessageResponse("Error: Ressource n'apartient pas a module!"));
-		}
-		moduleRepository.save(module);
-		return ResponseEntity.ok(new MessageResponse("User successfully added to module!"));
-	}
-
-	@PostMapping("/{id}/participants/{userid}")
+	@PostMapping("/{idModule}/{idStudentToAdd}")
 	@PreAuthorize("hasRole('TEACHER')")
 	public ResponseEntity<?> addUser(Principal principal, @PathVariable long id, @PathVariable long userid) {
 		Optional<Module> omodule = moduleRepository.findById(id);
@@ -180,15 +127,15 @@ public class ModuleController {
 		Set<User> participants = module.getParticipants();
 //		if ((participants.isEmpty() && actor.equals(user))
 //				|| participants.contains(actor)) {
-			// verifie si user n'apartient pas déjà à participants
-			if(!participants.contains(user)) {
-				participants.add(user);
-				user.getModules().add(module);
-			}else{
-				return ResponseEntity
-						.badRequest()
-						.body(new MessageResponse("Error: User y apartient deja !"));
-			}
+		// verifie si user n'apartient pas déjà à participants
+		if(!participants.contains(user)) {
+			participants.add(user);
+			user.getModules().add(module);
+		}else{
+			return ResponseEntity
+					.badRequest()
+					.body(new MessageResponse("Error: User y apartient deja !"));
+		}
 //		} else {
 //			return ResponseEntity
 //					.badRequest()
@@ -199,7 +146,12 @@ public class ModuleController {
 		return ResponseEntity.ok(new MessageResponse("User successfully added to module!"));
 	}
 
-	@DeleteMapping("/{id}/participants/{userid}")
+
+
+
+
+
+	@DeleteMapping("/{idModule}/{idStudentToDelete}")
 	@PreAuthorize("hasRole('TEACHER')")
 	public ResponseEntity<?> deleteUser(Principal principal, @PathVariable long id, @PathVariable long userid) {
 		Optional<Module> omodule = moduleRepository.findById(id);
@@ -231,31 +183,155 @@ public class ModuleController {
 		return ResponseEntity.ok(new MessageResponse("User successfully remouved from module!"));
 	}
 
-	User createUser(String userName, String email, String password, Set<String> strRoles) {
-		User user = new User(userName, email, password);
-		Set<Role> roles = new HashSet<>();
 
-		if (strRoles == null) {
-			Role userRole = roleRepository.findByName(ERole.ROLE_STUDENT)
-					.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-			roles.add(userRole);
-		} else {
-			strRoles.forEach(role -> {
-				switch (role) {
-					case "mod":
-						Role modRole = roleRepository.findByName(ERole.ROLE_TEACHER)
-								.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-						roles.add(modRole);
 
-						break;
-					default:
-						Role userRole = roleRepository.findByName(ERole.ROLE_STUDENT)
-								.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-						roles.add(userRole);
-				}
-			});
-		}
-		user.setRoles(roles);
-		return user;
-	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//
+//	@GetMapping("/{id}/getRessources")
+//	public ArrayList<String> getRessources(@PathVariable long id){
+//		ArrayList<String> strings = new ArrayList<>();
+//		Optional<Module> omodule = moduleRepository.findById(id);
+//		if (!omodule.isPresent()) {
+//			strings.add("Error: No such module!");
+//			return strings;
+//		}
+//
+//		Module module = omodule.get();
+//		for (Ressource r : module.getRessources()) {
+//			strings.add(r.toString());
+//		}
+//
+//		return strings;
+//	}
+//
+//	@PutMapping("/{name}/ressource/{ressouceName}")
+//	@PreAuthorize("hasRole('TEACHER')")
+//	public ResponseEntity<?> addRessource(Principal principal,@PathVariable String name, @PathVariable String ressouceName){
+//		Optional<Module> omodule = moduleRepository.findByName(name);
+//		Optional<Ressource> oressource = ressourcesRepository.findByName(ressouceName);
+//		if (!omodule.isPresent()) {
+//			return ResponseEntity
+//					.badRequest()
+//					.body(new MessageResponse("Error: No such module!"));
+//		}
+//		if (!oressource.isPresent()) {
+//			return ResponseEntity
+//					.badRequest()
+//					.body(new MessageResponse("Error: No such ressource!"));
+//		}
+//
+//		Module module = omodule.get();
+//		Ressource ressource = oressource.get();
+//		Set<Ressource> ressources = module.getRessources();
+//		if(!ressources.contains(ressource)) {
+//			ressources.add(ressource);
+//		}else{
+//			return ResponseEntity
+//					.badRequest()
+//					.body(new MessageResponse("Error: Ressource y apartient deja !"));
+//		}
+//		moduleRepository.save(module);
+//		return ResponseEntity.ok(new MessageResponse("User successfully added to module!"));
+//	}
+//
+//	@DeleteMapping("/{id}/ressource/{ressourceid}")
+//	@PreAuthorize("hasRole('TEACHER')")
+//	public ResponseEntity<?> deleteRessource(Principal principal,@PathVariable long id, @PathVariable long questionaireid) {
+//		Optional<Module> omodule = moduleRepository.findById(id);
+//		Optional<Ressource> oressource = ressourcesRepository.findById(questionaireid);
+//		if (!omodule.isPresent()) {
+//			return ResponseEntity
+//					.badRequest()
+//					.body(new MessageResponse("Error: No such module!"));
+//		}
+//		if (!oressource.isPresent()) {
+//			return ResponseEntity
+//					.badRequest()
+//					.body(new MessageResponse("Error: No such ressource!"));
+//		}
+//
+//		Module module = omodule.get();
+//		Ressource ressource = oressource.get();
+//		Set<Ressource> ressources = module.getRessources();
+//		if (ressources.contains(ressource)) {
+//			ressources.remove(ressource);
+//		} else {
+//			return ResponseEntity
+//					.badRequest()
+//					.body(new MessageResponse("Error: Ressource n'apartient pas a module!"));
+//		}
+//		moduleRepository.save(module);
+//		return ResponseEntity.ok(new MessageResponse("User successfully added to module!"));
+//	}
+//
+//
+//
+//
+//
+//
+//
+//
+//	User createUser(String userName, String email, String password, Set<String> strRoles) {
+//		User user = new User(userName, email, password);
+//		Set<Role> roles = new HashSet<>();
+//
+//		if (strRoles == null) {
+//			Role userRole = roleRepository.findByName(ERole.ROLE_STUDENT)
+//					.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+//			roles.add(userRole);
+//		} else {
+//			strRoles.forEach(role -> {
+//				switch (role) {
+//					case "mod":
+//						Role modRole = roleRepository.findByName(ERole.ROLE_TEACHER)
+//								.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+//						roles.add(modRole);
+//
+//						break;
+//					default:
+//						Role userRole = roleRepository.findByName(ERole.ROLE_STUDENT)
+//								.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+//						roles.add(userRole);
+//				}
+//			});
+//		}
+//		user.setRoles(roles);
+//		return user;
+//	}
 }
