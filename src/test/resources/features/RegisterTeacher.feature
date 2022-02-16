@@ -1,9 +1,7 @@
 Feature: Register Teacher/Student
 
   Background:
-
-    Given clean
-    And a teacher with login "steve"
+    Given a teacher with login "steve"
     And a teacher with login "sarah"
     And a student with login "paul"
     And a student with login "mari"

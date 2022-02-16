@@ -171,7 +171,8 @@ public class QuestionnaireController {
      */
     @PutMapping("/{questionarename}/question/{questionid}")
     @PreAuthorize("hasRole('TEACHER')")
-    public ResponseEntity<?> addRessource(@PathVariable String questionarename, @PathVariable long questionid){
+    public ResponseEntity<?> addRessource(@PathVariable String questionarename, @PathVariable final long questionid){
+        System.out.println("rajoute Question");
         Optional<Ressource> oressource = ressourcesRepository.findByName(questionarename);
         Optional<Question> oquestion = questionRepository.findById(questionid);
         if (!oressource.isPresent()) {

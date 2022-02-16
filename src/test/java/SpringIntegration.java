@@ -13,6 +13,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.*;
+import org.apache.http.config.ConnectionConfig;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -31,14 +32,17 @@ public class SpringIntegration {
     protected HttpResponse latestHttpResponse;
     private final RestTemplate restTemplate = new RestTemplate();
 
-    int timeout = 5;
+    int timeout = 1;
     RequestConfig config = RequestConfig.custom()
             .setConnectTimeout(timeout * 1000)
             .setConnectionRequestTimeout(timeout * 1000)
-            .setSocketTimeout(timeout * 1000).build();
+            .setSocketTimeout(timeout * 1000)
+            .setConnectTimeout(1)
+            .build();
     CloseableHttpClient  httpClient =
-            HttpClientBuilder.create().setDefaultRequestConfig(config).build();
-
+            HttpClientBuilder.create()
+                    .setDefaultRequestConfig(config)
+                    .build();
     //pas utiliser pour le moment
     Object executeGetReturnObject(String url, String jwt) throws IOException {
         HttpHeaders headers = new HttpHeaders();
@@ -63,11 +67,16 @@ public class SpringIntegration {
      * @return boolean true : request a reussi
      * @throws UnsupportedEncodingException
      */
-    boolean executePut(String url, String jwt, String obj) throws UnsupportedEncodingException {
+    boolean executePut(String url, String jwt, String obj) throws IOException {
         HttpPut request = new HttpPut(url);
-        add(request,jwt);
-        addbody(request,obj);
-        return  throwRequest(request);
+        add(request, jwt);
+        if(obj != null){
+            request.setEntity(new StringEntity(obj));
+        }else{
+            request.setEntity(new StringEntity("{}"));
+        }
+        latestHttpResponse = httpClient.execute(request);
+        return false;
     }
 
     /**
@@ -78,11 +87,19 @@ public class SpringIntegration {
      * @return boolean true : request a reussi
      * @throws UnsupportedEncodingException
      */
-    boolean executePost(String url,  String jwt, String obj) throws UnsupportedEncodingException {
+    boolean executePost(String url,  String jwt, String obj) throws IOException {
         HttpPost request = new HttpPost(url);
-        add(request,jwt);
-        addbody(request,obj);
-        return  throwRequest(request);
+        request.addHeader("content-type", "application/json");
+        if (jwt != null) {
+            request.addHeader("Authorization", "Bearer " + jwt);
+        }
+        if(obj != null){
+            request.setEntity(new StringEntity(obj));
+        }else{
+            request.setEntity(new StringEntity("{}"));
+        }
+        latestHttpResponse = httpClient.execute(request);
+        return false;
     }
 
     /**
@@ -94,8 +111,12 @@ public class SpringIntegration {
      */
     boolean executeDelete(String url, String jwt) throws IOException {
         HttpDelete request = new HttpDelete(url);
-        add(request,jwt);
-        return throwRequest(request);
+        request.addHeader("content-type", "application/json");
+        if (jwt != null) {
+            request.addHeader("Authorization", "Bearer " + jwt);
+        }
+        latestHttpResponse = httpClient.execute(request);
+        return false;
     }
 
     /**
@@ -104,10 +125,14 @@ public class SpringIntegration {
      * @param jwt si null pas de jwt
      * @return boolean true : request a reussi
      */
-    boolean executeGet(String url, String jwt)  {
+    boolean executeGet(String url, String jwt) throws IOException {
         HttpGet request = new HttpGet(url);
-        add(request,jwt);
-        return throwRequest(request);
+        request.addHeader("content-type", "application/json");
+        if (jwt != null) {
+            request.addHeader("Authorization", "Bearer " + jwt);
+        }
+        latestHttpResponse = httpClient.execute(request);
+        return false;
     }
 
     /////////////////////         methode pour executation post          ///////////////////////////
@@ -121,11 +146,7 @@ public class SpringIntegration {
      * @throws UnsupportedEncodingException
      */
     private void addbody(HttpEntityEnclosingRequestBase request,String obj)throws UnsupportedEncodingException {
-        if(obj != null){
-            request.setEntity(new StringEntity(obj));
-        }else{
-            request.setEntity(new StringEntity("{}"));
-        }
+
     }
 
     /**
@@ -135,26 +156,6 @@ public class SpringIntegration {
      * @param jwt
      */
     private void add(HttpRequestBase request,String jwt){
-        request.addHeader("content-type", "application/json");
-        if (jwt != null) {
-            request.addHeader("Authorization", "Bearer " + jwt);
-        }
-    }
 
-    /**
-     * Execute la request HttpRequestBase etant la super class de HttpGet,HttpDelete, HttpPost,HttpPut
-     * @param request
-     * @return boolean true : request a reussi
-     */
-    private boolean throwRequest(HttpRequestBase request){
-        try{
-            latestHttpResponse = httpClient.execute(request);
-            //String response  = EntityUtils.toString(latestHttpResponse.getEntity(), "UTF-8");
-            //System.out.println(response);
-        }catch(Throwable t){
-            System.out.println(t.getLocalizedMessage());
-            return false;
-        }
-        return true;
     }
 }
