@@ -99,7 +99,7 @@ public class QuestionnaireTest extends SpringIntegration {
     }
 
    @When("user {string} creates {string} question with content {string} and with answer {string}")
-   public void userCreateTextQuestion(String user_a, String questionType, String enonce_a , String answer_a) throws UnsupportedEncodingException {
+   public void userCreateTextQuestion(String user_a, String questionType, String enonce_a , String answer_a) throws IOException {
        CreateQuestionRequest textQuestionRequest = new CreateQuestionRequest();
        textQuestionRequest.setEnonce(enonce_a);
        textQuestionRequest.setReponse(answer_a);
@@ -108,11 +108,10 @@ public class QuestionnaireTest extends SpringIntegration {
        String s = g.toJson(textQuestionRequest);
        String jwt = authController.generateJwt(user_a, PASSWORD);
        executePost("http://localhost:8080/api/question",jwt,s);
-       System.out.println(latestHttpResponse.getStatusLine().getStatusCode());
    }
 
    @When("user {string} creates {string} question with content {string}, answers {string} and with answer {int}")
-   public void userCreateQcmQuestion(String user_a, String questionType, String enonce_a , String possibleanswer,int rep) throws UnsupportedEncodingException {
+   public void userCreateQcmQuestion(String user_a, String questionType, String enonce_a , String possibleanswer,int rep) throws IOException {
        CreateQuestionRequest textQuestionRequest = new CreateQuestionRequest();
        textQuestionRequest.setEnonce(enonce_a);
        textQuestionRequest.listeEnonces_= possibleanswer;
@@ -122,11 +121,10 @@ public class QuestionnaireTest extends SpringIntegration {
        String s = g.toJson(textQuestionRequest);
        String jwt = authController.generateJwt(user_a, PASSWORD);
        executePost("http://localhost:8080/api/question",jwt,s);
-       System.out.println(latestHttpResponse.getStatusLine().getStatusCode());
     }
 
     @When("user {string} creates {string} multi question with content {string}, answers {string} and with answer")
-    public void userCreateMultiQcmQuestion(String user_a, String questionType, String enonce_a , String possibleanswer, List<Integer> content) throws UnsupportedEncodingException  {
+    public void userCreateMultiQcmQuestion(String user_a, String questionType, String enonce_a , String possibleanswer, List<Integer> content) throws IOException  {
         CreateQuestionRequest textQuestionRequest = new CreateQuestionRequest();
         textQuestionRequest.setEnonce(enonce_a);
         textQuestionRequest.listeEnonces_= possibleanswer;
@@ -137,15 +135,15 @@ public class QuestionnaireTest extends SpringIntegration {
         String s = g.toJson(textQuestionRequest);
         String jwt = authController.generateJwt(user_a, PASSWORD);
         executePost("http://localhost:8080/api/question",jwt,s);
-        System.out.println(latestHttpResponse.getStatusLine().getStatusCode());
     }
 
     @When("user {string} add question {string} to {string}")
-    public void addquestiontoquestionaire(String username, String questionenonce, String questionairename) throws UnsupportedEncodingException{
+    public void addquestiontoquestionaire(String username, String questionenonce, String questionairename) throws IOException{
         String jwt = authController.generateJwt(username, PASSWORD);
         Optional<Question> oquestion = questionRepository.findByEnonce(questionenonce);
         if(oquestion.isEmpty())return;
         long questionid = oquestion.get().id;
+        System.out.println("questionid : " + questionid);
         executePut("http://localhost:8080/api/questionnaire/"+questionairename+"/question/"+questionid,jwt,null);
     }
 
@@ -165,7 +163,7 @@ public class QuestionnaireTest extends SpringIntegration {
    }
 
     @And("{string} adds questionnaire {string} to module {string}")
-    public void addsAuestionToModule(String username, String questionnaireName, String moduleName) throws UnsupportedEncodingException {
+    public void addsAuestionToModule(String username, String questionnaireName, String moduleName) throws IOException {
         String jwt = authController.generateJwt(username, PASSWORD);
         System.out.println(" BEGIN PUT MODULE ");
         executePut("http://localhost:8080/api/modules/"+moduleName+"/ressource/"+questionnaireName,jwt,null);
@@ -230,5 +228,72 @@ public class QuestionnaireTest extends SpringIntegration {
         List<String> listOfQuestions = Arrays.asList(responseQuestionnaire.subSequence(1,responseQuestionnaire.length()-1).toString().split(","));
         System.out.println("LIST OF QUES " + listOfQuestions);
 
+    }
+
+    @When("user {string} answer {string} with {string}")
+    public void answerQuestionText(String user_a, String enonce_a , String answer_a) throws IOException {
+        Question question = questionRepository.findByEnonce(enonce_a).get();
+        Reponse reponse = new Reponse();
+        reponse.typeReponse = TEXT;
+        reponse.username = user_a;
+        reponse.reponseText = answer_a;
+        Gson g = new Gson();
+        String s = g.toJson(reponse);
+        String jwt = authController.generateJwt(user_a, PASSWORD);
+        System.out.println(question.id);
+        executePut("http://localhost:8080/api/question/answer/"+question.id,jwt,s);
+        System.out.println(latestHttpResponse.getStatusLine().getStatusCode());
+    }
+
+    @When("user {string} answer {string} with {int}")
+    public void answerQuestionQcm(String user_a, String enonce_a , int answer_a) throws IOException {
+        Question question = questionRepository.findByEnonce(enonce_a).get();
+        Reponse reponse = new Reponse();
+        reponse.typeReponse = QCM;
+        reponse.username = user_a;
+        reponse.reponseQcm = answer_a;
+        Gson g = new Gson();
+        String s = g.toJson(reponse);
+        String jwt = authController.generateJwt(user_a, PASSWORD);
+        System.out.println(question.id);
+        executePut("http://localhost:8080/api/question/answer/"+question.id,jwt,s);
+        System.out.println(latestHttpResponse.getStatusLine().getStatusCode());
+    }
+
+    @When("user {string} answer multi {string} with")
+    public void answerQuestionMultiQcm(String user_a, String enonce_a , List<Integer> content) throws IOException{
+        Question question = questionRepository.findByEnonce(enonce_a).get();
+        int[] lrep = content.stream().mapToInt(i->i).toArray();
+        Reponse reponse = new Reponse();
+        reponse.typeReponse = CHOIXMULTIPLE;
+        reponse.username = user_a;
+        reponse.reponsesMultiples = lrep;
+        Gson g = new Gson();
+        String s = g.toJson(reponse);
+        String jwt = authController.generateJwt(user_a, PASSWORD);
+        System.out.println(question.id);
+        executePut("http://localhost:8080/api/question/answer/"+question.id,jwt,s);
+        System.out.println(latestHttpResponse.getStatusLine().getStatusCode());
+    }
+
+    @Then("Answer of {string} is saved in {string}")
+    public void Answersaved(String name, String enonce_a) throws UnsupportedEncodingException {
+        Question question = questionRepository.findByEnonce(enonce_a).get();
+        boolean find = false;
+        for (Reponse rep:question.reponses) {
+            System.out.println("sol " + rep.username + "my name " + name);
+            if(rep.username.equals(name)){
+                find =true;
+            }
+        }
+        assertTrue(find);
+    }
+
+    @Then("user {string} validate {string} and get {int} points")
+    public void userValidateAndGetPoints(String username, String questionnaireName, int points) throws IOException {
+        String jwt = authController.generateJwt(username, PASSWORD);
+        int validation = (int) executeGetReturnObject("http://localhost:8080/api/questionnaire/"+username+"/validate/"+questionnaireName, jwt);
+        //String response  = EntityUtils.toString(latestHttpResponse.getEntity(), "UTF-8");
+        System.out.println("REPONSE " + validation);
     }
 }

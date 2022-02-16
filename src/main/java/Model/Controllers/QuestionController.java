@@ -164,8 +164,10 @@ public class QuestionController {
                 //rajouter plus tard program python string
                 questionToAdd = null;
         }
+        System.out.println("question to add" + questionToAdd);
         if (questionToAdd != null){
             if(questionRepository.existsByEnonce(questionToAdd.enonce)) {
+                System.out.println("return ok");
                 return ResponseEntity.ok(new MessageResponse("Question existed before"));
             }
             System.out.println("je passe dans save");
@@ -173,6 +175,7 @@ public class QuestionController {
             return ResponseEntity.ok(new MessageResponse("Question successfully "));
         }
         else {
+            System.out.println("return bad request question");
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Error: No such ressource!"));

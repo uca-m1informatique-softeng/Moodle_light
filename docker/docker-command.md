@@ -12,3 +12,5 @@ You build the image with the command :
 /!\ don't forget the '.' at the end of the command which has to be the pwd of the main project workspace 
 
 # 
+
+` docker-compose up --build `
