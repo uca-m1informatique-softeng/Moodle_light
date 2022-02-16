@@ -176,12 +176,10 @@ public class QuestionnaireTest extends SpringIntegration {
         String jwt = authController.generateJwt(username, PASSWORD);
         ArrayList<String> lstRessource = (ArrayList<String>) executeGetReturnObject("http://localhost:8080/api/modules/getressources/"+moduleName, jwt);
         boolean ressourcesFinded = false ;
-        System.out.println("DEBUG FUNC ACTUAL"+lstRessource);
         for (String str :
                 lstRessource) {
             try {
 
-                System.out.println("DEBUG FUNC ACTUAL: str :"+ str);
                 JSONArray jsonArr = new JSONArray(str);
 
                 for (int i = 0; i < jsonArr.length(); i++) {
