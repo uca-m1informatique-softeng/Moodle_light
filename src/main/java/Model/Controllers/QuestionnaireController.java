@@ -86,7 +86,6 @@ public class QuestionnaireController {
         System.out.println(" GET QUESTIONNAIRE ");
         Optional<Ressource> oquestionaire = ressourcesRepository.findByName(nameQuestionnaire);
         Questionnaire questionnaire = (Questionnaire) oquestionaire.get();
-        System.out.println("=========== DEBUG =========\n"+questionnaire.toString());
         if( questionnaire != null ){
             Gson g = new Gson();
             return g.toJson(questionnaire);
@@ -94,24 +93,8 @@ public class QuestionnaireController {
         else
         {
             System.out.println("DEBUG :: QUESTIONNAIRE doesn't exist ");
-            return "";
+            return "{}";
         }
-        /* Optional<User> ouser = userRepository.findByUsername(username);
-        if(!oquestionaire.isPresent()||!ouser.isPresent()||!oquestionaire.get().getClass().equals(Questionnaire.class)){
-            return null;
-        }
-        System.out.println(" GET QUESTIONNAIRE 2");
-
-        Questionnaire questionnaire = (Questionnaire) oquestionaire.get();
-        User user = ouser.get();
-        if(!questionnaire.module.users.contains(user)){
-            System.out.println(" GET QUESTIONNAIRE 3");
-
-            return null;
-        }
-
-        System.out.println(" GET QUESTIONNAIRE 4");
-        */
     }
 
     /***

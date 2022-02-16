@@ -144,8 +144,10 @@ public class ModuleController {
 		for (Ressource rsrc :
 			module.ressources) {
 			elem = new JSONObject();
+
 			elem.put("name",rsrc.name);
 			elem.put("id", rsrc.id);
+			elem.put("type",rsrc.getClass());
 			ressourceArray.put(elem);
 		}
 		return ressourceArray.toString();
