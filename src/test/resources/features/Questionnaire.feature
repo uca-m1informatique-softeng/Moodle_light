@@ -32,10 +32,6 @@ Feature: Questionnaire
     And "steve" sends a get request for questionnaire "Quest1"
     Then "steve" gets the questionnaire with name "Quest1"
 
-  Scenario: Teacher add questionnaire to module
-    When "steve" creates questionnaire "Quest1"
-    And "steve" adds questionnaire "Quest1" to module "Gestion-de-projet"
-    Then "steve" finds questionnaire "Quest1" is in module "Gestion-de-projet"
 
   Scenario: Teacher add qestion to questionaire
     When user "steve" creates "text" question with content "Enonce1" and with answer "answ1"
@@ -43,6 +39,11 @@ Feature: Questionnaire
     And "steve" registers "paul" to module "Gestion-de-projet"
     And "steve" adds questionnaire "Quest1" to module "Gestion-de-projet"
     Then "paul" finds question "Enonce1" is in questionaire "Quest1"
+
+  Scenario: Teacher add questionnaire to module
+    When "steve" creates questionnaire "Quest1"
+    And "steve" adds questionnaire "Quest1" to module "Gestion-de-projet"
+    Then "steve" finds questionnaire "Quest1" is in module "Gestion-de-projet"
 
 
   Scenario: student answer question text

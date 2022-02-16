@@ -77,6 +77,8 @@ public class SpringIntegration {
             request.setEntity(new StringEntity("{}"));
         }
         latestHttpResponse = httpClient.execute(request);
+
+        EntityUtils.consumeQuietly(latestHttpResponse.getEntity());
         return false;
     }
 
@@ -100,6 +102,7 @@ public class SpringIntegration {
             request.setEntity(new StringEntity("{}"));
         }
         latestHttpResponse = httpClient.execute(request);
+        EntityUtils.consumeQuietly(latestHttpResponse.getEntity());
         return false;
     }
 

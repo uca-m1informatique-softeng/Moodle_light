@@ -229,9 +229,6 @@ public class QuestionController {
     @PreAuthorize("hasRole('TEACHER')")
     public ResponseEntity<?> deleteQuestion(@PathVariable long id) {
         Optional<Question> questToDel = questionRepository.findById(id);
-        System.out.println("==========================================");
-        System.out.println(questToDel.get().typeQuestion);
-        System.out.println("==============DEBUG============================");
        if(questToDel.isEmpty()) {
            return  ResponseEntity
                    .badRequest()

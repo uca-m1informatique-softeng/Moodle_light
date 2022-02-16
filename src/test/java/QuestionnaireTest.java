@@ -163,7 +163,7 @@ public class QuestionnaireTest extends SpringIntegration {
    }
 
     @And("{string} adds questionnaire {string} to module {string}")
-    public void addsAuestionToModule(String username, String questionnaireName, String moduleName) throws IOException {
+    public void addsQuestionToModule(String username, String questionnaireName, String moduleName) throws IOException {
         String jwt = authController.generateJwt(username, PASSWORD);
         System.out.println(" BEGIN PUT MODULE ");
         executePut("http://localhost:8080/api/modules/"+moduleName+"/ressource/"+questionnaireName,jwt,null);

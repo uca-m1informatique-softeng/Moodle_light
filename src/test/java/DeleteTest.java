@@ -74,13 +74,13 @@ public class DeleteTest extends SpringIntegration{
 
     @Given("clean")
     public void clean(){
-        for(Module module: moduleRepository.findAll()){
+        /*for(Module module: moduleRepository.findAll()){
             module.users = null;
             module.ressources = null;
             moduleRepository.save(module);
         }
         questionRepository.deleteAll();
         ressourcesRepository.deleteAll();
-        userRepository.deleteAll();
+        userRepository.deleteAll();*/
     }
 }
