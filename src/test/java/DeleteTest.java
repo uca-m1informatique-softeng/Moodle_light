@@ -39,8 +39,17 @@ public class DeleteTest extends SpringIntegration{
     @Given("{string} not exist")
     public void  notExistePerson(String arg0) throws IOException {
         Optional<User> ouser = userRepository.findByUsername(arg0);
+        System.out.println(arg0);
         if(ouser.isPresent()){
             User user = ouser.get();
+            for (Module module:moduleRepository.findAll()) {
+                System.out.println(module.name);
+                for (User user1: module.users) {
+                    System.out.println(user1.getUsername());
+                }
+
+            }
+            System.out.println("found in "+ user.getModules());
             for(Module module : user.getModules()){
                 module.users.remove(user);
                 moduleRepository.save(module);

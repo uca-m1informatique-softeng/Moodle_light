@@ -216,7 +216,6 @@ public class ModuleController {
 					.badRequest()
 					.body(new MessageResponse("Error: No such user!"));
 		}
-
 		Module module = omodule.get();
 		User user = ouser.get();
 		User actor = userRepository.findByUsername(principal.getName()).get();
