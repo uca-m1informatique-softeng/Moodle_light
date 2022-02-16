@@ -154,6 +154,7 @@ public class QuestionController {
                 );
                 break;
             case CHOIXMULTIPLE:
+                System.out.println("length" + createQuestionRequest_a.reponsesMultiples.length);
                 questionToAdd = new Question(
                         createQuestionRequest_a.getEnonce(),
                         createQuestionRequest_a.listeEnonces_,
@@ -255,11 +256,8 @@ public class QuestionController {
            return  ResponseEntity
                    .badRequest()
                    .body(new MessageResponse("Error: No such ressource!"));
-
        }
        questionRepository.delete(questToDel.get());
        return new ResponseEntity<>("The question id :"+ id+ " Has been succesfully deleted", HttpStatus.OK);
-
     }
-
 }

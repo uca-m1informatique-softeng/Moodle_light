@@ -3,6 +3,7 @@ package Model.Controllers;
 
 import Model.Documents.*;
 import Model.Payload.request.AddRessourceRequest;
+import Model.Payload.response.JwtResponse;
 import Model.Payload.response.MessageResponse;
 import Model.Repositories.ModuleRepository;
 import Model.Repositories.QuestionRepository;
@@ -89,9 +90,7 @@ public class QuestionnaireController {
         if( questionnaire != null ){
             Gson g = new Gson();
             return g.toJson(questionnaire);
-        }
-        else
-        {
+        } else {
             System.out.println("DEBUG :: QUESTIONNAIRE doesn't exist ");
             return "{}";
         }
@@ -102,23 +101,30 @@ public class QuestionnaireController {
      * @return int represent reponse correcte dans questionaire
      */
     @GetMapping("{username}/validate/{questionairename}")
-    public int validateQuestionnaire(@PathVariable String userName , @PathVariable String questionairename ){
+    public int validateQuestionnaire(@PathVariable String username , @PathVariable String questionairename ){
+        System.out.println("Valideate function");
         Optional<Ressource> oquestionnaire = ressourcesRepository.findByName(questionairename);
-        if(!oquestionnaire.isPresent()||oquestionnaire.get().getClass().equals(Questionnaire.class)){
+        if(!oquestionnaire.isPresent()&&oquestionnaire.get().getClass().equals(Questionnaire.class)){
             return -1;
         }
-
+        System.out.println("Questionaire trouver");
         Questionnaire questionnaire = (Questionnaire) oquestionnaire.get();
         int reponsevalide = 0;
         for (Question question:questionnaire.ListeQuestions) {
-            Reponse reponse = findReponse(question,userName);
+            System.out.println(question.enonce);
+            Reponse reponse = findReponse(question,username);
             if(reponse == null){
+                System.out.println("reponse de youser not found");
                 return -1;
             }
+            System.out.println("test reponce");
             if(question.reponse(reponse)) {
+                System.out.println("reponse valide");
                 reponsevalide++;
             }
+            System.out.println("finis test");
         }
+        System.out.println("return object");
         return reponsevalide;
     }
 
@@ -130,10 +136,13 @@ public class QuestionnaireController {
      */
     public Reponse findReponse(Question question, String name){
         for (Reponse reponse :question.reponses) {
-            if(reponse.username == name){
+            System.out.println(reponse.username);
+            if(reponse.username.equals(name)){
+                System.out.println("reponse found");
                 return reponse;
             }
         }
+        System.out.println("reponse not found");
         return null;
     }
 

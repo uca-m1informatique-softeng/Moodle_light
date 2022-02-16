@@ -67,4 +67,7 @@ Feature: Questionnaire
     And user "paul" answer multi "Enonce3" with
       | 1 |
       | 2 |
+    And user "steve" add question "Enonce1" to "Quest1"
+    And user "steve" add question "Enonce2" to "Quest1"
+    And user "steve" add question "Enonce3" to "Quest1"
     Then user "paul" validate "Quest1" and get 2 points

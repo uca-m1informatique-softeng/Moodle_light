@@ -267,8 +267,9 @@ public class QuestionnaireTest extends SpringIntegration {
     @Then("user {string} validate {string} and get {int} points")
     public void userValidateAndGetPoints(String username, String questionnaireName, int points) throws IOException {
         String jwt = authController.generateJwt(username, PASSWORD);
-        int validation = (int) executeGetReturnObject("http://localhost:8080/api/questionnaire/"+username+"/validate/"+questionnaireName, jwt);
+        executeGet("http://localhost:8080/api/questionnaire/"+username+"/validate/"+questionnaireName, jwt);
+        String responseQuestionnaire  = EntityUtils.toString(latestHttpResponse.getEntity(), "UTF-8");
         //String response  = EntityUtils.toString(latestHttpResponse.getEntity(), "UTF-8");
-        System.out.println("REPONSE " + validation);
+        System.out.println("REPONSE " + responseQuestionnaire);
     }
 }
