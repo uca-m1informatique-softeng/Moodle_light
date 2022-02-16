@@ -151,10 +151,7 @@ public class ModuleController {
 		return ressourceArray.toString();
 	}
 
-
-
 	//////////////////////      Post  PUT     //////////////////////
-
 
 	/**
 	 * rajoute une ressource

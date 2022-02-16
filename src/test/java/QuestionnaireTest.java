@@ -57,14 +57,16 @@ public class QuestionnaireTest extends SpringIntegration {
        if( module.ressources.contains(quest))
        {
            module.ressources.remove(quest);
+           moduleRepository.save(module);
        }
     }
 
     @Given("a questionnaire named {string}")
     public void coursGestion(String QuestionnaireName){
-        Questionnaire questionnaire = (Questionnaire) ressourcesRepository.findByName(QuestionnaireName).
-                orElse(new Questionnaire(QuestionnaireName));
-        ressourcesRepository.save(questionnaire);
+        if(!ressourcesRepository.existsByName(QuestionnaireName)){
+            Questionnaire questionnaire = new Questionnaire(QuestionnaireName);
+            ressourcesRepository.save(questionnaire);
+        }
     }
 
 
@@ -215,7 +217,6 @@ public class QuestionnaireTest extends SpringIntegration {
     @When("{string} sends a get request for questionnaire {string}")
     public void sendsAGetRequestForQuestionnaire(String username, String questionairename) throws IOException {
         String token = authController.generateJwt(username, PASSWORD);
-        System.out.println("http://localhost:8080/api/questionnaire/"+username+"/"+questionairename);
         executeGet("http://localhost:8080/api/questionnaire/"+username+"/"+questionairename, token);
         System.out.println(" end get quest ");
     }
@@ -224,8 +225,7 @@ public class QuestionnaireTest extends SpringIntegration {
     public void getsTheQuestionnaireWithName(String arg0, String arg1) throws IOException {
         String responseQuestionnaire  = EntityUtils.toString(latestHttpResponse.getEntity(), "UTF-8");
         List<String> listOfQuestions = Arrays.asList(responseQuestionnaire.subSequence(1,responseQuestionnaire.length()-1).toString().split(","));
-        System.out.println("LIST OF QUES " + listOfQuestions);
-
+        System.out.println("LIST OF QUES " + responseQuestionnaire);
     }
 
     @When("user {string} answer {string} with {string}")
@@ -277,6 +277,7 @@ public class QuestionnaireTest extends SpringIntegration {
     @Then("Answer of {string} is saved in {string}")
     public void Answersaved(String name, String enonce_a) throws UnsupportedEncodingException {
         Question question = questionRepository.findByEnonce(enonce_a).get();
+        System.out.println("find question reponses" + question.reponses.isEmpty());
         boolean find = false;
         for (Reponse rep:question.reponses) {
             System.out.println("sol " + rep.username + "my name " + name);

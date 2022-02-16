@@ -200,20 +200,42 @@ public class QuestionController {
                     .body(new MessageResponse("Error: Question doesn't exist "));
         }
         Question question = oquestion.get();
-        for (Reponse reponses:question.reponses) {
-            if(reponses.username.equals(reponse.username)) {
-                question.reponses.remove(reponses);
-                reponsesRepository.delete(reponses);
-            }
-        }
+        System.out.println("reponse demande: " + reponse.username);
         if(reponse.typeReponse != question.typeQuestion) {
+            System.out.println("wrong type");
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Error: Given reponse is not same type of questioon  "));
         }
+        for (Reponse reponses:question.reponses) {
+            System.out.println(reponses.username);
+            if(reponses.username.equals(reponse.username)) {
+                reponses.reponsesMultiples = reponse.reponsesMultiples;
+                reponses.reponseText = reponse.reponseText;
+                reponses.reponseQcm = reponse.reponseQcm;
+                question.reponses.add(reponse);
+                return ResponseEntity.ok(new MessageResponse("Reponse a eter mis a jour "));
+            }
+        }
         reponsesRepository.save(reponse);
         question.reponses.add(reponse);
-        questionRepository.save(question);
+        /*System.out.println("reponse " + reponse.getId());
+        for (Reponse reponse1:question.reponses) {
+            System.out.println(reponse1.getId());
+        }
+        System.out.println(question.reponses.contains(reponse));
+        System.out.println("passe ici2");
+
+         */
+        try {
+            questionRepository.save(question);
+
+        }catch(Exception e){
+            System.out.println(e);
+        }
+
+        System.out.println("savec");
+        System.out.println("question reponses" + questionRepository.findByEnonce(question.enonce).get().reponses.isEmpty());
         return ResponseEntity.ok(new MessageResponse("Question successfully submited "));
     }
 

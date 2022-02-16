@@ -52,6 +52,7 @@ public class RegisterTeacherStepDefs extends SpringIntegration {
                 orElse(new User(arg0, arg0 + "@test.fr", encoder.encode(PASSWORD)));
         user.setRoles(new HashSet<>(){{ add(roleRepository.findByName(ERole.ROLE_STUDENT).
                 orElseThrow(() -> new RuntimeException("Error: Role is not found."))); }});
+        System.out.println("!!!!!!!!!!!!!!!!!!!!User " + user.getUsername() + " has no module " +user.getModules().isEmpty());
         userRepository.save(user);
         System.out.println("user is save in userRepository");
     }
@@ -59,6 +60,9 @@ public class RegisterTeacherStepDefs extends SpringIntegration {
     @And("a module named {string}")
     public void aModuleNamed(String arg0) {
         Module module = moduleRepository.findByName(arg0).orElse(new Module(arg0));
+        for(User user : module.users){
+            user.getModules().clear();
+        }
         module.setParticipants(new HashSet<>());
         moduleRepository.save(module);
     }
@@ -78,6 +82,8 @@ public class RegisterTeacherStepDefs extends SpringIntegration {
         User user = userRepository.findByUsername(arg1).get();
         String jwt = authController.generateJwt(arg0, PASSWORD);
         noexception = executePost("http://localhost:8080/api/modules/"+module.getId()+"/participants/"+user.getId(), jwt,null);
+        User nuser = userRepository.findById(user.getId()).get();
+        System.out.println("User" + nuser.getModules().isEmpty());
     }
 
     @Then("exception in request occurs")
@@ -96,6 +102,7 @@ public class RegisterTeacherStepDefs extends SpringIntegration {
         User user = userRepository.findByUsername(arg0).get();
         module.getParticipants().contains(user);
         assertTrue(true);
+        System.out.println("User" + user.getModules().isEmpty());
     }
 
     @And("{string} is not registered to module {string}")

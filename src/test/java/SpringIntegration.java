@@ -32,7 +32,7 @@ public class SpringIntegration {
     protected HttpResponse latestHttpResponse;
     private final RestTemplate restTemplate = new RestTemplate();
 
-    int timeout = 1;
+    int timeout = 5;
     RequestConfig config = RequestConfig.custom()
             .setConnectTimeout(timeout * 1000)
             .setConnectionRequestTimeout(timeout * 1000)
@@ -70,14 +70,16 @@ public class SpringIntegration {
      */
     boolean executePut(String url, String jwt, String obj) throws IOException {
         HttpPut request = new HttpPut(url);
-        add(request, jwt);
-        if(obj != null){
+        request.addHeader("content-type", "application/json");
+        if (jwt != null) {
+            request.addHeader("Authorization", "Bearer " + jwt);
+        }        if(obj != null){
             request.setEntity(new StringEntity(obj));
         }else{
             request.setEntity(new StringEntity("{}"));
         }
         latestHttpResponse = httpClient.execute(request);
-
+        System.out.println("ENTITY " +obj + "   " + latestHttpResponse.getStatusLine());
         EntityUtils.consumeQuietly(latestHttpResponse.getEntity());
         return false;
     }

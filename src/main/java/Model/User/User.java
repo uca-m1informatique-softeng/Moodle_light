@@ -42,8 +42,10 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name="userid")
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(	name = "user_modules",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "module_id"))
     private Set<Module> modules = new HashSet<>();
 
 
