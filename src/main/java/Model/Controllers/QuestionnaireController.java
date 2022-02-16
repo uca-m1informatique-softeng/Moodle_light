@@ -80,7 +80,7 @@ public class QuestionnaireController {
      * @param nameQuestionnaire
      * @return ResponseEntity
      */
-    @GetMapping(value="/{username}/{nameQuestionnaire}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping("/{username}/{nameQuestionnaire}")
     @PreAuthorize("hasRole('TEACHER')")
     public String getsModule(@PathVariable String username, @PathVariable String nameQuestionnaire){
         System.out.println(" GET QUESTIONNAIRE ");

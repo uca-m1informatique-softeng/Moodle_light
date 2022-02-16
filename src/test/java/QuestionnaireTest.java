@@ -217,7 +217,6 @@ public class QuestionnaireTest extends SpringIntegration {
     @When("{string} sends a get request for questionnaire {string}")
     public void sendsAGetRequestForQuestionnaire(String username, String questionairename) throws IOException {
         String token = authController.generateJwt(username, PASSWORD);
-        System.out.println("http://localhost:8080/api/questionnaire/"+username+"/"+questionairename);
         executeGet("http://localhost:8080/api/questionnaire/"+username+"/"+questionairename, token);
         System.out.println(" end get quest ");
     }
@@ -226,8 +225,7 @@ public class QuestionnaireTest extends SpringIntegration {
     public void getsTheQuestionnaireWithName(String arg0, String arg1) throws IOException {
         String responseQuestionnaire  = EntityUtils.toString(latestHttpResponse.getEntity(), "UTF-8");
         List<String> listOfQuestions = Arrays.asList(responseQuestionnaire.subSequence(1,responseQuestionnaire.length()-1).toString().split(","));
-        System.out.println("LIST OF QUES " + listOfQuestions);
-
+        System.out.println("LIST OF QUES " + responseQuestionnaire);
     }
 
     @When("user {string} answer {string} with {string}")

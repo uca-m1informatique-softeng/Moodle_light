@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -100,7 +101,6 @@ public class CourseController {
     @PreAuthorize("hasRole('TEACHER')")
     public ResponseEntity<?> creerCours(@Valid @RequestBody AddRessourceRequest addRessourceRequest){
         if(ressourcesRepository.existsByName(addRessourceRequest.getName())){
-
             return ResponseEntity.ok(new MessageResponse("user existe!"));
         }
         ressourcesRepository.save(new Cours(addRessourceRequest.getName()));
@@ -118,16 +118,19 @@ public class CourseController {
     public ResponseEntity<?> modifierCours(@Valid @RequestBody AddTextRequest addTextRequest, @PathVariable String courname){
         // Vérifier si ce resource existe
         Optional<Ressource> oressource = ressourcesRepository.findByName(courname);
+
         if (!oressource.isPresent()) {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Error: No such ressource!"));
         }
+
         Ressource ressource = oressource.get();
         Cours cours;
         //S'il existe et il est de type Cours on le cast a un objet cours
         if(ressource.getClass().equals(Cours.class)){
             cours = (Cours)ressource;
+            cours.text = Arrays.asList("");
         }else{
             return ResponseEntity
                     .badRequest()
@@ -135,21 +138,23 @@ public class CourseController {
         }
 
         //Si le text passé dans les paramètre existe dans le text dans le cours on renvoie une erreur
-        List<String> textes = cours.text;
+
         String text = addTextRequest.getText();
-        if(!textes.contains(text)) {
-            textes.add(text);
+        if(!cours.text.contains(text)) {
+            System.out.println("TEXT ADDED");
+            cours.text.add(text);
+            System.out.println("TEXT ADDED 2" + cours.text.get(0));
         }else{
             return ResponseEntity
                     .ok(new MessageResponse("A eter dejat creer!"));
         }
+
+        System.out.println("PASS");
         ressourcesRepository.save(ressource);
         return ResponseEntity.ok(new MessageResponse("User successfully added to module!"));
     }
 
-
     //////////////////////      Delete     //////////////////////
-
     /**
      * Delete a cour
      * @param courname
