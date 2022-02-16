@@ -4,23 +4,16 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 
 @Entity
-@Table(	name = "Questionaire")
+@DiscriminatorValue("Q")
 public class Questionnaire extends Ressource{
-    @NotBlank
-    public String name;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long id;
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(	name = "Questionaire_question",
-            joinColumns = @JoinColumn(name = "questionaire_id"),
-            inverseJoinColumns = @JoinColumn(name = "question_id"))
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name="questionaireid")
     public Set<Question> ListeQuestions = new HashSet<>();
     public  Questionnaire(){}
 
@@ -37,4 +30,5 @@ public class Questionnaire extends Ressource{
 
         }
     }
+
 }

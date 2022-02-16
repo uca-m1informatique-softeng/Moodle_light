@@ -12,4 +12,6 @@ import java.util.Optional;
 public interface RessourcesRepository extends JpaRepository<Ressource, Long>{
     Optional<Ressource> findByName(String name);
     Optional<Ressource> findById(String name);
+
+    Boolean existsByName(String username);
 }

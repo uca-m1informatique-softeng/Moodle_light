@@ -46,7 +46,6 @@ public class RegisterTeacherStepDefs extends SpringIntegration {
         System.out.println("user is save in userRepository");
     }
 
-
     @Given("a student with login {string}")
     public void aStudentWithLogin(String arg0){
         User user = userRepository.findByUsername(arg0).
@@ -70,7 +69,7 @@ public class RegisterTeacherStepDefs extends SpringIntegration {
         User user = userRepository.findByUsername(arg0).get();
         String jwt = authController.generateJwt(arg0, PASSWORD);
 
-       executePost("http://localhost:8080/api/module/"+module.getId()+"/participants/"+user.getId(), jwt);
+       executePost("http://localhost:8080/api/modules/"+module.getId()+"/participants/"+user.getId(), jwt,null);
     }
 
     @Given( "{string} registers {string} to module {string}")
@@ -78,7 +77,7 @@ public class RegisterTeacherStepDefs extends SpringIntegration {
         Module module = moduleRepository.findByName(arg2).get();
         User user = userRepository.findByUsername(arg1).get();
         String jwt = authController.generateJwt(arg0, PASSWORD);
-        noexception = executePost("http://localhost:8080/api/module/"+module.getId()+"/participants/"+user.getId(), jwt);
+        noexception = executePost("http://localhost:8080/api/modules/"+module.getId()+"/participants/"+user.getId(), jwt,null);
     }
 
     @Then("exception in request occurs")
