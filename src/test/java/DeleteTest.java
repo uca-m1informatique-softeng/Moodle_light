@@ -79,8 +79,8 @@ public class DeleteTest extends SpringIntegration{
             module.ressources = null;
             moduleRepository.save(module);
         }
-        ressourcesRepository.deleteAll();
         questionRepository.deleteAll();
+        ressourcesRepository.deleteAll();
         userRepository.deleteAll();
     }
 }

@@ -2,6 +2,7 @@ package Model.Payload.request;
 
 import java.util.Set;
 
+import javax.persistence.OneToMany;
 import javax.validation.constraints.*;
  
 public class SignupRequest {
@@ -13,7 +14,7 @@ public class SignupRequest {
     @Size(max = 50)
     @Email
     private String email;
-    
+
     private Set<String> role;
     
     @NotBlank

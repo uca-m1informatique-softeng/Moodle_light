@@ -5,7 +5,15 @@ import Model.Security.jwt.JwtUtils;
 import Model.User.User;
 import Model.Documents.Module;
 import Model.Repositories.*;
+import com.fasterxml.jackson.databind.util.JSONPObject;
+import io.cucumber.messages.internal.com.google.gson.Gson;
+import io.cucumber.messages.internal.com.google.gson.JsonArray;
+import io.cucumber.messages.internal.com.google.gson.JsonObject;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -97,12 +105,12 @@ public class ModuleController {
 	 * @param nameUser
 	 * @return ensemble de ressource
 	 */
-	@GetMapping("ressources/{nameUser}")
-	public ArrayList<String> getressourcesofmodules(@PathVariable String nameUser){
+	@GetMapping(value="ressources/{nameUser}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public String getressourcesofmodules(@PathVariable String nameUser){
 		ArrayList<String> userModules = new ArrayList<>();
 		Optional<User> ouser = userRepository.findByUsername(nameUser);
 		if (!ouser.isPresent()) {
-			return null;
+			return "{}";
 		}
 		User user= ouser.get();
 
@@ -111,7 +119,8 @@ public class ModuleController {
 		for (Module module:modules) {
 			userModules.add("module name : "+module.name + "| id : " + module.id);
 		}
-		return userModules;
+		Gson g = new Gson();
+		return g.toJson(userModules);
 	}
 
 
@@ -120,22 +129,26 @@ public class ModuleController {
 	 * @param modulename
 	 * @return	ensemble de ressource
 	 */
-	@GetMapping("/getressources/{modulename}")
+	@GetMapping(value = "/getressources/{modulename}",produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('TEACHER')")
-	public ArrayList<String> getRessources(@PathVariable String modulename){
+	public String getRessources(@PathVariable String modulename) throws JSONException {
 		ArrayList<String> strings = new ArrayList<>();
+		JSONArray ressourceArray = new JSONArray();
 		Optional<Module> omodule = moduleRepository.findByName(modulename);
-
+		JSONObject elem ;
 		if (!omodule.isPresent()) {
 			strings.add("Error: No such module!");
-			return strings;
+			return "{}";
 		}
 		Module module = omodule.get();
-		for (Ressource r : module.getRessources()) {
-			strings.add(r.toString());
+		for (Ressource rsrc :
+			module.ressources) {
+			elem = new JSONObject();
+			elem.put("name",rsrc.name);
+			elem.put("id", rsrc.id);
+			ressourceArray.put(elem);
 		}
-
-		return strings;
+		return ressourceArray.toString();
 	}
 
 

@@ -1,8 +1,6 @@
 import Model.Controllers.AuthController;
-import Model.Documents.EQuestion;
+import Model.Documents.*;
 import Model.Documents.Module;
-import Model.Documents.Question;
-import Model.Documents.Questionnaire;
 import Model.Payload.request.AddRessourceRequest;
 import Model.Payload.request.CreateQuestionRequest;
 import Model.Repositories.*;
@@ -11,19 +9,24 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.cucumber.messages.internal.com.google.gson.Gson;
+import io.cucumber.messages.internal.com.google.gson.JsonParser;
+import org.apache.commons.logging.Log;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static Model.Documents.EQuestion.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class QuestionnaireTest extends SpringIntegration {
 
@@ -171,10 +174,46 @@ public class QuestionnaireTest extends SpringIntegration {
     }
 
     @Then("{string} finds questionnaire {string} is in module {string}")
-    public void findsQuestionnaireIsInModule(String username, String questionairename, String moduleName) throws IOException {
+    public void findsQuestionnaireIsInModule(String username, String questionairename, String moduleName) throws IOException, JSONException {
         String jwt = authController.generateJwt(username, PASSWORD);
-        Questionnaire ques = (Questionnaire) executeGetReturnObject("http://localhost:8080/api/questionnaire/"+username+"/"+questionairename, jwt);
-        assertTrue(ques.module.name == moduleName);
+        ArrayList<String> lstRessource = (ArrayList<String>) executeGetReturnObject("http://localhost:8080/api/modules/getressources/"+moduleName, jwt);
+        boolean ressourcesFinded = false ;
+        System.out.println("DEBUG FUNC ACTUAL"+lstRessource);
+        for (String str :
+                lstRessource) {
+            try {
+
+                System.out.println("DEBUG FUNC ACTUAL: str :"+ str);
+                JSONArray jsonArr = new JSONArray(str);
+
+                for (int i = 0; i < jsonArr.length(); i++) {
+                    JSONObject jsonObj = jsonArr.getJSONObject(i);
+                    System.out.println(jsonObj.getString("name"));
+                    if(jsonObj.getString("name").equals(null)){
+                        assertTrue(false);
+                    }
+                }
+
+            } catch (JSONException ex) {
+                ex.printStackTrace();
+            }
+            System.out.println("Out : "+str);
+/*
+           // obj= new JSONObject(str);
+            System.out.println("Value of name : " + obj.get("name"));
+
+            if(g.fromJson(str,Ressource.class).name.equals(questionairename)){
+                if(ressourcesFinded){// finde multiples identical ressource
+
+                    assertTrue(false);
+                }
+                else{
+                    ressourcesFinded=true;
+                }
+            }*/
+        }
+        //assertTrue(ques.module.name == moduleName);
+        assertTrue(ressourcesFinded);
     }
 
     @When("{string} sends a get request for questionnaire {string}")

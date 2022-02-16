@@ -44,10 +44,11 @@ public class SpringIntegration {
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         headers.add("Authorization", "Bearer " + jwt);
-
+        System.out.println("========DEBUG ======\n"+headers.toString());
         HttpEntity request = new HttpEntity(headers);
 
         ResponseEntity<Object> response = this.restTemplate.exchange(url, HttpMethod.GET, request, Object.class);
+        System.out.println("========DEBUG ======\n"+response.toString());
         if(response.getStatusCode() == HttpStatus.OK) {
             return response.getBody();
         } else {

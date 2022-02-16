@@ -31,7 +31,7 @@ Feature: Questionnaire
     And "steve" sends a get request for questionnaire "Quest1"
     Then "steve" gets the questionnaire with name "Quest1"
 
-  Scenario: Teacher add module to questionaire
+  Scenario: Teacher add questionnaire to module
     When "steve" creates questionnaire "Quest1"
     And "steve" adds questionnaire "Quest1" to module "Gestion-de-projet"
     Then "steve" finds questionnaire "Quest1" is in module "Gestion-de-projet"

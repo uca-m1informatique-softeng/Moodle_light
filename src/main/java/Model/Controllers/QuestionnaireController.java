@@ -9,7 +9,9 @@ import Model.Repositories.QuestionRepository;
 import Model.Repositories.RessourcesRepository;
 import Model.Repositories.UserRepository;
 import Model.User.User;
+import io.cucumber.messages.internal.com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -78,13 +80,22 @@ public class QuestionnaireController {
      * @param nameQuestionnaire
      * @return ResponseEntity
      */
-    @GetMapping("/{username}/{nameQuestionnaire}")
+    @GetMapping(value="/{username}/{nameQuestionnaire}", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('TEACHER')")
     public String getsModule(@PathVariable String username, @PathVariable String nameQuestionnaire){
         System.out.println(" GET QUESTIONNAIRE ");
         Optional<Ressource> oquestionaire = ressourcesRepository.findByName(nameQuestionnaire);
         Questionnaire questionnaire = (Questionnaire) oquestionaire.get();
-
+        System.out.println("=========== DEBUG =========\n"+questionnaire.toString());
+        if( questionnaire != null ){
+            Gson g = new Gson();
+            return g.toJson(questionnaire);
+        }
+        else
+        {
+            System.out.println("DEBUG :: QUESTIONNAIRE doesn't exist ");
+            return "";
+        }
         /* Optional<User> ouser = userRepository.findByUsername(username);
         if(!oquestionaire.isPresent()||!ouser.isPresent()||!oquestionaire.get().getClass().equals(Questionnaire.class)){
             return null;
@@ -101,8 +112,6 @@ public class QuestionnaireController {
 
         System.out.println(" GET QUESTIONNAIRE 4");
         */
-
-        return questionnaire.name;
     }
 
     /***
