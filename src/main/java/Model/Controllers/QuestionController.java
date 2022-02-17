@@ -163,7 +163,6 @@ public class QuestionController {
                 //rajouter plus tard program python string
                 questionToAdd = null;
         }
-        System.out.println("question to add" + questionToAdd.reponsesMultiples.length);
         if (questionToAdd != null){
             if(questionRepository.existsByEnonce(questionToAdd.enonce)) {
                 System.out.println("return ok");
@@ -208,7 +207,7 @@ public class QuestionController {
                 reponses.reponsesMultiples = reponse.reponsesMultiples;
                 reponses.reponseText = reponse.reponseText;
                 reponses.reponseQcm = reponse.reponseQcm;
-                reponsesRepository.save(reponses);
+                question.reponses.add(reponse);
                 return ResponseEntity.ok(new MessageResponse("Reponse a eter mis a jour "));
             }
         }
