@@ -5,10 +5,6 @@ import Model.Security.jwt.JwtUtils;
 import Model.User.User;
 import Model.Documents.Module;
 import Model.Repositories.*;
-import com.fasterxml.jackson.databind.util.JSONPObject;
-import io.cucumber.messages.internal.com.google.gson.Gson;
-import io.cucumber.messages.internal.com.google.gson.JsonArray;
-import io.cucumber.messages.internal.com.google.gson.JsonObject;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,6 +29,7 @@ import java.util.Set;
  *
  * Get /api/modules								:	return module
  * GET /api/modules/who/{modulename}   			:	return the name of the teacher of module
+ *
  * GET /api/modules/{nameUser}					:   return the modules of a User
  * GET /api/modules/ressources/{modulename}		:	return the ressources a module
  *
@@ -74,13 +71,37 @@ public class ModuleController {
 
 	/**
 	 * renvois le module
-	 * @param modulename
+	 * @param
 	 * @return module
 	 */
-	@GetMapping("/{modulename}")
-	public String getModule(@PathVariable String modulename) {
-		return null;
+
+	@GetMapping("")
+	public String getStudentModules(Principal principal) throws JSONException {
+		User user = userRepository.findByUsername(principal.getName()).get();
+
+		JSONArray modulesArray = new JSONArray();
+		JSONObject elem ;
+		for (Module module : user.getModules()) {
+			elem = new JSONObject();
+
+			elem.put("name",module.name);
+			modulesArray.put(elem);
+
+
+		}
+
+
+
+		return modulesArray.toString() ;
+
 	}
+
+
+
+
+
+
+
 
 	/**
 	 * renvois le Teacher du module : modulename
@@ -100,29 +121,6 @@ public class ModuleController {
 
 	}
 
-	/**
-	 * renvois les ressources de user : nameUser
-	 * @param nameUser
-	 * @return ensemble de ressource
-	 */
-	@GetMapping(value="ressources/{nameUser}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public String getressourcesofmodules(@PathVariable String nameUser){
-		ArrayList<String> userModules = new ArrayList<>();
-		Optional<User> ouser = userRepository.findByUsername(nameUser);
-		if (!ouser.isPresent()) {
-			return "{}";
-		}
-		User user= ouser.get();
-
-		Set<Module> modules = user.getModules();
-
-		for (Module module:modules) {
-			userModules.add("module name : "+module.name + "| id : " + module.id);
-		}
-		Gson g = new Gson();
-		return g.toJson(userModules);
-	}
-
 
 	/**
 	 * Renvois les ressources d'un module specifique
@@ -132,13 +130,11 @@ public class ModuleController {
 	@GetMapping(value = "/getressources/{modulename}",produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('TEACHER')")
 	public String getRessources(@PathVariable String modulename) throws JSONException {
-		ArrayList<String> strings = new ArrayList<>();
 		JSONArray ressourceArray = new JSONArray();
 		Optional<Module> omodule = moduleRepository.findByName(modulename);
 		JSONObject elem ;
 		if (!omodule.isPresent()) {
-			strings.add("Error: No such module!");
-			return "{}";
+			return "[]";
 		}
 		Module module = omodule.get();
 		for (Ressource rsrc :

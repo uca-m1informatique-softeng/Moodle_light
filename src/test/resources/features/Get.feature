@@ -8,3 +8,5 @@ Feature: Get
   Scenario: user check all modules that he subscribe to
     When "steve" checks his modules
     Then return all modules names
+    |Gestion-de-projet|
+

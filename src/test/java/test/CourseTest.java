@@ -16,6 +16,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import io.cucumber.messages.internal.com.google.gson.Gson;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import java.io.IOException;
 import java.util.*;
@@ -136,11 +138,25 @@ public class CourseTest extends SpringIntegration {
     }
 
     @When("{string} checks his modules")
-    public void checksModules(String string) {
+    public void checksModules(String string) throws IOException {
         String jwt = authController.generateJwt(string, PASSWORD);
+        executeGet("http://localhost:8080/api/modules",jwt);
     }
 
     @Then("return all modules names")
-    public void returnAllModulesNames() {
+    public void returnAllModulesNames(List<String> studentModules) throws IOException, JSONException {
+        String reponse = EntityUtils.toString(latestHttpResponse.getEntity(),"UTF-8");
+
+        JSONArray result = new JSONArray(reponse);
+        ArrayList<String> resultList = new ArrayList<>();
+
+        for (int i = 0; i < result.length(); i++) {
+          resultList.add((String)result.getJSONObject(i).get("name"));
+        }
+
+        assertTrue(resultList.containsAll(studentModules));
+        assertTrue(resultList.size() == studentModules.size());
+
+
     }
 }
