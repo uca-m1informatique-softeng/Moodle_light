@@ -93,7 +93,7 @@ public class ModuleController {
 	 */
 
 
-	@GetMapping("/api/{idUser}/modules")
+	@GetMapping("/api/{modules")
 	public Set<Module> getUserModules(@PathVariable Long idUser,Principal principal) {
 
 		User user = userRepository.findByUsername(principal.getName()).get();
@@ -211,7 +211,7 @@ public class ModuleController {
 	 * @param userid
 	 * @return ResponseEntity
 	 */
-	@DeleteMapping("/{id}/participants/{userid}")
+	@DeleteMapping("/api/modules/{idModule}/{idStudentToAdd}")
 	@PreAuthorize("hasRole('TEACHER')")
 	public ResponseEntity<?> deleteUser(Principal principal, @PathVariable long id, @PathVariable long userid) {
 		Optional<Module> omodule = moduleRepository.findById(id);
@@ -252,16 +252,7 @@ public class ModuleController {
 
 
 
-
-
-
-
-
-
-
-
-
-
+/////------------------------------------------------------------//////
 
 
 
@@ -278,17 +269,24 @@ public class ModuleController {
 	 * @return Teacher
 	 */
 	@GetMapping("/who/{modulename}")
-	public ArrayList<String> getPersonneModule(@PathVariable String modulename) {
+	public String getPersonneModule(@PathVariable String modulename) {
 		ArrayList<String> data = new ArrayList<>();
 		Optional<Module> omodule =	moduleRepository.findByName(modulename);
 		if(!omodule.isPresent()){
 			return null;
 		}
 		Module module = omodule.get();
-		data.add("la personne connectée est " );
-		return data ;
+		for (User user:module.users ){
+			if(user.getRoles().contains("ROLE_TEACHER")){
+				return user.getUsername();
+			}
+		}
+		return null;
 
 	}
+
+
+
 
 	/**
 	 * renvois les ressources de user : nameUser
