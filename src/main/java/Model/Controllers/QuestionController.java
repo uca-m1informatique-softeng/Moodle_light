@@ -154,7 +154,6 @@ public class QuestionController {
                 );
                 break;
             case CHOIXMULTIPLE:
-                System.out.println("length" + createQuestionRequest_a.reponsesMultiples.length);
                 questionToAdd = new Question(
                         createQuestionRequest_a.getEnonce(),
                         createQuestionRequest_a.listeEnonces_,
@@ -165,18 +164,15 @@ public class QuestionController {
                 //rajouter plus tard program python string
                 questionToAdd = null;
         }
-        System.out.println("question to add" + questionToAdd);
         if (questionToAdd != null){
             if(questionRepository.existsByEnonce(questionToAdd.enonce)) {
                 System.out.println("return ok");
                 return ResponseEntity.ok(new MessageResponse("Question existed before"));
             }
-            System.out.println("je passe dans save");
             questionRepository.save(questionToAdd);
             return ResponseEntity.ok(new MessageResponse("Question successfully "));
         }
         else {
-            System.out.println("return bad request question");
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Error: No such ressource!"));
@@ -193,7 +189,6 @@ public class QuestionController {
      */
     @PutMapping("/answer/{idquestion}")
     public ResponseEntity<?> updateAnswer(@Valid @RequestBody Reponse reponse,@PathVariable long idquestion) {
-        System.out.println("Try add answer");
         Optional<Question> oquestion = questionRepository.findById(idquestion);
         if (!oquestion.isPresent()) {
             return ResponseEntity
@@ -203,7 +198,6 @@ public class QuestionController {
         Question question = oquestion.get();
         System.out.println("reponse demande: " + reponse.username);
         if(reponse.typeReponse != question.typeQuestion) {
-            System.out.println("wrong type");
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Error: Given reponse is not same type of questioon  "));
