@@ -1,4 +1,4 @@
-package test;
+package tests;
 
 import Model.Main;
 import org.junit.Test;

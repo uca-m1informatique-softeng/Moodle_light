@@ -1,4 +1,4 @@
-package test;
+package tests;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.client.ClientHttpRequest;

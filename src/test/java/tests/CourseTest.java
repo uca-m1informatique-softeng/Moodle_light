@@ -1,4 +1,4 @@
-package test;
+package tests;
 
 import Model.Controllers.AuthController;
 import Model.Documents.Cours;

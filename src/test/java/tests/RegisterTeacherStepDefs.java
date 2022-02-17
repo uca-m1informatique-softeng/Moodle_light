@@ -1,4 +1,4 @@
-package test;
+package tests;
 
 import Model.User.ERole;
 import Model.User.User;

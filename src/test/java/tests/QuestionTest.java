@@ -1,4 +1,4 @@
-package test;
+package tests;
 
 import Model.Documents.Question;
 import io.cucumber.java.en.Given;
