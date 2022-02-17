@@ -32,10 +32,6 @@ Feature: Questionnaire
     And "steve" sends a get request for questionnaire "Quest1"
     Then "steve" gets the questionnaire with name "Quest1"
 
-  Scenario: Teacher add questionnaire to module
-    When "steve" creates questionnaire "Quest1"
-    And "steve" adds questionnaire "Quest1" to module "Gestion-de-projet"
-    Then "steve" finds questionnaire "Quest1" is in module "Gestion-de-projet"
 
   Scenario: Teacher add qestion to questionaire
     When user "steve" creates "text" question with content "Enonce1" and with answer "answ1"
@@ -44,9 +40,15 @@ Feature: Questionnaire
     And "steve" adds questionnaire "Quest1" to module "Gestion-de-projet"
     Then "paul" finds question "Enonce1" is in questionaire "Quest1"
 
+  Scenario: Teacher add questionnaire to module
+    When "steve" creates questionnaire "Quest1"
+    And "steve" adds questionnaire "Quest1" to module "Gestion-de-projet"
+    Then "steve" finds questionnaire "Quest1" is in module "Gestion-de-projet"
+
 
   Scenario: student answer question text
-    When user "paul" answer "Enonce1" with "text"
+    When user "steve" creates "text" question with content "Enonce1" and with answer "answ1"
+    And user "paul" answer "Enonce1" with "text"
     Then Answer of "paul" is saved in "Enonce1"
 
   Scenario: student answer question qcm
@@ -65,4 +67,7 @@ Feature: Questionnaire
     And user "paul" answer multi "Enonce3" with
       | 1 |
       | 2 |
+    And user "steve" add question "Enonce1" to "Quest1"
+    And user "steve" add question "Enonce2" to "Quest1"
+    And user "steve" add question "Enonce3" to "Quest1"
     Then user "paul" validate "Quest1" and get 2 points

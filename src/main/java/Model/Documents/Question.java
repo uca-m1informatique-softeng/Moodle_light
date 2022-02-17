@@ -55,8 +55,10 @@ public class Question {
              return reponse.reponseQcm == this.reponseQcm;
 
          case CHOIXMULTIPLE:
-             if ( reponse.reponsesMultiples.length != reponse.reponsesMultiples.length)
+             System.out.println("taille " + this.reponsesMultiples.length +" : " + reponse.reponsesMultiples.length);
+             if ( this.reponsesMultiples.length != reponse.reponsesMultiples.length){
                  return  false ;
+             }
              for (int i = 0 ; i < reponse.reponsesMultiples.length; i++){
                  if(reponse.reponsesMultiples[i] == this.reponsesMultiples[i]) {
                      return false;

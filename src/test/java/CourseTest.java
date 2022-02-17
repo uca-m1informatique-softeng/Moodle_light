@@ -102,11 +102,15 @@ public class CourseTest extends SpringIntegration {
         String token = authController.generateJwt(username, PASSWORD);
         executeGet("http://localhost:8080/api/course/" + coursGestion+ "/StudentCours/" +username, token);
         String response  = EntityUtils.toString(latestHttpResponse.getEntity(), "UTF-8");
+        System.out.println("reponse" + response);
+        System.out.println("content " + content);
 
         List<String> listTexts = Arrays.asList(response.subSequence(1,response.length()-1).toString().split(","));
 
+        System.out.println(content);
+        System.out.println(listTexts);
         boolean result = true;
-        for (int i = 0; i < listTexts.size(); i++){
+        for (int i = 0; i < listTexts.size()-1; i++){
             if (!content.get(i).equals(listTexts.get(i))){
                 result = false;
             }

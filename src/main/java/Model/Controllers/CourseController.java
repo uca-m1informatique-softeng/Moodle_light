@@ -1,9 +1,11 @@
 package Model.Controllers;
 import Model.Documents.Cours;
+import Model.Documents.Module;
 import Model.Documents.Ressource;
 import Model.Payload.request.AddRessourceRequest;
 import Model.Payload.request.AddTextRequest;
 import Model.Payload.response.MessageResponse;
+import Model.Repositories.ModuleRepository;
 import Model.Repositories.RessourcesRepository;
 import Model.Repositories.UserRepository;
 import Model.User.User;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,6 +46,7 @@ public class CourseController {
 
     @Autowired
     UserRepository userRepository;
+    private ModuleRepository moduleRepository;
 
 
     //////////////////////      GET     //////////////////////
@@ -59,16 +63,18 @@ public class CourseController {
      */
     @GetMapping("{namecours}/StudentCours/{namestudent}")
     public List<String> getCourses(@PathVariable String namecours,@PathVariable String namestudent){
+        System.out.println("In function Get courses");
         Optional<Ressource> ocours = ressourcesRepository.findByName(namecours);
         Optional<User> ouser = userRepository.findByUsername(namestudent);
+
         // not a coursfind userfind or cour is not a cour
         if(!ocours.isPresent()||!ouser.isPresent()||!ocours.get().getClass().equals(Cours.class)){
+            System.out.println("In function Get courses SOMETHING IS WRONG in ocours || ouser \\ class cours ");
             return null;
         }
         Cours cours = (Cours) ocours.get();
         User user = ouser.get();
         if(!cours.module.users.contains(user)){
-            System.out.println("user");
             return null;
         }
         return cours.text;
@@ -100,7 +106,6 @@ public class CourseController {
     @PreAuthorize("hasRole('TEACHER')")
     public ResponseEntity<?> creerCours(@Valid @RequestBody AddRessourceRequest addRessourceRequest){
         if(ressourcesRepository.existsByName(addRessourceRequest.getName())){
-
             return ResponseEntity.ok(new MessageResponse("user existe!"));
         }
         ressourcesRepository.save(new Cours(addRessourceRequest.getName()));
@@ -115,7 +120,7 @@ public class CourseController {
      */
     @PutMapping("/{courname}")
     @PreAuthorize("hasRole('TEACHER')")
-    public ResponseEntity<?> modifierCours(@Valid @RequestBody AddTextRequest addTextRequest, @PathVariable String courname){
+    public ResponseEntity<?> modifierCours(@Valid @RequestBody AddTextRequest addTextRequest, @PathVariable String courname) throws Exception{
         // Vérifier si ce resource existe
         Optional<Ressource> oressource = ressourcesRepository.findByName(courname);
         if (!oressource.isPresent()) {
@@ -125,7 +130,6 @@ public class CourseController {
         }
         Ressource ressource = oressource.get();
         Cours cours;
-        //S'il existe et il est de type Cours on le cast a un objet cours
         if(ressource.getClass().equals(Cours.class)){
             cours = (Cours)ressource;
         }else{
@@ -133,23 +137,30 @@ public class CourseController {
                     .badRequest()
                     .body(new MessageResponse("Error: Ressource n'est pas un cours!"));
         }
-
         //Si le text passé dans les paramètre existe dans le text dans le cours on renvoie une erreur
-        List<String> textes = cours.text;
+
         String text = addTextRequest.getText();
-        if(!textes.contains(text)) {
-            textes.add(text);
+        try{
+            cours.text.contains(text);
+        }catch(Exception e){
+            System.out.println(e);
+        }
+        if(!cours.text.contains(text)) {
+            try{
+                cours.text.add(text);
+            }catch (Exception e){
+                System.out.println(e);
+            }
+
         }else{
             return ResponseEntity
-                    .ok(new MessageResponse("A eter dejat creer!"));
+                    .ok(new MessageResponse("A eter dejat rajouter!"));
         }
         ressourcesRepository.save(ressource);
         return ResponseEntity.ok(new MessageResponse("User successfully added to module!"));
     }
 
-
     //////////////////////      Delete     //////////////////////
-
     /**
      * Delete a cour
      * @param courname
@@ -167,7 +178,6 @@ public class CourseController {
         }
 
         Ressource ressource = oressource.get();
-        System.out.println("delete cours 2");
         if(ressource.module!=null && ressource.module.ressources.contains(ressource)){
             ressource.module.ressources.remove(ressource);
         }

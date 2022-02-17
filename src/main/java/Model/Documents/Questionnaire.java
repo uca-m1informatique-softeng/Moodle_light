@@ -31,4 +31,17 @@ public class Questionnaire extends Ressource{
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Questionnaire questionnaire = (Questionnaire) o;
+        return id.equals(questionnaire.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
 }

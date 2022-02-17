@@ -18,6 +18,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import javax.validation.constraints.AssertTrue;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -57,14 +58,16 @@ public class QuestionnaireTest extends SpringIntegration {
        if( module.ressources.contains(quest))
        {
            module.ressources.remove(quest);
+           moduleRepository.save(module);
        }
     }
 
     @Given("a questionnaire named {string}")
     public void coursGestion(String QuestionnaireName){
-        Questionnaire questionnaire = (Questionnaire) ressourcesRepository.findByName(QuestionnaireName).
-                orElse(new Questionnaire(QuestionnaireName));
-        ressourcesRepository.save(questionnaire);
+        if(!ressourcesRepository.existsByName(QuestionnaireName)){
+            Questionnaire questionnaire = new Questionnaire(QuestionnaireName);
+            ressourcesRepository.save(questionnaire);
+        }
     }
 
 
@@ -163,7 +166,7 @@ public class QuestionnaireTest extends SpringIntegration {
    }
 
     @And("{string} adds questionnaire {string} to module {string}")
-    public void addsAuestionToModule(String username, String questionnaireName, String moduleName) throws IOException {
+    public void addsQuestionToModule(String username, String questionnaireName, String moduleName) throws IOException {
         String jwt = authController.generateJwt(username, PASSWORD);
         System.out.println(" BEGIN PUT MODULE ");
         executePut("http://localhost:8080/api/modules/"+moduleName+"/ressource/"+questionnaireName,jwt,null);
@@ -174,50 +177,22 @@ public class QuestionnaireTest extends SpringIntegration {
     @Then("{string} finds questionnaire {string} is in module {string}")
     public void findsQuestionnaireIsInModule(String username, String questionairename, String moduleName) throws IOException, JSONException {
         String jwt = authController.generateJwt(username, PASSWORD);
-        ArrayList<String> lstRessource = (ArrayList<String>) executeGetReturnObject("http://localhost:8080/api/modules/getressources/"+moduleName, jwt);
-        boolean ressourcesFinded = false ;
-        System.out.println("DEBUG FUNC ACTUAL"+lstRessource);
-        for (String str :
-                lstRessource) {
-            try {
-
-                System.out.println("DEBUG FUNC ACTUAL: str :"+ str);
-                JSONArray jsonArr = new JSONArray(str);
-
-                for (int i = 0; i < jsonArr.length(); i++) {
-                    JSONObject jsonObj = jsonArr.getJSONObject(i);
-                    System.out.println(jsonObj.getString("name"));
-                    if(jsonObj.getString("name").equals(null)){
-                        assertTrue(false);
-                    }
-                }
-
-            } catch (JSONException ex) {
-                ex.printStackTrace();
+        //String req = (String) executeGetReturnObject("http://localhost:8080/api/modules/getressources/"+moduleName, jwt);
+        executeGet("http://localhost:8080/api/modules/getressources/"+moduleName, jwt);
+        String out = EntityUtils.toString(latestHttpResponse.getEntity(),"UTF-8");
+        JSONArray result = new JSONArray(out);
+        boolean testValid = false;
+        for (int i = 0; i < result.length(); i++) {
+            if(result.getJSONObject(i).get("name").equals(questionairename)) {
+                testValid=true;
             }
-            System.out.println("Out : "+str);
-/*
-           // obj= new JSONObject(str);
-            System.out.println("Value of name : " + obj.get("name"));
-
-            if(g.fromJson(str,Ressource.class).name.equals(questionairename)){
-                if(ressourcesFinded){// finde multiples identical ressource
-
-                    assertTrue(false);
-                }
-                else{
-                    ressourcesFinded=true;
-                }
-            }*/
         }
-        //assertTrue(ques.module.name == moduleName);
-        assertTrue(ressourcesFinded);
+        assertTrue(testValid);
     }
 
     @When("{string} sends a get request for questionnaire {string}")
     public void sendsAGetRequestForQuestionnaire(String username, String questionairename) throws IOException {
         String token = authController.generateJwt(username, PASSWORD);
-        System.out.println("http://localhost:8080/api/questionnaire/"+username+"/"+questionairename);
         executeGet("http://localhost:8080/api/questionnaire/"+username+"/"+questionairename, token);
         System.out.println(" end get quest ");
     }
@@ -226,8 +201,7 @@ public class QuestionnaireTest extends SpringIntegration {
     public void getsTheQuestionnaireWithName(String arg0, String arg1) throws IOException {
         String responseQuestionnaire  = EntityUtils.toString(latestHttpResponse.getEntity(), "UTF-8");
         List<String> listOfQuestions = Arrays.asList(responseQuestionnaire.subSequence(1,responseQuestionnaire.length()-1).toString().split(","));
-        System.out.println("LIST OF QUES " + listOfQuestions);
-
+        System.out.println("LIST OF QUES " + responseQuestionnaire);
     }
 
     @When("user {string} answer {string} with {string}")
@@ -279,6 +253,7 @@ public class QuestionnaireTest extends SpringIntegration {
     @Then("Answer of {string} is saved in {string}")
     public void Answersaved(String name, String enonce_a) throws UnsupportedEncodingException {
         Question question = questionRepository.findByEnonce(enonce_a).get();
+        System.out.println("find question reponses" + question.reponses.isEmpty());
         boolean find = false;
         for (Reponse rep:question.reponses) {
             System.out.println("sol " + rep.username + "my name " + name);
@@ -292,8 +267,9 @@ public class QuestionnaireTest extends SpringIntegration {
     @Then("user {string} validate {string} and get {int} points")
     public void userValidateAndGetPoints(String username, String questionnaireName, int points) throws IOException {
         String jwt = authController.generateJwt(username, PASSWORD);
-        int validation = (int) executeGetReturnObject("http://localhost:8080/api/questionnaire/"+username+"/validate/"+questionnaireName, jwt);
+        executeGet("http://localhost:8080/api/questionnaire/"+username+"/validate/"+questionnaireName, jwt);
+        String responseQuestionnaire  = EntityUtils.toString(latestHttpResponse.getEntity(), "UTF-8");
         //String response  = EntityUtils.toString(latestHttpResponse.getEntity(), "UTF-8");
-        System.out.println("REPONSE " + validation);
+        System.out.println("REPONSE " + responseQuestionnaire);
     }
 }

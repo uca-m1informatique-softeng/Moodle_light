@@ -5,7 +5,7 @@ Feature: Register Teacher/Student
     And a teacher with login "sarah"
     And a student with login "paul"
     And a student with login "mari"
-    And a module named "Gestion de projet"
+    And a module named "Gestion-de-projet"
 
 
 
@@ -25,38 +25,36 @@ Feature: Register Teacher/Student
     Scenario: Teacher register Student
       When "sarah" registers to module "Gestion-de-projet"
       And "sarah" registers "paul" to module "Gestion-de-projet"
-      Then last request status is 200
-      And "sarah" is registered to module "Gestion-de-projet"
+      Then "sarah" is registered to module "Gestion-de-projet"
       And "paul" is registered to module "Gestion-de-projet"
 
     Scenario: Student register Student
       When "sarah" registers to module "Gestion-de-projet"
-      And "sarah" registers "paul" to module "Gestion de projet"
-      And "paul" registers "mari" to module "Gestion de projet"
+      And "sarah" registers "paul" to module "Gestion-de-projet"
+      And "paul" registers "mari" to module "Gestion-de-projet"
       Then exception in request occurs
-      And "sarah" is registered to module "Gestion de projet"
-      And "paul" is registered to module "Gestion de projet"
-      And "mari" is not registered to module "Gestion de projet"
+      And "sarah" is registered to module "Gestion-de-projet"
+      And "paul" is registered to module "Gestion-de-projet"
+      And "mari" is not registered to module "Gestion-de-projet"
 
     Scenario: Teacher register it self again
-      When "sarah" registers to module "Gestion de projet"
-      And "sarah" registers to module "Gestion de projet"
+      When "sarah" registers to module "Gestion-de-projet"
+      And "sarah" registers to module "Gestion-de-projet"
       Then last request status is 200
-      And "sarah" is registered to module "Gestion de projet"
+      And "sarah" is registered to module "Gestion-de-projet"
 
     Scenario: Teacher not registered registre Student
-      When "sarah" registers "paul" to module "Gestion de projet"
+      When "sarah" registers "paul" to module "Gestion-de-projet"
       Then last request status is 400
 
     Scenario: Teacher not registered Teacher
-      When "sarah" registers "steve" to module "Gestion de projet"
-      Then last request status is 400
+      When "sarah" registers "steve" to module "Gestion-de-projet"
+      Then "steve" is not registered to module "Gestion-de-projet"
 
     Scenario: Teacher add 2 students
-      When "sarah" registers to module "Gestion de projet"
-      And "sarah" registers "paul" to module "Gestion de projet"
-      And "sarah" registers "mari" to module "Gestion de projet"
-      Then last request status is 200
-      And "sarah" is registered to module "Gestion de projet"
-      And "paul" is registered to module "Gestion de projet"
-      And "mari" is registered to module "Gestion de projet"
+      When "sarah" registers to module "Gestion-de-projet"
+      And "sarah" registers "paul" to module "Gestion-de-projet"
+      And "sarah" registers "mari" to module "Gestion-de-projet"
+      Then "sarah" is registered to module "Gestion-de-projet"
+      And "paul" is registered to module "Gestion-de-projet"
+      And "mari" is registered to module "Gestion-de-projet"

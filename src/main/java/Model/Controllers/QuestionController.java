@@ -164,18 +164,15 @@ public class QuestionController {
                 //rajouter plus tard program python string
                 questionToAdd = null;
         }
-        System.out.println("question to add" + questionToAdd);
         if (questionToAdd != null){
             if(questionRepository.existsByEnonce(questionToAdd.enonce)) {
                 System.out.println("return ok");
                 return ResponseEntity.ok(new MessageResponse("Question existed before"));
             }
-            System.out.println("je passe dans save");
             questionRepository.save(questionToAdd);
             return ResponseEntity.ok(new MessageResponse("Question successfully "));
         }
         else {
-            System.out.println("return bad request question");
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Error: No such ressource!"));
@@ -192,7 +189,6 @@ public class QuestionController {
      */
     @PutMapping("/answer/{idquestion}")
     public ResponseEntity<?> updateAnswer(@Valid @RequestBody Reponse reponse,@PathVariable long idquestion) {
-        System.out.println("Try add answer");
         Optional<Question> oquestion = questionRepository.findById(idquestion);
         if (!oquestion.isPresent()) {
             return ResponseEntity
@@ -200,20 +196,41 @@ public class QuestionController {
                     .body(new MessageResponse("Error: Question doesn't exist "));
         }
         Question question = oquestion.get();
-        for (Reponse reponses:question.reponses) {
-            if(reponses.username.equals(reponse.username)) {
-                question.reponses.remove(reponses);
-                reponsesRepository.delete(reponses);
-            }
-        }
+        System.out.println("reponse demande: " + reponse.username);
         if(reponse.typeReponse != question.typeQuestion) {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Error: Given reponse is not same type of questioon  "));
         }
+        for (Reponse reponses:question.reponses) {
+            System.out.println(reponses.username);
+            if(reponses.username.equals(reponse.username)) {
+                reponses.reponsesMultiples = reponse.reponsesMultiples;
+                reponses.reponseText = reponse.reponseText;
+                reponses.reponseQcm = reponse.reponseQcm;
+                question.reponses.add(reponse);
+                return ResponseEntity.ok(new MessageResponse("Reponse a eter mis a jour "));
+            }
+        }
         reponsesRepository.save(reponse);
         question.reponses.add(reponse);
-        questionRepository.save(question);
+        /*System.out.println("reponse " + reponse.getId());
+        for (Reponse reponse1:question.reponses) {
+            System.out.println(reponse1.getId());
+        }
+        System.out.println(question.reponses.contains(reponse));
+        System.out.println("passe ici2");
+
+         */
+        try {
+            questionRepository.save(question);
+
+        }catch(Exception e){
+            System.out.println(e);
+        }
+
+        System.out.println("savec");
+        System.out.println("question reponses" + questionRepository.findByEnonce(question.enonce).get().reponses.isEmpty());
         return ResponseEntity.ok(new MessageResponse("Question successfully submited "));
     }
 
@@ -229,18 +246,12 @@ public class QuestionController {
     @PreAuthorize("hasRole('TEACHER')")
     public ResponseEntity<?> deleteQuestion(@PathVariable long id) {
         Optional<Question> questToDel = questionRepository.findById(id);
-        System.out.println("==========================================");
-        System.out.println(questToDel.get().typeQuestion);
-        System.out.println("==============DEBUG============================");
        if(questToDel.isEmpty()) {
            return  ResponseEntity
                    .badRequest()
                    .body(new MessageResponse("Error: No such ressource!"));
-
        }
        questionRepository.delete(questToDel.get());
        return new ResponseEntity<>("The question id :"+ id+ " Has been succesfully deleted", HttpStatus.OK);
-
     }
-
 }
