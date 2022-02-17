@@ -1,0 +1,32 @@
+version: '3.1'
+services:
+  authservice:
+    image: 'authservice:latest'
+#    build: ./docker/api_spring
+    container_name: api
+    ports:
+      - 8081:8080
+    depends_on:
+      - credentialdb
+    links:
+      - credentialdb
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://credentialdb/credentialdb
+      - SPRING_DATASOURCE_USERNAME=admi_cred
+      - SPRING_DATASOURCE_PASSWORD=pswd_cred
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+  credentialdb:
+    image: 'credentialdb:latest'
+    container_name: credentialdb
+    restart: always
+    ports:
+      - 5436:5432
+    environment:
+      - POSTGRES_USER=admi_cred
+      - POSTGRES_DB=credentialdb
+      - POSTGRES_PASSWORD=pswd_cred
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U admi_cred -d credentialdb" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5

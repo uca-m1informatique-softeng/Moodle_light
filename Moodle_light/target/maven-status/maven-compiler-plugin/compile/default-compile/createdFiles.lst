@@ -3,6 +3,7 @@ Model/Documents/Reponse.class
 Model/Documents/Module.class
 Model/Controllers/ModuleController.class
 Model/Controllers/QuestionnaireController.class
+Model/Repositories/NoteRepository.class
 Model/Security/jwt/AuthEntryPointJwt.class
 Model/Security/services/UserDetailsServiceImpl.class
 Model/Controllers/AuthController.class
@@ -26,6 +27,7 @@ Model/Controllers/CourseController.class
 Model/Controllers/QuestionController.class
 Model/Payload/response/JwtResponse.class
 Model/Payload/request/CreateQuestionRequest.class
+Model/Documents/Note.class
 Model/Payload/request/SignupRequest.class
 Model/User/User.class
 Model/Repositories/ReponsesRepository.class
