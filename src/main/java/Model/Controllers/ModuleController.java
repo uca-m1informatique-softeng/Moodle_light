@@ -153,7 +153,7 @@ public class ModuleController {
 	 * @param idModule
 	 * @return ResponseEntity
 	 */
-	@PostMapping("/api/modules/{idModule}/adduser/{idStudentToAdd}")
+	@PostMapping("/api/modules/{idModule}/{idStudentToAdd}")
 	@PreAuthorize("hasRole('TEACHER')")
 	public ResponseEntity<?> addUser(Principal principal,
 
@@ -201,10 +201,52 @@ public class ModuleController {
 
 
 
+//////////////////////        DELETE     //////////////////////
 
 
+	/**
+	 * enleve user : userid  from module : id
+	 * @param principal
+	 * @param id
+	 * @param userid
+	 * @return ResponseEntity
+	 */
+	@DeleteMapping("/{id}/participants/{userid}")
+	@PreAuthorize("hasRole('TEACHER')")
+	public ResponseEntity<?> deleteUser(Principal principal, @PathVariable long id, @PathVariable long userid) {
+		Optional<Module> omodule = moduleRepository.findById(id);
+		Optional<User> ouser = userRepository.findById(userid);
+		if (!omodule.isPresent()) {
+			return ResponseEntity
+					.badRequest()
+					.body(new MessageResponse("Error: No such module!"));
+		}
+		if (!ouser.isPresent()) {
+			return ResponseEntity
+					.badRequest()
+					.body(new MessageResponse("Error: No such user!"));
+		}
+
+		Module module = omodule.get();
+		User user = ouser.get();
+		User actor = userRepository.findByUsername(principal.getName()).get();
+		Set<User> participants = module.getParticipants();
+
+		if(!participants.contains(user)) {
+
+			return ResponseEntity
+					.badRequest()
+					.body(new MessageResponse("Error: User n'apartient pas au module !"));
+		}
 
 
+		user.getModules().remove(module);
+		participants.remove(user);
+		moduleRepository.save(module);
+		userRepository.save(user);
+		return ResponseEntity.ok(new MessageResponse("User successfully remouved from module!"));
+
+	}
 
 
 
@@ -344,43 +386,5 @@ public class ModuleController {
 
 	//////////////////////        Delete     //////////////////////
 
-	/**
-	 * enleve user : userid  from module : id
-	 * @param principal
-	 * @param id
-	 * @param userid
-	 * @return ResponseEntity
-	 */
-	@DeleteMapping("/{id}/participants/{userid}")
-	@PreAuthorize("hasRole('TEACHER')")
-	public ResponseEntity<?> deleteUser(Principal principal, @PathVariable long id, @PathVariable long userid) {
-		Optional<Module> omodule = moduleRepository.findById(id);
-		Optional<User> ouser = userRepository.findById(userid);
-		if (!omodule.isPresent()) {
-			return ResponseEntity
-					.badRequest()
-					.body(new MessageResponse("Error: No such module!"));
-		}
-		if (!ouser.isPresent()) {
-			return ResponseEntity
-					.badRequest()
-					.body(new MessageResponse("Error: No such user!"));
-		}
 
-		Module module = omodule.get();
-		User user = ouser.get();
-		User actor = userRepository.findByUsername(principal.getName()).get();
-
-		Set<User> participants = module.getParticipants();
-		if(participants.contains(user)) {
-			user.getModules().remove(module);
-			participants.remove(user);
-		}else{
-			return ResponseEntity
-					.badRequest()
-					.body(new MessageResponse("Error: User n'apartient pas au module !"));
-		}
-		moduleRepository.save(module);
-		return ResponseEntity.ok(new MessageResponse("User successfully remouved from module!"));
-	}
 }
