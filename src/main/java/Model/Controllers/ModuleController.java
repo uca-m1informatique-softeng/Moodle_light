@@ -179,17 +179,20 @@ public class ModuleController {
 
 		Module module = omodule.get();
 		Ressource ressource = oressource.get();
+
 		Set<Ressource> ressources = module.getRessources();
 		if(!ressources.contains(ressource)) {
 			ressources.add(ressource);
 			ressource.module = module;
 		}else{
+			ressource.module = module;
 			return ResponseEntity
 					.ok()
 					.body(new MessageResponse("Ressource y apartient deja !"));
 		}
 		moduleRepository.save(module);
-		return ResponseEntity.ok(new MessageResponse("User successfully added to module!"));
+		ressourcesRepository.save(ressource);
+		return ResponseEntity.ok(new MessageResponse("The ressource has successfully added to the module!"));
 	}
 
 	/**

@@ -33,7 +33,6 @@ Feature: Course
       | "chapter5" |
       | "chapter5" |
 
-
   Scenario: Teacher gets the content of a course
     When "steve" registers to module "Gestion-de-projet"
     And "steve" adds a course with name "Gestion" in module "Gestion-de-projet"

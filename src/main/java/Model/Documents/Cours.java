@@ -15,7 +15,6 @@ public class Cours extends Ressource{
 
     public Cours(String name_a) {
         super(name_a);
-        text= new ArrayList<>(Arrays.asList(""));
     }
 
     @Override
