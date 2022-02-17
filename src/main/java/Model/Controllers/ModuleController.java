@@ -92,7 +92,7 @@ public class ModuleController {
 	 * @return
 	 */
 	@GetMapping("/api/{idUser}/{modules}")
-	public Set<Module> getUserModules(@PathVariable Long idUser,Principal principal) {
+	public Set<Module> getUserModules(@PathVariable String idUser,Principal principal) {
 
 		User user = userRepository.findByUsername(principal.getName()).get();
 
