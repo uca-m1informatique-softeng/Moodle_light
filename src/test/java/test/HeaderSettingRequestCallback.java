@@ -1,3 +1,5 @@
+package test;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.client.ClientHttpRequest;
 import org.springframework.web.client.RequestCallback;

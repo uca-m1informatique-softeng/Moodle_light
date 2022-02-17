@@ -1,23 +1,16 @@
+package test;
+
 import Model.Controllers.AuthController;
 import Model.Payload.request.LoginRequest;
 import Model.Payload.request.SignupRequest;
 import Model.Repositories.UserRepository;
-import Model.User.ERole;
-import Model.User.Role;
-import Model.User.User;
-import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.cucumber.messages.internal.com.google.gson.Gson;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
 
 import java.io.IOException;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

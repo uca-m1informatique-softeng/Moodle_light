@@ -1,25 +1,18 @@
+package test;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Collections;
-import java.util.List;
-import java.util.Set;
 
 import Model.Main;
 import io.cucumber.spring.CucumberContextConfiguration;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.*;
-import org.apache.http.config.ConnectionConfig;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
-import org.hibernate.cfg.annotations.reflection.XMLContext;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;

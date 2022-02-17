@@ -1,3 +1,5 @@
+package test;
+
 import Model.Controllers.AuthController;
 import Model.Documents.Cours;
 import Model.Documents.Module;

@@ -1,5 +1,6 @@
+package test;
+
 import Model.User.ERole;
-import Model.User.Role;
 import Model.User.User;
 import Model.Documents.Module;
 import Model.Controllers.AuthController;

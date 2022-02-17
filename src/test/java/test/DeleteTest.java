@@ -1,6 +1,6 @@
+package test;
+
 import Model.Controllers.AuthController;
-import Model.Documents.Cours;
-import Model.Documents.Ressource;
 import Model.Documents.Module;
 import Model.Repositories.ModuleRepository;
 import Model.Repositories.QuestionRepository;
@@ -10,7 +10,6 @@ import Model.User.User;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;

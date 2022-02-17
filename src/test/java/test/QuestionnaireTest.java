@@ -1,3 +1,5 @@
+package test;
+
 import Model.Controllers.AuthController;
 import Model.Documents.*;
 import Model.Documents.Module;
@@ -9,19 +11,14 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.cucumber.messages.internal.com.google.gson.Gson;
-import io.cucumber.messages.internal.com.google.gson.JsonParser;
-import org.apache.commons.logging.Log;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import javax.validation.constraints.AssertTrue;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
