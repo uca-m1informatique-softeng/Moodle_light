@@ -246,13 +246,19 @@ public class QuestionController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('TEACHER')")
     public ResponseEntity<?> deleteQuestion(@PathVariable long id) {
-        Optional<Question> questToDel = questionRepository.findById(id);
-       if(questToDel.isEmpty()) {
-           return  ResponseEntity
-                   .badRequest()
-                   .body(new MessageResponse("Error: No such ressource!"));
-       }
-       questionRepository.delete(questToDel.get());
-       return new ResponseEntity<>("The question id :"+ id+ " Has been succesfully deleted", HttpStatus.OK);
+        System.out.println("delete Question");
+        Optional<Question> oquestToDel = questionRepository.findById(id);
+        if(oquestToDel.isEmpty()) {
+            return  ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: No such ressource!"));
+        }
+        Question questToDel = oquestToDel.get();
+        Questionnaire questionnaire = questToDel.questionnaire;
+        Set<Question> questions = questionnaire.ListeQuestions;
+        questions.remove(questToDel);
+        ressourcesRepository.save(questionnaire);
+        questionRepository.delete(questToDel);
+        return new ResponseEntity<>("The question id :"+ id+ " Has been succesfully deleted", HttpStatus.OK);
     }
 }
