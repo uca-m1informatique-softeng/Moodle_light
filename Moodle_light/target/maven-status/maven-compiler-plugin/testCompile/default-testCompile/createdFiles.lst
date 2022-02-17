@@ -1,0 +1,13 @@
+RunCucumberTest.class
+DeleteTest.class
+QuestionnaireTest.class
+QuestionTest.class
+ResponseResults.class
+CourseTest.class
+RegistrationTest.class
+RegisterTeacherStepDefs.class
+HeaderSettingRequestCallback.class
+SpringContextTest.class
+RegisterTeacherStepDefs$1.class
+RegisterTeacherStepDefs$2.class
+SpringIntegration.class
