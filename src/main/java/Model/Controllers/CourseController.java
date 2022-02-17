@@ -60,14 +60,19 @@ public class CourseController {
      */
     @GetMapping("{namecours}/StudentCours/{namestudent}")
     public List<String> getCourses(@PathVariable String namecours,@PathVariable String namestudent){
+        System.out.println("In function Get courses");
         Optional<Ressource> ocours = ressourcesRepository.findByName(namecours);
         Optional<User> ouser = userRepository.findByUsername(namestudent);
         // not a coursfind userfind or cour is not a cour
         if(!ocours.isPresent()||!ouser.isPresent()||!ocours.get().getClass().equals(Cours.class)){
+            System.out.println("In function Get courses SOMETHING IS WRONG in ocours || ouser \\ class cours ");
             return null;
         }
         Cours cours = (Cours) ocours.get();
         User user = ouser.get();
+        System.out.println(" cours "+ cours.toString());
+        System.out.println(" module  "+ cours.module.toString());
+        System.out.println(" cours "+ cours.toString());
         if(!cours.module.users.contains(user)){
             System.out.println("user");
             return null;
