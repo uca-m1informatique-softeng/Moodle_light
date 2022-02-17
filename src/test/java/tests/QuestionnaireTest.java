@@ -277,4 +277,17 @@ public class QuestionnaireTest extends SpringIntegration {
         System.out.println("REPONSE " + responseQuestionnaire );
         assertEquals(responseQuestionnaire ,points);
     }
+
+
+    @When("Teacher {string} gets notes from {string} of {string}")
+    public void teacherrequestPoints(String teachername, String username, String questionairename) throws IOException {
+        String jwt = authController.generateJwt(teachername, PASSWORD);
+        executeGet("http://localhost:8080/api/questionnaire/reponse/"+username+"/"+questionairename,jwt);
+    }
+
+    @Then("return note is {string}")
+    public void teachergetPoints(String points) throws IOException {
+        String responseQuestionnaire  = EntityUtils.toString(latestHttpResponse.getEntity(), "UTF-8");
+        assertEquals(responseQuestionnaire ,points);
+    }
 }

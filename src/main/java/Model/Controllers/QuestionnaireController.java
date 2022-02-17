@@ -5,10 +5,7 @@ import Model.Documents.*;
 import Model.Payload.request.AddRessourceRequest;
 import Model.Payload.response.JwtResponse;
 import Model.Payload.response.MessageResponse;
-import Model.Repositories.ModuleRepository;
-import Model.Repositories.QuestionRepository;
-import Model.Repositories.RessourcesRepository;
-import Model.Repositories.UserRepository;
+import Model.Repositories.*;
 import Model.User.User;
 import io.cucumber.messages.internal.com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +47,9 @@ public class QuestionnaireController {
 
     @Autowired
     ModuleRepository moduleRepository;
+
+    @Autowired
+    NoteRepository noteRepository;
 
     @Autowired
     QuestionRepository questionRepository;
@@ -96,6 +96,34 @@ public class QuestionnaireController {
         }
     }
 
+
+    /**
+     *
+     */
+    @GetMapping("reponse/{username}/{questionairename}")
+    @PreAuthorize("hasRole('TEACHER')")
+    public int getreponseStudent(@PathVariable String username , @PathVariable String questionairename){
+        System.out.println("get passe ici");
+        Optional<Ressource> oquestionnaire = ressourcesRepository.findByName(questionairename);
+        if(!oquestionnaire.isPresent()&&oquestionnaire.get().getClass().equals(Questionnaire.class)){
+            return -1;
+        }
+        System.out.println("Questionaire trouver");
+        Questionnaire questionnaire = (Questionnaire) oquestionnaire.get();
+        Optional<User> ouser = userRepository.findByUsername(username);
+        if(!ouser.isPresent()){
+            return -1;
+        }
+        User user = ouser.get();
+        for (Note note:questionnaire.notes){
+            System.out.println("note" + note.username);
+            if(user.getUsername().equals(note.username)){
+                return note.note;
+            }
+        }
+        return -1;
+    }
+
     /***
      * valider un questionnaire
      * @return int represent reponse correcte dans questionaire
@@ -109,6 +137,16 @@ public class QuestionnaireController {
         }
         System.out.println("Questionaire trouver");
         Questionnaire questionnaire = (Questionnaire) oquestionnaire.get();
+        Optional<User> ouser = userRepository.findByUsername(username);
+        if(!ouser.isPresent()){
+            return -1;
+        }
+        User user = ouser.get();
+        for (Note note:questionnaire.notes) {
+            if(note.username.equals(username)){
+                return -1;
+            }
+        }
         int reponsevalide = 0;
         for (Question question:questionnaire.ListeQuestions) {
             System.out.println(question.enonce);
@@ -125,6 +163,10 @@ public class QuestionnaireController {
             System.out.println("finis test");
         }
         System.out.println("return object");
+        Note note = new Note(reponsevalide, username);
+        noteRepository.save(note);
+        questionnaire.notes.add(note);
+        ressourcesRepository.save(questionnaire);
         return reponsevalide;
     }
 

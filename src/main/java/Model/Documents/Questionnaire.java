@@ -15,6 +15,12 @@ public class Questionnaire extends Ressource{
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name="questionaireid")
     public Set<Question> ListeQuestions = new HashSet<>();
+
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name="noteuserid")
+    public Set<Note> notes;
+
+
     public  Questionnaire(){}
 
     public  Questionnaire(String questName_arg){

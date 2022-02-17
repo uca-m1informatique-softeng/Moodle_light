@@ -71,3 +71,8 @@ Feature: Questionnaire
     And user "steve" add question "Enonce2" to "Quest1"
     And user "steve" add question "Enonce3" to "Quest1"
     Then user "paul" validate "Quest1" and get "3" points
+
+
+  Scenario: teacher gets answer of student
+    When Teacher "steve" gets notes from "paul" of "Quest1"
+    Then return note is "3"
