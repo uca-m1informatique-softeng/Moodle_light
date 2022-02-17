@@ -271,12 +271,13 @@ public class QuestionnaireTest extends SpringIntegration {
         assertTrue(find);
     }
 
-    @Then("user {string} validate {string} and get {int} points")
-    public void userValidateAndGetPoints(String username, String questionnaireName, int points) throws IOException {
+    @Then("user {string} validate {string} and get {string} points")
+    public void userValidateAndGetPoints(String username, String questionnaireName, String points) throws IOException {
         String jwt = authController.generateJwt(username, PASSWORD);
         executeGet("http://localhost:8080/api/questionnaire/"+username+"/validate/"+questionnaireName, jwt);
         String responseQuestionnaire  = EntityUtils.toString(latestHttpResponse.getEntity(), "UTF-8");
         //String response  = EntityUtils.toString(latestHttpResponse.getEntity(), "UTF-8");
-        System.out.println("REPONSE " + responseQuestionnaire);
+        System.out.println("REPONSE " + responseQuestionnaire );
+        assertEquals(responseQuestionnaire ,points);
     }
 }

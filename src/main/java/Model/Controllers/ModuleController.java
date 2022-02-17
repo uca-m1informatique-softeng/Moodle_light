@@ -29,6 +29,7 @@ import java.util.Set;
  *
  * Get /api/modules								:	return module
  * GET /api/modules/who/{modulename}   			:	return the name of the teacher of module
+ *
  * GET /api/modules/{nameUser}					:   return the modules of a User
  * GET /api/modules/ressources/{modulename}		:	return the ressources a module
  *
