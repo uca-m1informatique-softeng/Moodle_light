@@ -156,7 +156,7 @@ public class CourseTest extends SpringIntegration {
 
         assertTrue(resultList.containsAll(studentModules));
         assertTrue(resultList.size() == studentModules.size());
-
-
     }
+
+
 }

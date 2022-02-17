@@ -194,6 +194,7 @@ public class CourseController {
     @DeleteMapping("/{courname}/text/{text}")
     @PreAuthorize("hasRole('TEACHER')")
     public ResponseEntity<?> deletRessource(@PathVariable String courname, @PathVariable String text){
+        System.out.println("Cours est Delete");
         Optional<Ressource> oressource = ressourcesRepository.findByName(courname);
         if (!oressource.isPresent()) {
             return ResponseEntity
@@ -216,6 +217,7 @@ public class CourseController {
             return ResponseEntity
                     .ok(new MessageResponse("A eter dejat creer!"));
         }
+        ressourcesRepository.save(cours);
         return ResponseEntity.ok(new MessageResponse("User successfully added to cours!"));
     }
 

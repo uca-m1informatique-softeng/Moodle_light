@@ -1,12 +1,14 @@
 package tests;
 
 import Model.Controllers.AuthController;
+import Model.Documents.Cours;
 import Model.Documents.Module;
 import Model.Repositories.ModuleRepository;
 import Model.Repositories.QuestionRepository;
 import Model.Repositories.RessourcesRepository;
 import Model.Repositories.UserRepository;
 import Model.User.User;
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -80,6 +82,20 @@ public class DeleteTest extends SpringIntegration{
         assertEquals(status, latestHttpResponse.getStatusLine().getStatusCode());
     }
 
+    @And("{string} delete {string} from cours {string}")
+    public void deleteFromCours(String teachername, String text, String courname) throws IOException {
+        String jwt = authController.generateJwt(teachername, PASSWORD);
+        executeDelete("http://localhost:8080/api/course/"+courname+"/text/"+text,jwt);
+    }
+
+    @Then("{string} not existe in {string}")
+    public void notExisteIn(String text, String courname) {
+        Cours cour = (Cours)ressourcesRepository.findByName(courname).get();
+        assertFalse(cour.text.contains(text));
+    }
+
+
+
     @Given("clean")
     public void clean(){
         /*for(Module module: moduleRepository.findAll()){
@@ -91,4 +107,6 @@ public class DeleteTest extends SpringIntegration{
         ressourcesRepository.deleteAll();
         userRepository.deleteAll();*/
     }
+
+
 }
