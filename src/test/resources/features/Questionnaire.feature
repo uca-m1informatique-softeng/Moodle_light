@@ -62,7 +62,7 @@ Feature: Questionnaire
     Then Answer of "paul" is saved in "Enonce3"
 
   Scenario: student answer all questions and validate
-    When user "paul" answer "Enonce1" with "text"
+    When user "paul" answer "Enonce1" with "answ1"
     And user "paul" answer "Enonce2" with 1
     And user "paul" answer multi "Enonce3" with
       | 1 |
