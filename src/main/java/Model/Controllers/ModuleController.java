@@ -170,36 +170,33 @@ public class ModuleController {
 					.body(new MessageResponse("Error: No such module!"));
 		}
 
+		Optional<User> ouser = userRepository.findById(idStudentToAdd);
+		if (!ouser.isPresent()) {
+			return ResponseEntity
+					.badRequest()
+					.body(new MessageResponse("Error: No such user exist!"));
+		}
+
 
 
 		Module module = omodule.get();
-		User user = userRepository.findByUsername(principal.getName()).get();
-
-
-
 		User actor = userRepository.findByUsername(principal.getName()).get();
-		System.out.println("passe ici 2");
+		User user = ouser.get();
 		Set<User> participants = module.getParticipants();
-		if ((participants.isEmpty() && actor.equals(user)) ||
-				participants.contains(actor)) {
-			System.out.println("passe ici 3");
-			// verifie si user n'apartient pas déjà à participants
-			if(!participants.contains(user)) {
-				System.out.println("passe ici 4");
-				participants.add(user);
-				user.getModules().add(module);
-			}else{
-				return ResponseEntity.ok(new MessageResponse("is created before"));
-			}
-		} else {
-			return ResponseEntity
-					.badRequest()
-					.body(new MessageResponse("Error: Not allowed to add user!"));
+
+
+		if (participants.contains(user))
+		{
+			return ResponseEntity.ok(new MessageResponse("already registered user"));
 		}
-		System.out.println("User realtion creer");
+
+
+		participants.add(user);
+		user.getModules().add(module);
 		moduleRepository.save(module);
 		userRepository.save(user);
-		return ResponseEntity.ok(new MessageResponse("User successfully added to module!"));
+
+		return ResponseEntity.ok(new MessageResponse("User successfully added "+ user.getUsername()+" to module!"));
 	}
 
 
