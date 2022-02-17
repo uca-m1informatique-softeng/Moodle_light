@@ -73,12 +73,7 @@ public class CourseController {
             return null;
         }
         Cours cours = (Cours) ocours.get();
-        System.out.println(" COURS NAME " + cours.name);
-        System.out.println(" COURS MODULE " + cours.module);
         User user = ouser.get();
-        System.out.println(" cours "+ cours.toString());
-        System.out.println(" module  "+ cours.module.toString());
-        System.out.println(" cours "+ cours.toString());
         if(!cours.module.users.contains(user)){
             return null;
         }
@@ -127,55 +122,40 @@ public class CourseController {
     @PreAuthorize("hasRole('TEACHER')")
     public ResponseEntity<?> modifierCours(@Valid @RequestBody AddTextRequest addTextRequest, @PathVariable String courname) throws Exception{
         // Vérifier si ce resource existe
-        System.out.println("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT");
         Optional<Ressource> oressource = ressourcesRepository.findByName(courname);
-        System.out.println("text1");
         if (!oressource.isPresent()) {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Error: No such ressource!"));
         }
-        System.out.println("text2");
         Ressource ressource = oressource.get();
         Cours cours;
-        //S'il existe et il est de type Cours on le cast a un objet cours
         if(ressource.getClass().equals(Cours.class)){
-            System.out.println("text3");
             cours = (Cours)ressource;
         }else{
-            System.out.println("text4");
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Error: Ressource n'est pas un cours!"));
         }
-        System.out.println("casting pass");
         //Si le text passé dans les paramètre existe dans le text dans le cours on renvoie une erreur
 
         String text = addTextRequest.getText();
-        System.out.println("get text");
         try{
             cours.text.contains(text);
         }catch(Exception e){
             System.out.println(e);
         }
-        System.out.println("contains passe");
         if(!cours.text.contains(text)) {
-            System.out.println("text5");
-            System.out.println("TEXT ADDED");
             try{
                 cours.text.add(text);
             }catch (Exception e){
                 System.out.println(e);
             }
 
-            System.out.println("TEXT ADDED 2" + cours.text.get(0));
         }else{
-            System.out.println("text7");
             return ResponseEntity
                     .ok(new MessageResponse("A eter dejat rajouter!"));
         }
-        System.out.println("text6");
-        System.out.println("PASS");
         ressourcesRepository.save(ressource);
         return ResponseEntity.ok(new MessageResponse("User successfully added to module!"));
     }
@@ -198,7 +178,6 @@ public class CourseController {
         }
 
         Ressource ressource = oressource.get();
-        System.out.println("delete cours 2");
         if(ressource.module!=null && ressource.module.ressources.contains(ressource)){
             ressource.module.ressources.remove(ressource);
         }

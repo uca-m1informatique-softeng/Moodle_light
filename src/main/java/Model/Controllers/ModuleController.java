@@ -1,14 +1,13 @@
 package Model.Controllers;
 
 import Model.Documents.Ressource;
+import Model.Exceptions.ModuleException;
+import Model.Exceptions.UserException;
 import Model.Security.jwt.JwtUtils;
 import Model.User.User;
 import Model.Documents.Module;
 import Model.Repositories.*;
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import io.cucumber.messages.internal.com.google.gson.Gson;
-import io.cucumber.messages.internal.com.google.gson.JsonArray;
-import io.cucumber.messages.internal.com.google.gson.JsonObject;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,10 +40,25 @@ import java.util.Set;
  *
  * DELETE /api/modules/{id}/participants/{userid}:	enleve un user d'un Module
  *
+ *
+ *-------------------------
+ * /api/{idUser}/modules
+ *---------------------------
+ * get api/{idUser}/modules 						     :getModules of the student
+ *
+ * get api/{idUser}/modules/{idModule} 						     :get a module of from the list of modules of  student
+ *
+ * post api/{idUser}/modules  							 : add a Module to the list of modules
+ *
+ * post api/{idUser}/modules/{idModule}/{idStudentToAdd} : add a user (student/ teacher ) to the module
+ *
+ * delete api/{idUser}/modules/{idModule}/{idStudentToDelete} : delete a user (student/ teacher ) from the module
+ *
+
+ *
  */
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/modules")
 public class ModuleController {
 
 	@Autowired
@@ -73,14 +87,181 @@ public class ModuleController {
 
 
 	/**
-	 * renvois le module
-	 * @param modulename
-	 * @return module
+	 * get all the modules of a student
+	 * @param idUser
+	 * @return
 	 */
-	@GetMapping("/{modulename}")
-	public String getModule(@PathVariable String modulename) {
-		return null;
+
+
+	@GetMapping("/api/{modules")
+	public Set<Module> getUserModules(@PathVariable Long idUser,Principal principal) {
+
+		User user = userRepository.findByUsername(principal.getName()).get();
+
+		return user.getModules();
+
+
 	}
+
+
+
+	/**
+	 *  get a module from the list of modules of a student
+	 * @param idUser
+	 * @param idModule
+	 * @return
+	 */
+
+
+	@GetMapping("/api/modules/{idModule}")
+	public Module getModule(@PathVariable Long idUser, @PathVariable Long idModule, Principal principal) {
+
+
+		User user = userRepository.findByUsername(principal.getName()).get();
+
+		//verifier si le module exist
+		Optional<Module> omodule = moduleRepository.findById(idModule) ;
+
+		if (!omodule.isPresent()) {
+			throw new ModuleException("module does not exist");
+
+		}
+
+		Module module = omodule.get();
+		if (!user.getModules().contains(module))
+		{
+			throw new ModuleException("user haven't acces to this courses");
+		}
+
+
+		return  module;
+
+	}
+
+
+
+
+
+
+
+
+	//////////////////////        POST     //////////////////////
+
+	/**
+	 * rajoute user: userid to module : id
+	 * @param principal
+	 * @param idModule
+	 * @return ResponseEntity
+	 */
+	@PostMapping("/api/modules/{idModule}/{idStudentToAdd}")
+	@PreAuthorize("hasRole('TEACHER')")
+	public ResponseEntity<?> addUser(Principal principal,
+
+									 @PathVariable long idModule,
+									 @PathVariable long idStudentToAdd
+									 ) {
+
+
+
+		Optional<Module> omodule = moduleRepository.findById(idModule);
+		if (!omodule.isPresent()) {
+			return ResponseEntity
+					.badRequest()
+					.body(new MessageResponse("Error: No such module!"));
+		}
+
+		Optional<User> ouser = userRepository.findById(idStudentToAdd);
+		if (!ouser.isPresent()) {
+			return ResponseEntity
+					.badRequest()
+					.body(new MessageResponse("Error: No such user exist!"));
+		}
+
+
+
+		Module module = omodule.get();
+		User actor = userRepository.findByUsername(principal.getName()).get();
+		User user = ouser.get();
+		Set<User> participants = module.getParticipants();
+
+
+		if (participants.contains(user))
+		{
+			return ResponseEntity.ok(new MessageResponse("already registered user"));
+		}
+
+
+		participants.add(user);
+		user.getModules().add(module);
+		moduleRepository.save(module);
+		userRepository.save(user);
+
+		return ResponseEntity.ok(new MessageResponse("User successfully added "+ user.getUsername()+" to module!"));
+	}
+
+
+
+//////////////////////        DELETE     //////////////////////
+
+
+	/**
+	 * enleve user : userid  from module : id
+	 * @param principal
+	 * @param id
+	 * @param userid
+	 * @return ResponseEntity
+	 */
+	@DeleteMapping("/api/modules/{idModule}/{idStudentToAdd}")
+	@PreAuthorize("hasRole('TEACHER')")
+	public ResponseEntity<?> deleteUser(Principal principal, @PathVariable long id, @PathVariable long userid) {
+		Optional<Module> omodule = moduleRepository.findById(id);
+		Optional<User> ouser = userRepository.findById(userid);
+		if (!omodule.isPresent()) {
+			return ResponseEntity
+					.badRequest()
+					.body(new MessageResponse("Error: No such module!"));
+		}
+		if (!ouser.isPresent()) {
+			return ResponseEntity
+					.badRequest()
+					.body(new MessageResponse("Error: No such user!"));
+		}
+
+		Module module = omodule.get();
+		User user = ouser.get();
+		User actor = userRepository.findByUsername(principal.getName()).get();
+		Set<User> participants = module.getParticipants();
+
+		if(!participants.contains(user)) {
+
+			return ResponseEntity
+					.badRequest()
+					.body(new MessageResponse("Error: User n'apartient pas au module !"));
+		}
+
+
+		user.getModules().remove(module);
+		participants.remove(user);
+		moduleRepository.save(module);
+		userRepository.save(user);
+		return ResponseEntity.ok(new MessageResponse("User successfully remouved from module!"));
+
+	}
+
+
+
+
+
+/////------------------------------------------------------------//////
+
+
+
+
+
+
+
+
+
 
 	/**
 	 * renvois le Teacher du module : modulename
@@ -88,17 +269,24 @@ public class ModuleController {
 	 * @return Teacher
 	 */
 	@GetMapping("/who/{modulename}")
-	public ArrayList<String> getPersonneModule(@PathVariable String modulename) {
+	public String getPersonneModule(@PathVariable String modulename) {
 		ArrayList<String> data = new ArrayList<>();
 		Optional<Module> omodule =	moduleRepository.findByName(modulename);
 		if(!omodule.isPresent()){
 			return null;
 		}
 		Module module = omodule.get();
-		data.add("la personne connectée est " );
-		return data ;
+		for (User user:module.users ){
+			if(user.getRoles().contains("ROLE_TEACHER")){
+				return user.getUsername();
+			}
+		}
+		return null;
 
 	}
+
+
+
 
 	/**
 	 * renvois les ressources de user : nameUser
@@ -144,16 +332,17 @@ public class ModuleController {
 		for (Ressource rsrc :
 			module.ressources) {
 			elem = new JSONObject();
-
 			elem.put("name",rsrc.name);
 			elem.put("id", rsrc.id);
-			elem.put("type",rsrc.getClass());
 			ressourceArray.put(elem);
 		}
 		return ressourceArray.toString();
 	}
 
+
+
 	//////////////////////      Post  PUT     //////////////////////
+
 
 	/**
 	 * rajoute une ressource
@@ -179,112 +368,21 @@ public class ModuleController {
 
 		Module module = omodule.get();
 		Ressource ressource = oressource.get();
-
 		Set<Ressource> ressources = module.getRessources();
 		if(!ressources.contains(ressource)) {
 			ressources.add(ressource);
 			ressource.module = module;
 		}else{
-			ressource.module = module;
 			return ResponseEntity
 					.ok()
 					.body(new MessageResponse("Ressource y apartient deja !"));
 		}
 		moduleRepository.save(module);
-		ressourcesRepository.save(ressource);
-		return ResponseEntity.ok(new MessageResponse("The ressource has successfully added to the module!"));
-	}
-
-	/**
-	 * rajoute user: userid to module : id
-	 * @param principal
-	 * @param id
-	 * @param userid
-	 * @return ResponseEntity
-	 */
-	@PostMapping("/{id}/participants/{userid}")
-	@PreAuthorize("hasRole('TEACHER')")
-	public ResponseEntity<?> addUser(Principal principal, @PathVariable long id, @PathVariable long userid) {
-		System.out.println("passe ici");
-		Optional<Module> omodule = moduleRepository.findById(id);
-		Optional<User> ouser = userRepository.findById(userid);
-		if (!omodule.isPresent()) {
-			return ResponseEntity
-					.badRequest()
-					.body(new MessageResponse("Error: No such module!"));
-		}
-		if (!ouser.isPresent()) {
-			return ResponseEntity
-					.badRequest()
-					.body(new MessageResponse("Error: No such user!"));
-		}
-		Module module = omodule.get();
-		User user = ouser.get();
-		User actor = userRepository.findByUsername(principal.getName()).get();
-		System.out.println("passe ici 2");
-		Set<User> participants = module.getParticipants();
-		if ((participants.isEmpty() && actor.equals(user)) ||
-			participants.contains(actor)) {
-			System.out.println("passe ici 3");
-			// verifie si user n'apartient pas déjà à participants
-			if(!participants.contains(user)) {
-				System.out.println("passe ici 4");
-				participants.add(user);
-				user.getModules().add(module);
-			}else{
-				return ResponseEntity.ok(new MessageResponse("is created before"));
-			}
-		} else {
-		return ResponseEntity
-					.badRequest()
-					.body(new MessageResponse("Error: Not allowed to add user!"));
-		}
-		System.out.println("User realtion creer");
-		moduleRepository.save(module);
-		userRepository.save(user);
 		return ResponseEntity.ok(new MessageResponse("User successfully added to module!"));
 	}
 
 
 	//////////////////////        Delete     //////////////////////
 
-	/**
-	 * enleve user : userid  from module : id
-	 * @param principal
-	 * @param id
-	 * @param userid
-	 * @return ResponseEntity
-	 */
-	@DeleteMapping("/{id}/participants/{userid}")
-	@PreAuthorize("hasRole('TEACHER')")
-	public ResponseEntity<?> deleteUser(Principal principal, @PathVariable long id, @PathVariable long userid) {
-		Optional<Module> omodule = moduleRepository.findById(id);
-		Optional<User> ouser = userRepository.findById(userid);
-		if (!omodule.isPresent()) {
-			return ResponseEntity
-					.badRequest()
-					.body(new MessageResponse("Error: No such module!"));
-		}
-		if (!ouser.isPresent()) {
-			return ResponseEntity
-					.badRequest()
-					.body(new MessageResponse("Error: No such user!"));
-		}
 
-		Module module = omodule.get();
-		User user = ouser.get();
-		User actor = userRepository.findByUsername(principal.getName()).get();
-
-		Set<User> participants = module.getParticipants();
-		if(participants.contains(user)) {
-			user.getModules().remove(module);
-			participants.remove(user);
-		}else{
-			return ResponseEntity
-					.badRequest()
-					.body(new MessageResponse("Error: User n'apartient pas au module !"));
-		}
-		moduleRepository.save(module);
-		return ResponseEntity.ok(new MessageResponse("User successfully remouved from module!"));
-	}
 }
