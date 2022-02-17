@@ -51,6 +51,11 @@ public class CourseController {
 
     //////////////////////      GET     //////////////////////
 
+
+
+
+
+
     /**
      * Read - Get all textes of  a cours of a student
      * @param namecours
@@ -61,6 +66,10 @@ public class CourseController {
      * Les utilisateurs peuvent connaitre la liste des textes sur le cours ou ils sont inscrits
      *
      */
+
+
+
+
     @GetMapping("{namecours}/StudentCours/{namestudent}")
     public List<String> getCourses(@PathVariable String namecours,@PathVariable String namestudent){
         System.out.println("In function Get courses");

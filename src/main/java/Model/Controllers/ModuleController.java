@@ -1,6 +1,7 @@
 package Model.Controllers;
 
 import Model.Documents.Ressource;
+import Model.Exceptions.ModuleException;
 import Model.Security.jwt.JwtUtils;
 import Model.User.User;
 import Model.Documents.Module;
@@ -20,6 +21,7 @@ import Model.Payload.response.MessageResponse;
 
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 
@@ -102,23 +104,36 @@ public class ModuleController {
 
 
 
+
+
+
+
 	/**
-	 * renvois le Teacher du module : modulename
-	 * @param modulename
+	 * renvois la liste des etudiants inscrit dans un module
 	 * @return Teacher
 	 */
-	@GetMapping("/who/{modulename}")
-	public ArrayList<String> getPersonneModule(@PathVariable String modulename) {
-		ArrayList<String> data = new ArrayList<>();
-		Optional<Module> omodule =	moduleRepository.findByName(modulename);
-		if(!omodule.isPresent()){
-			return null;
+	@PreAuthorize("hasRole('TEACHER')")
+	@GetMapping("/{idModule}/students")
+	public Set<User> getStudentsOfModule(@PathVariable Long idModule) {
+
+		Optional<Module> module = moduleRepository.findById(idModule);
+
+		if(!module.isPresent())
+		{
+			  throw new ModuleException("module does not exist");
+
 		}
-		Module module = omodule.get();
-		data.add("la personne connectée est " );
-		return data ;
+
+		return module.get().getParticipants();
+
 
 	}
+
+
+
+
+
+
 
 
 	/**
