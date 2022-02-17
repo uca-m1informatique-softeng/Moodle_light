@@ -37,11 +37,7 @@ public class ModuleTest extends SpringIntegration{
         String response  = EntityUtils.toString(latestHttpResponse.getEntity(), "UTF-8");
         System.out.println("reponse" + response);
         System.out.println("content " + content);
-
-        // TODO : erreur il faut arriver a récupérer seulement les name des modules dans listTexts
-
-        List<String> listTexts = Arrays.asList(response.subSequence(1,response.length()-1).toString().split("\""));
-        listTexts.remove(0);
+        List<String> listTexts = Arrays.asList(response.subSequence(1,response.length()-1).toString().split(","));
 
         System.out.println(content);
         System.out.println(listTexts);

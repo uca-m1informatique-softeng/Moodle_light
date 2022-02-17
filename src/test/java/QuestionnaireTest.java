@@ -250,7 +250,14 @@ public class QuestionnaireTest extends SpringIntegration {
         System.out.println(latestHttpResponse.getStatusLine().getStatusCode());
     }
 
-    @Then("Answer of {string} is saved in {string}")
+    @When("user {string} delete question {string}")
+    public void deleteQuestion(String user_a, String enonce_a) throws IOException {
+        String jwt = authController.generateJwt(user_a, PASSWORD);
+        executeDelete("http://localhost:8080/api/question/" + questionRepository.findByEnonce(enonce_a).get().id,jwt);
+
+    }
+
+        @Then("Answer of {string} is saved in {string}")
     public void Answersaved(String name, String enonce_a) throws UnsupportedEncodingException {
         Question question = questionRepository.findByEnonce(enonce_a).get();
         System.out.println("find question reponses" + question.reponses.isEmpty());

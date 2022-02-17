@@ -29,5 +29,10 @@ Feature: Delete
   Scenario: teacher delete text from cours
 
   Scenario: teacher delete question
+    When user "steve" creates "text" question with content "Enoncesteve" and with answer "answ1"
+    And user "steve" delete question "Enoncesteve"
+    Then course "Enoncesteve" does not exist
+
+
 
   Scenario: teacher delete question that is connected to a questionaire
