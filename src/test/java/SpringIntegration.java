@@ -43,6 +43,22 @@ public class SpringIntegration {
             HttpClientBuilder.create()
                     .setDefaultRequestConfig(config)
                     .build();
+    //pas utiliser pour le moment
+    Object executeGetReturnObject(String url, String jwt) throws IOException {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        headers.add("Authorization", "Bearer " + jwt);
+        System.out.println("========DEBUG ======\n"+headers.toString());
+        HttpEntity request = new HttpEntity(headers);
+
+        ResponseEntity<Object> response = this.restTemplate.exchange(url, HttpMethod.GET, request, Object.class);
+        System.out.println("========DEBUG ======\n"+response.toString());
+        if(response.getStatusCode() == HttpStatus.OK) {
+            return response.getBody();
+        } else {
+            return null;
+        }
+    }
 
     /**
      * exectute HttpPut avec obj jwt qui peuve etre null si non néssésaire
@@ -106,7 +122,6 @@ public class SpringIntegration {
             request.addHeader("Authorization", "Bearer " + jwt);
         }
         latestHttpResponse = httpClient.execute(request);
-        EntityUtils.consumeQuietly(latestHttpResponse.getEntity());
         return false;
     }
 
@@ -123,7 +138,6 @@ public class SpringIntegration {
             request.addHeader("Authorization", "Bearer " + jwt);
         }
         latestHttpResponse = httpClient.execute(request);
-        EntityUtils.consumeQuietly(latestHttpResponse.getEntity());
         return false;
     }
 
