@@ -18,6 +18,7 @@ public class Ressource {
     public Ressource(){}
 
     @ManyToOne
+    @JoinColumn(name="modulid")
     public Module module;
 
     public Ressource(String name){

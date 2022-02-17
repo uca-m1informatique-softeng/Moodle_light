@@ -19,8 +19,7 @@ public class Module {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name="modulid")
+    @OneToMany(targetEntity=Ressource.class, mappedBy="module", fetch = FetchType.EAGER)
     public Set<Ressource> ressources = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

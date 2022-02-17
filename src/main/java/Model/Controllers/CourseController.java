@@ -1,9 +1,11 @@
 package Model.Controllers;
 import Model.Documents.Cours;
+import Model.Documents.Module;
 import Model.Documents.Ressource;
 import Model.Payload.request.AddRessourceRequest;
 import Model.Payload.request.AddTextRequest;
 import Model.Payload.response.MessageResponse;
+import Model.Repositories.ModuleRepository;
 import Model.Repositories.RessourcesRepository;
 import Model.Repositories.UserRepository;
 import Model.User.User;
@@ -44,6 +46,7 @@ public class CourseController {
 
     @Autowired
     UserRepository userRepository;
+    private ModuleRepository moduleRepository;
 
 
     //////////////////////      GET     //////////////////////
@@ -62,14 +65,16 @@ public class CourseController {
     public List<String> getCourses(@PathVariable String namecours,@PathVariable String namestudent){
         Optional<Ressource> ocours = ressourcesRepository.findByName(namecours);
         Optional<User> ouser = userRepository.findByUsername(namestudent);
+
         // not a coursfind userfind or cour is not a cour
         if(!ocours.isPresent()||!ouser.isPresent()||!ocours.get().getClass().equals(Cours.class)){
             return null;
         }
         Cours cours = (Cours) ocours.get();
+        System.out.println(" COURS NAME " + cours.name);
+        System.out.println(" COURS MODULE " + cours.module);
         User user = ouser.get();
         if(!cours.module.users.contains(user)){
-            System.out.println("user");
             return null;
         }
         return cours.text;
