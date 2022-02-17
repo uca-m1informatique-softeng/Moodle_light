@@ -52,6 +52,7 @@ public class Question {
  public boolean reponse(Reponse reponse){
      switch(reponse.typeReponse) {
          case QCM:
+             System.out.println("compare value : " + reponse.reponseQcm + " : " + this.reponseQcm);
              return reponse.reponseQcm == this.reponseQcm;
 
          case CHOIXMULTIPLE:
@@ -60,13 +61,15 @@ public class Question {
                  return  false ;
              }
              for (int i = 0 ; i < reponse.reponsesMultiples.length; i++){
-                 if(reponse.reponsesMultiples[i] == this.reponsesMultiples[i]) {
+                 System.out.println("compare value " + reponse.reponsesMultiples[i] + " : " +this.reponsesMultiples[i]);
+                 if(reponse.reponsesMultiples[i] != this.reponsesMultiples[i]) {
                      return false;
                  }
              }
              return true;
 
          case TEXT:
+             System.out.println("compare value : " + reponse.reponseText + " : " + this.reponseText);
              if(reponse.reponseText.equals(this.reponseText))
                  return true;
              else return  false;
@@ -95,6 +98,7 @@ public class Question {
          this.typeQuestion=EQuestion.CHOIXMULTIPLE;
          this.listeEnonces_ = listrReponses_a;
          this.enonce = enonce_a;
+         this.reponsesMultiples = reponse_a;
      }
 
 
