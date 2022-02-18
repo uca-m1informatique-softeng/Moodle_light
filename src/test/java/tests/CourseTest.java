@@ -115,11 +115,12 @@ public class CourseTest extends SpringIntegration {
         System.out.println(listTexts);
         boolean result = true;
         for (int i = 0; i < listTexts.size()-1; i++){
-            if (!content.get(i).equals(listTexts.get(i))){
+            if (!content.contains(listTexts.get(i))){
                 result = false;
             }
         }
         assertTrue(result);
+        assertTrue(content.size()==listTexts.size());
     }
 
     @When("{string} deletes the course {string}")
