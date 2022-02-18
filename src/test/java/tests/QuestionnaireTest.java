@@ -275,7 +275,7 @@ public class QuestionnaireTest extends SpringIntegration {
         String responseQuestionnaire  = EntityUtils.toString(latestHttpResponse.getEntity(), "UTF-8");
         //String response  = EntityUtils.toString(latestHttpResponse.getEntity(), "UTF-8");
         System.out.println("REPONSE " + responseQuestionnaire );
-        //assertEquals(responseQuestionnaire ,points);
+        assertEquals(responseQuestionnaire ,points);
     }
 
 
@@ -288,6 +288,6 @@ public class QuestionnaireTest extends SpringIntegration {
     @Then("return note is {string}")
     public void teachergetPoints(String points) throws IOException {
         String responseQuestionnaire  = EntityUtils.toString(latestHttpResponse.getEntity(), "UTF-8");
-        //assertEquals(responseQuestionnaire ,points);
+        assertEquals(responseQuestionnaire ,points);
     }
 }
