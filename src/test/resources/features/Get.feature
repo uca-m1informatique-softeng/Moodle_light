@@ -9,9 +9,9 @@ Feature: Get
   Scenario: user check all modules that he subscribe to
     When "steve" checks his modules
     Then return all modules names
-    |Gestion-de-projet|
+      |Gestion-de-projet|
 
   Scenario: teacher check list of students subscibed  in a module
     When "steve" checks his module named "Gestion-de-projet"
     Then return all users names
-    |{"0":"steve"}|
+      |{"0":"steve"}|

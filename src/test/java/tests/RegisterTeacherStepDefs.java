@@ -109,7 +109,7 @@ public class RegisterTeacherStepDefs extends SpringIntegration {
         User user = userRepository.findByUsername(arg0).get();
         String jwt = authController.generateJwt(arg0, PASSWORD);
 
-       executePost("http://localhost:8080/api/modules/"+module.getId()+"/participants/"+user.getId(), jwt,null);
+        executePost("http://localhost:8080/api/modules/"+module.getId()+"/participants/"+user.getId(), jwt,null);
     }
 
     @Given( "{string} registers {string} to module {string}")
