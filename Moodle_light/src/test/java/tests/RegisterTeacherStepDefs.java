@@ -74,7 +74,6 @@ public class RegisterTeacherStepDefs extends SpringIntegration {
         Module module = moduleRepository.findByName(arg1).get();
         module.getParticipants().add(userRepository.findByUsername(arg0).get());
         moduleRepository.save(module);
-
     }
 
     @When("{string} registers to module {string}")

@@ -178,12 +178,8 @@ public class CourseTest extends SpringIntegration {
 
 
         String reponse = EntityUtils.toString(latestHttpResponse.getEntity(),"UTF-8");
-
+        System.out.println(reponse);
         assertTrue(reponse.equalsIgnoreCase(studentNames.get(0)));
-
-
-
-
     }
 
 }

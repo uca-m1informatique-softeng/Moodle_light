@@ -1,6 +1,7 @@
 package Model.Controllers;
 
 import Model.Documents.Ressource;
+import Model.Exceptions.ModuleException;
 import Model.Security.jwt.JwtUtils;
 import Model.User.User;
 import Model.Documents.Module;
@@ -20,6 +21,7 @@ import Model.Payload.response.MessageResponse;
 
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Optional;
 import java.util.Set;
 
@@ -70,29 +72,37 @@ public class ModuleController {
 
 
 	/**
-	 * renvois le module
-	 * @param
-	 * @return module
+	 * renvois la liste des etudiants inscrit dans un module
+	 * @return Teacher
 	 */
+	@PreAuthorize("hasRole('TEACHER')")
+	@GetMapping("/{nameModule}/students")
+	public HashMap<Integer, String> getStudentsOfModule(@PathVariable String nameModule) {
 
-	@GetMapping("")
-	public String getStudentModules(Principal principal) throws JSONException {
-		User user = userRepository.findByUsername(principal.getName()).get();
+		Optional<Module> module = moduleRepository.findByName(nameModule);
 
-		JSONArray modulesArray = new JSONArray();
-		JSONObject elem ;
-		for (Module module : user.getModules()) {
-			elem = new JSONObject();
-
-			elem.put("name",module.name);
-			modulesArray.put(elem);
-
+		if(!module.isPresent())
+		{
+			throw new ModuleException("module does not exist");
 
 		}
 
 
 
-		return modulesArray.toString() ;
+
+		HashMap<Integer,String> StudentsNames = new HashMap<>();
+
+		for (int i = 0; i <module.get().getParticipants().size() ; i++) {
+
+			StudentsNames.put(i,module.get().getParticipants().iterator().next().getUsername());
+		}
+
+
+
+
+
+		return StudentsNames;
+
 
 	}
 
