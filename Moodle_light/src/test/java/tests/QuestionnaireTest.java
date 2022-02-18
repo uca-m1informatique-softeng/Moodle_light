@@ -110,6 +110,18 @@ public class QuestionnaireTest extends SpringIntegration {
        executePost("http://localhost:8080/api/question",jwt,s);
    }
 
+    @When("user {string} creates code {string} question with content {string} and with answer {string}")
+    public void userCreateCodeQuestion(String user_a, String questionType, String enonce_a , String answer_a) throws IOException {
+        CreateQuestionRequest textQuestionRequest = new CreateQuestionRequest();
+        textQuestionRequest.setEnonce(enonce_a);
+        textQuestionRequest.setReponse(answer_a);
+        textQuestionRequest.setQuestionType(PYTHON);
+        Gson g = new Gson();
+        String s = g.toJson(textQuestionRequest);
+        String jwt = authController.generateJwt(user_a, PASSWORD);
+        executePost("http://localhost:8080/api/question",jwt,s);
+    }
+
    @When("user {string} creates {string} question with content {string}, answers {string} and with answer {int}")
    public void userCreateQcmQuestion(String user_a, String questionType, String enonce_a , String possibleanswer,int rep) throws IOException {
        CreateQuestionRequest textQuestionRequest = new CreateQuestionRequest();
@@ -206,6 +218,22 @@ public class QuestionnaireTest extends SpringIntegration {
         Question question = questionRepository.findByEnonce(enonce_a).get();
         Reponse reponse = new Reponse();
         reponse.typeReponse = TEXT;
+        reponse.username = user_a;
+        reponse.reponseText = answer_a;
+        Gson g = new Gson();
+        String s = g.toJson(reponse);
+        String jwt = authController.generateJwt(user_a, PASSWORD);
+        System.out.println(question.id);
+        executePut("http://localhost:8080/api/question/answer/"+question.id,jwt,s);
+        System.out.println(latestHttpResponse.getStatusLine().getStatusCode());
+    }
+
+
+    @When("user {string} code answer {string} with {string}")
+    public void answerQuestionCode(String user_a, String enonce_a , String answer_a) throws IOException {
+        Question question = questionRepository.findByEnonce(enonce_a).get();
+        Reponse reponse = new Reponse();
+        reponse.typeReponse = PYTHON;
         reponse.username = user_a;
         reponse.reponseText = answer_a;
         Gson g = new Gson();

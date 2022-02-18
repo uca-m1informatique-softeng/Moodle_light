@@ -1,3 +1,5 @@
+package tests;
+
 import Model.Controllers.AuthController;
 import Model.Documents.Cours;
 import Model.Documents.Module;
@@ -17,6 +19,8 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
+import tests.SpringIntegration;
+
 import java.io.IOException;
 import java.util.*;
 
