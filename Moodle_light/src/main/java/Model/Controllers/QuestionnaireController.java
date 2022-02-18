@@ -27,6 +27,7 @@ import java.util.Set;
  * GET  /api/questionnaire/{username}/questionnaires/{nameQuestionnaire}    :   return question de questionaires
  * GET  /api/questionnaire/{username}/validate/{questionairename}            :   evalue questionaire et return points
  * GET /api/questionnaire/{username}/{nameQuestionnaire}/   : get the questionnaire object
+ *
  * POST /api/questionnaire    :    creer questionaire
  * PUT  /api/questionnaire/{questionarename}/question/{questionid}   :   rajoute une question dans questionaire
  * PUT api/questionnaire/{questionarename}/module/{moduleName}  : attache un module à une questionnaire
