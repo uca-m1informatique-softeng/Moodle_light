@@ -1,0 +1,9 @@
+fr/uca/springbootstrap/SpringBootSecurityPostgresqlApplication.class
+fr/uca/springbootstrap/repository/RoleRepository.class
+fr/uca/springbootstrap/payload/request/LoginRequest.class
+fr/uca/springbootstrap/repository/UserRepository.class
+fr/uca/springbootstrap/models/User.class
+fr/uca/springbootstrap/models/ERole.class
+fr/uca/springbootstrap/models/Role.class
+fr/uca/springbootstrap/payload/request/SignupRequest.class
+fr/uca/springbootstrap/controllers/UserDetailService.class

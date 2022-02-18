@@ -10,10 +10,14 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.io.IOException;
 import java.util.HashSet;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -67,6 +71,37 @@ public class RegisterTeacherStepDefs extends SpringIntegration {
         module.setParticipants(new HashSet<>());
         moduleRepository.save(module);
     }
+
+    @And("{string} student in {string}")
+    public void studentIn(String arg0, String arg1) {
+        Module module = moduleRepository.findByName(arg1).get();
+        module.getParticipants().add(userRepository.findByUsername(arg0).get());
+        moduleRepository.save(module);
+
+    }
+
+    @When("{string} checks his module named {string}")
+    public void checkParticipants(String nameUser ,String nameModule) throws IOException, JSONException {
+
+        String jwt = authController.generateJwt(nameUser, PASSWORD);
+        executeGet("http://localhost:8080/api/modules/"+nameModule+"/students",jwt);
+
+
+    }
+
+
+
+
+
+    @Then("return all users names")
+    public void returnAllParticipants(List<String> studentNames) throws IOException, JSONException {
+
+
+        String reponse = EntityUtils.toString(latestHttpResponse.getEntity(), "UTF-8");
+
+        assertTrue(reponse.equalsIgnoreCase(studentNames.get(0)));
+    }
+
 
     @When("{string} registers to module {string}")
     public void registersToModule(String arg0, String arg1) throws Exception {

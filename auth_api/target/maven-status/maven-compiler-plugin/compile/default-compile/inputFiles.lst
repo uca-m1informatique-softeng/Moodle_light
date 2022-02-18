@@ -1,0 +1,9 @@
+/home/data/MASTER/S2/genLog/Moodle_light/auth_api/src/main/java/fr/uca/springbootstrap/models/Role.java
+/home/data/MASTER/S2/genLog/Moodle_light/auth_api/src/main/java/fr/uca/springbootstrap/payload/request/SignupRequest.java
+/home/data/MASTER/S2/genLog/Moodle_light/auth_api/src/main/java/fr/uca/springbootstrap/repository/UserRepository.java
+/home/data/MASTER/S2/genLog/Moodle_light/auth_api/src/main/java/fr/uca/springbootstrap/SpringBootSecurityPostgresqlApplication.java
+/home/data/MASTER/S2/genLog/Moodle_light/auth_api/src/main/java/fr/uca/springbootstrap/repository/RoleRepository.java
+/home/data/MASTER/S2/genLog/Moodle_light/auth_api/src/main/java/fr/uca/springbootstrap/payload/request/LoginRequest.java
+/home/data/MASTER/S2/genLog/Moodle_light/auth_api/src/main/java/fr/uca/springbootstrap/models/User.java
+/home/data/MASTER/S2/genLog/Moodle_light/auth_api/src/main/java/fr/uca/springbootstrap/controllers/UserDetailService.java
+/home/data/MASTER/S2/genLog/Moodle_light/auth_api/src/main/java/fr/uca/springbootstrap/models/ERole.java

@@ -51,6 +51,11 @@ public class CourseController {
 
     //////////////////////      GET     //////////////////////
 
+
+
+
+
+
     /**
      * Read - Get all textes of  a cours of a student
      * @param namecours
@@ -61,6 +66,10 @@ public class CourseController {
      * Les utilisateurs peuvent connaitre la liste des textes sur le cours ou ils sont inscrits
      *
      */
+
+
+
+
     @GetMapping("{namecours}/StudentCours/{namestudent}")
     public List<String> getCourses(@PathVariable String namecours,@PathVariable String namestudent){
         System.out.println("In function Get courses");
@@ -194,6 +203,7 @@ public class CourseController {
     @DeleteMapping("/{courname}/text/{text}")
     @PreAuthorize("hasRole('TEACHER')")
     public ResponseEntity<?> deletRessource(@PathVariable String courname, @PathVariable String text){
+        System.out.println("Cours est Delete");
         Optional<Ressource> oressource = ressourcesRepository.findByName(courname);
         if (!oressource.isPresent()) {
             return ResponseEntity
@@ -216,6 +226,7 @@ public class CourseController {
             return ResponseEntity
                     .ok(new MessageResponse("A eter dejat creer!"));
         }
+        ressourcesRepository.save(cours);
         return ResponseEntity.ok(new MessageResponse("User successfully added to cours!"));
     }
 

@@ -1,6 +1,7 @@
 package Model.Controllers;
 
 import Model.Documents.Ressource;
+import Model.Exceptions.ModuleException;
 import Model.Security.jwt.JwtUtils;
 import Model.User.User;
 import Model.Documents.Module;
@@ -19,9 +20,7 @@ import Model.Payload.response.MessageResponse;
 
 
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 
 /**
@@ -103,23 +102,50 @@ public class ModuleController {
 
 
 
+
+
+
+
 	/**
-	 * renvois le Teacher du module : modulename
-	 * @param modulename
+	 * renvois la liste des etudiants inscrit dans un module
 	 * @return Teacher
 	 */
-	@GetMapping("/who/{modulename}")
-	public ArrayList<String> getPersonneModule(@PathVariable String modulename) {
-		ArrayList<String> data = new ArrayList<>();
-		Optional<Module> omodule =	moduleRepository.findByName(modulename);
-		if(!omodule.isPresent()){
-			return null;
+	@PreAuthorize("hasRole('TEACHER')")
+	@GetMapping("/{nameModule}/students")
+	public HashMap<Integer, String> getStudentsOfModule(@PathVariable String nameModule) {
+
+		Optional<Module> module = moduleRepository.findByName(nameModule);
+
+		if(!module.isPresent())
+		{
+			  throw new ModuleException("module does not exist");
+
 		}
-		Module module = omodule.get();
-		data.add("la personne connectée est " );
-		return data ;
+
+
+
+
+		HashMap<Integer,String> StudentsNames = new HashMap<>();
+
+		for (int i = 0; i <module.get().getParticipants().size() ; i++) {
+
+			StudentsNames.put(i,module.get().getParticipants().iterator().next().getUsername());
+		}
+
+
+
+
+
+		return StudentsNames;
+
 
 	}
+
+
+
+
+
+
 
 
 	/**
@@ -235,6 +261,24 @@ public class ModuleController {
 		userRepository.save(user);
 		return ResponseEntity.ok(new MessageResponse("User successfully added to module!"));
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 	//////////////////////        Delete     //////////////////////
