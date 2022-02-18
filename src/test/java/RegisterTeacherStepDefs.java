@@ -67,6 +67,15 @@ public class RegisterTeacherStepDefs extends SpringIntegration {
         moduleRepository.save(module);
     }
 
+
+    @And("{string} student in {string}")
+    public void studentIn(String arg0, String arg1) {
+        Module module = moduleRepository.findByName(arg1).get();
+        module.getParticipants().add(userRepository.findByUsername(arg0).get());
+        moduleRepository.save(module);
+
+    }
+
     @When("{string} registers to module {string}")
     public void registersToModule(String arg0, String arg1) throws Exception {
         Module module = moduleRepository.findByName(arg1).get();

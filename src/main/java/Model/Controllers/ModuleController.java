@@ -20,10 +20,7 @@ import Model.Payload.response.MessageResponse;
 
 
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 
 /**
@@ -113,10 +110,10 @@ public class ModuleController {
 	 * @return Teacher
 	 */
 	@PreAuthorize("hasRole('TEACHER')")
-	@GetMapping("/{idModule}/students")
-	public Set<User> getStudentsOfModule(@PathVariable Long idModule) {
+	@GetMapping("/{nameModule}/students")
+	public HashMap<Integer, String> getStudentsOfModule(@PathVariable String nameModule) {
 
-		Optional<Module> module = moduleRepository.findById(idModule);
+		Optional<Module> module = moduleRepository.findByName(nameModule);
 
 		if(!module.isPresent())
 		{
@@ -124,7 +121,21 @@ public class ModuleController {
 
 		}
 
-		return module.get().getParticipants();
+
+
+
+		HashMap<Integer,String> StudentsNames = new HashMap<>();
+
+		for (int i = 0; i <module.get().getParticipants().size() ; i++) {
+
+			StudentsNames.put(i,module.get().getParticipants().iterator().next().getUsername());
+		}
+
+
+
+
+
+		return StudentsNames;
 
 
 	}
@@ -249,6 +260,24 @@ public class ModuleController {
 		userRepository.save(user);
 		return ResponseEntity.ok(new MessageResponse("User successfully added to module!"));
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 	//////////////////////        Delete     //////////////////////
