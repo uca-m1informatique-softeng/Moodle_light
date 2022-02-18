@@ -113,11 +113,13 @@ public class CourseTest extends SpringIntegration {
         System.out.println(listTexts);
         boolean result = true;
         for (int i = 0; i < listTexts.size()-1; i++){
-            if (!content.get(i).equals(listTexts.get(i))){
+
+            if (!content.contains(listTexts.get(i))){
                 result = false;
             }
         }
         assertTrue(result);
+        assertTrue(listTexts.size() == content.size());
     }
 
     @When("{string} deletes the course {string}")
@@ -157,4 +159,27 @@ public class CourseTest extends SpringIntegration {
 
 
     }
+
+    @When("{string} checks his module named {string}")
+    public void checkParticipants(String nameUser ,String nameModule) throws IOException, JSONException {
+
+        String jwt = authController.generateJwt(nameUser, PASSWORD);
+        executeGet("http://localhost:8080/api/modules/"+nameModule+"/students",jwt);
+
+
+    }
+
+    @Then("return all users names")
+    public void returnAllParticipants(List<String> studentNames) throws IOException, JSONException {
+
+
+        String reponse = EntityUtils.toString(latestHttpResponse.getEntity(),"UTF-8");
+
+        assertTrue(reponse.equalsIgnoreCase(studentNames.get(0)));
+
+
+
+
+    }
+
 }
