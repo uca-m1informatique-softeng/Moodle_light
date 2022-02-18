@@ -149,6 +149,7 @@ public class QuestionnaireController {
             }
         }
         int reponsevalide = 0;
+        System.out.println("quest size" + questionnaire.ListeQuestions.size());
         for (Question question:questionnaire.ListeQuestions) {
             System.out.println(question.enonce);
             Reponse reponse = findReponse(question,username);

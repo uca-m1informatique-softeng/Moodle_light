@@ -77,11 +77,13 @@ public class Question {
                  return true;
              else return  false;
          case PYTHON:
+             System.out.println("Python");
              PythonInterpreter pyInterp  = new PythonInterpreter();
              StringWriter output = new StringWriter();
              pyInterp.setOut(output);
              pyInterp.exec(reponse.reponseText);
-             return output.toString().trim()==this.reponseText;
+             System.out.println("reponse python :" + output.toString().trim() + " | " +this.reponseText);
+             return output.toString().trim().equals(this.reponseText);
          default : return false;
      }
  }
