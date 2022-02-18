@@ -27,7 +27,7 @@ Feature: Questionnaire
 
   Scenario: Teacher add python question
     When user "steve" creates code "python" question with content "Enonce4_print_hello" and with answer "Hello"
-    Then Question with content "Enonce4" exist
+    Then Question with content "Enonce4_print_hello" exist
 
   Scenario: Teacher gets a questionnaire
     When "steve" creates questionnaire "Quest1"
@@ -66,9 +66,9 @@ Feature: Questionnaire
     Then Answer of "paul" is saved in "Enonce3"
 
   Scenario: student add python text
-    When user "steve" creates code "python" question with content "Enonce4" and with answer "answ1"
-    And user "paul" code answer "Enonce4" with "print('Hello')"
-    Then Answer of "paul" is saved in "Enonce4"
+    When user "steve" creates code "python" question with content "Enonce4_print_hello" and with answer "Hello"
+    And user "paul" code answer "Enonce4_print_hello" with "print('Hello')"
+    Then Answer of "paul" is saved in "Enonce4_print_hello"
 
   Scenario: student answer all questions and validate
     When user "paul" answer "Enonce1" with "answ1"
@@ -79,7 +79,7 @@ Feature: Questionnaire
     And user "steve" add question "Enonce1" to "Quest1"
     And user "steve" add question "Enonce2" to "Quest1"
     And user "steve" add question "Enonce3" to "Quest1"
-    And user "steve" add question "Enonce4" to "Quest1"
+    And user "steve" add question "Enonce4_print_hello" to "Quest1"
     Then user "paul" validate "Quest1" and get "3" points
 
 
