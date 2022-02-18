@@ -2,14 +2,17 @@ package Model.Documents;
 
 import org.hibernate.type.EnumType;
 import org.hibernate.validator.constraints.Range;
+import org.python.util.PythonInterpreter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.io.StringWriter;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import static Model.Documents.EQuestion.PYTHON;
 import static Model.Documents.EQuestion.TEXT;
 
 /**
@@ -73,6 +76,12 @@ public class Question {
              if(reponse.reponseText.equals(this.reponseText))
                  return true;
              else return  false;
+         case PYTHON:
+             PythonInterpreter pyInterp  = new PythonInterpreter();
+             StringWriter output = new StringWriter();
+             pyInterp.setOut(output);
+             pyInterp.exec(reponse.reponseText);
+             return output.toString().trim()==this.reponseText;
          default : return false;
      }
  }
@@ -111,6 +120,17 @@ public class Question {
         this.typeQuestion=TEXT;
         this.enonce =enonce_a;
         this.reponseText=reponse_a;
+    }
+
+    /**
+     * Constructor text question
+     * @param enonce_a
+     * @param reponse_a
+     */
+    public Question(String enonce_a, String reponse_a, String langage){
+        this.typeQuestion=PYTHON;
+        this.enonce = enonce_a;
+        this.reponseText = reponse_a;
     }
 
     @Override

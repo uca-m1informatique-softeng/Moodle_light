@@ -146,6 +146,9 @@ public class QuestionController {
             case TEXT:
                 questionToAdd = new Question(createQuestionRequest_a.getEnonce(),createQuestionRequest_a.getReponse());
                 break;
+            case PYTHON:
+                questionToAdd = new Question(createQuestionRequest_a.getEnonce(),createQuestionRequest_a.getReponse(), "Python");
+                break;
             case QCM:
                 questionToAdd = new Question(
                         createQuestionRequest_a.getEnonce(),
