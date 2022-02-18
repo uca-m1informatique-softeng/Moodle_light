@@ -77,7 +77,7 @@ public class UserDetailService {
 									signUpRequest.getPassword(),
 									signUpRequest.getRole() );
 
-
+		userRepository.save(newUser);
 
 		return ResponseEntity.status(HttpStatus.CONFLICT).body(" Username Already Exist ");
 	}

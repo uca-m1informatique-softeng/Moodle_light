@@ -3,7 +3,7 @@ services:
   authservice:
     image: 'authservice:latest'
 #    build: ./docker/api_spring
-    container_name: api
+    container_name: authapi
     ports:
       - 8081:8080
     depends_on:

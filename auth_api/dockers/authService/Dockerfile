@@ -8,4 +8,4 @@ COPY dockers/authService/settings.xml /usr/share/maven/conf/
 COPY pom.xml /spring/pom.xml
 ENTRYPOINT java -jar /spring/app.jar
  #mvn clean test;
-EXPOSE 8080
+#EXPOSE 8080
